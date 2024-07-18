@@ -3,9 +3,53 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{EC93D63D-195A-45BF-8797-C653705DDE43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocCareWeb.Application", "src\DocCareWeb.Application\DocCareWeb.Application.csproj", "{4238DDFE-33BC-4AB2-8FFB-50E5DDE4DB88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{619D28BE-40EA-47B8-A50C-7406F8CA12D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocCareWeb.Domain", "src\DocCareWeb.Domain\DocCareWeb.Domain.csproj", "{C5AEF671-E337-4F77-8FD3-FCFFF8BF781D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{B4FB48DA-967B-4009-B511-1B52F0CB2442}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocCareWeb.Infrastructure", "src\DocCareWeb.Infrastructure\DocCareWeb.Infrastructure.csproj", "{49ED13E4-6423-4273-83F1-AFC3C2D6DCCC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{0E787670-A8DC-4715-8D4E-1534FEBA771E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocCareWeb.API", "src\DocCareWeb.API\DocCareWeb.API.csproj", "{045BF6C6-07E6-4BE6-8DF7-890B483D3E8A}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4238DDFE-33BC-4AB2-8FFB-50E5DDE4DB88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4238DDFE-33BC-4AB2-8FFB-50E5DDE4DB88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4238DDFE-33BC-4AB2-8FFB-50E5DDE4DB88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4238DDFE-33BC-4AB2-8FFB-50E5DDE4DB88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5AEF671-E337-4F77-8FD3-FCFFF8BF781D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5AEF671-E337-4F77-8FD3-FCFFF8BF781D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5AEF671-E337-4F77-8FD3-FCFFF8BF781D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5AEF671-E337-4F77-8FD3-FCFFF8BF781D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49ED13E4-6423-4273-83F1-AFC3C2D6DCCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49ED13E4-6423-4273-83F1-AFC3C2D6DCCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49ED13E4-6423-4273-83F1-AFC3C2D6DCCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49ED13E4-6423-4273-83F1-AFC3C2D6DCCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{045BF6C6-07E6-4BE6-8DF7-890B483D3E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{045BF6C6-07E6-4BE6-8DF7-890B483D3E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{045BF6C6-07E6-4BE6-8DF7-890B483D3E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{045BF6C6-07E6-4BE6-8DF7-890B483D3E8A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4238DDFE-33BC-4AB2-8FFB-50E5DDE4DB88} = {EC93D63D-195A-45BF-8797-C653705DDE43}
+		{C5AEF671-E337-4F77-8FD3-FCFFF8BF781D} = {619D28BE-40EA-47B8-A50C-7406F8CA12D0}
+		{49ED13E4-6423-4273-83F1-AFC3C2D6DCCC} = {B4FB48DA-967B-4009-B511-1B52F0CB2442}
+		{045BF6C6-07E6-4BE6-8DF7-890B483D3E8A} = {0E787670-A8DC-4715-8D4E-1534FEBA771E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0173E852-2FB6-42C8-94F0-2C0A9C7E9D3E}
