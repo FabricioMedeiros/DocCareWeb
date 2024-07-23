@@ -1,6 +1,7 @@
 using DocCareWeb.Domain.Entities;
 using DocCareWeb.Domain.Interfaces;
 using DocCareWeb.Infrastructure.Data;
+using DocCareWeb.Infrastructure.Mappings;
 using DocCareWeb.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,12 +38,15 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// Configure Repositories
+// Config. Repositories
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IHealthPlanRepository, HealthPlanRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
+// Config. AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
