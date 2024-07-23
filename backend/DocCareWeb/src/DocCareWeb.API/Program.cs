@@ -1,3 +1,4 @@
+using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
 using DocCareWeb.Domain.Interfaces;
 using DocCareWeb.Infrastructure.Data;
@@ -44,6 +45,9 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IHealthPlanRepository, HealthPlanRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
+//Config. Notifications
+builder.Services.AddScoped(typeof(INotificator), typeof(Notificator));
 
 // Config. AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
