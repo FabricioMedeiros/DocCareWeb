@@ -1,11 +1,20 @@
+using DocCareWeb.Application.Dtos.Address;
+using DocCareWeb.Application.Dtos.Appointment;
+using DocCareWeb.Application.Dtos.Doctor;
+using DocCareWeb.Application.Dtos.HealthPlan;
+using DocCareWeb.Application.Dtos.Patient;
+using DocCareWeb.Application.Dtos.Specialty;
 using DocCareWeb.Application.Notifications;
+using DocCareWeb.Application.Validators;
 using DocCareWeb.Domain.Entities;
 using DocCareWeb.Domain.Interfaces;
 using DocCareWeb.Infrastructure.Data;
 using DocCareWeb.Infrastructure.Mappings;
 using DocCareWeb.Infrastructure.Repositories;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +57,25 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 //Config. Notifications
 builder.Services.AddScoped(typeof(INotificator), typeof(Notificator));
+
+//Config. Validators
+builder.Services.AddScoped<IValidator<AddressCreateDto>, AddressCreateValidator>();
+builder.Services.AddScoped<IValidator<AddressUpdateDto>, AddressUpdateValidator>();
+
+builder.Services.AddScoped<IValidator<AppointmentCreateDto>, AppointmentCreateValidator>();
+builder.Services.AddScoped<IValidator<AppointmentUpdateDto>, AppointmentUpdateValidator>();
+
+builder.Services.AddScoped<IValidator<DoctorCreateDto>, DoctorCreateValidator>();
+builder.Services.AddScoped<IValidator<DoctorUpdateDto>, DoctorUpdateValidator>();
+
+builder.Services.AddScoped<IValidator<HealthPlanCreateDto>, HealthPlanCreateValidator>();
+builder.Services.AddScoped<IValidator<HealthPlanUpdateDto>, HealthPlanUpdateValidator>();
+
+builder.Services.AddScoped<IValidator<PatientCreateDto>, PatientCreateValidator>();
+builder.Services.AddScoped<IValidator<PatientUpdateDto>, PatientUpdateValidator>();
+
+builder.Services.AddScoped<IValidator<SpecialtyCreateDto>, SpecialtyCreateValidator>();
+builder.Services.AddScoped<IValidator<SpecialtyUpdateDto>, SpecialtyUpdateValidator>();
 
 // Config. AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
