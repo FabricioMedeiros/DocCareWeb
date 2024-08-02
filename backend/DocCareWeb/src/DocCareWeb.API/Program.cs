@@ -1,3 +1,4 @@
+using DocCareWeb.Application.Configurations;
 using DocCareWeb.Application.Dtos.Address;
 using DocCareWeb.Application.Dtos.Appointment;
 using DocCareWeb.Application.Dtos.Doctor;
@@ -5,6 +6,7 @@ using DocCareWeb.Application.Dtos.HealthPlan;
 using DocCareWeb.Application.Dtos.Patient;
 using DocCareWeb.Application.Dtos.Specialty;
 using DocCareWeb.Application.Notifications;
+using DocCareWeb.Application.Services;
 using DocCareWeb.Application.Validators;
 using DocCareWeb.Domain.Entities;
 using DocCareWeb.Domain.Interfaces;
@@ -45,15 +47,25 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
 })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
 // Config. Repositories
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IHealthPlanRepository, HealthPlanRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
+//Config. Services
+builder.Services.AddScoped(typeof(IGenericService<,,,>), typeof(GenericService<,,,>));
+builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IHealthPlanService, HealthPlanService>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
+
 
 //Config. Notifications
 builder.Services.AddScoped(typeof(INotificator), typeof(Notificator));
