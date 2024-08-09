@@ -8,7 +8,7 @@ using FluentValidation;
 
 namespace DocCareWeb.Application.Services
 {
-    public class AppointmentService : GenericService<Appointment, AppointmentCreateDto, AppointmentUpdateDto, AppointmentBaseDto>, IAppointmentService
+    public class AppointmentService : GenericService<Appointment, AppointmentCreateDto, AppointmentUpdateDto, AppointmentListDto>, IAppointmentService
     {
         private readonly IGenericRepository<Appointment> _appointmentRepository;
 
@@ -23,7 +23,7 @@ namespace DocCareWeb.Application.Services
             _appointmentRepository = appointmentRepository;
         }
 
-        public override async Task AddAsync(AppointmentCreateDto createDto)
+        public override async Task<AppointmentListDto?> AddAsync(AppointmentCreateDto createDto)
         {
             var existingAppointments = await _appointmentRepository.GetAllAsync(a =>
                 a.DoctorId == createDto.DoctorId && a.AppointmentDate == createDto.AppointmentDate && a.AppointmentTime == createDto.AppointmentTime);
@@ -31,16 +31,17 @@ namespace DocCareWeb.Application.Services
             if (existingAppointments.Any())
             {
                 Notify("Já existe uma consulta agendada para este médico no mesmo dia e horário.");
-                return;
+                return null;
             }
 
             if (!await ValidateCreateDto(createDto))
             {
-                return;
+                return null;
             }
 
             var entity = _mapper.Map<Appointment>(createDto);
-            await _appointmentRepository.AddAsync(entity);
+            var createdAppointment = await _appointmentRepository.AddAsync(entity);
+            return _mapper.Map<AppointmentListDto>(createdAppointment);
         }
 
         public override async Task UpdateAsync(AppointmentUpdateDto updateDto)

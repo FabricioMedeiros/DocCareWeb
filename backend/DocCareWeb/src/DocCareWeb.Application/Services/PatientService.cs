@@ -8,7 +8,7 @@ using FluentValidation;
 
 namespace DocCareWeb.Application.Services
 {
-    public class PatientService : GenericService<Patient, PatientCreateDto, PatientUpdateDto, PatientBaseDto>, IPatientService
+    public class PatientService : GenericService<Patient, PatientCreateDto, PatientUpdateDto, PatientListDto>, IPatientService
     {
         public PatientService(
             IGenericRepository<Patient> patientRepository,

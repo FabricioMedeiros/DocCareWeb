@@ -3,7 +3,7 @@ using DocCareWeb.Domain.Entities;
 
 namespace DocCareWeb.Application.Interfaces
 {
-    public interface IPatientService : IGenericService<Patient, PatientCreateDto, PatientUpdateDto, PatientBaseDto>
+    public interface IPatientService : IGenericService<Patient, PatientCreateDto, PatientUpdateDto, PatientListDto>
     {
     }
 }

@@ -3,7 +3,7 @@ using DocCareWeb.Domain.Entities;
 
 namespace DocCareWeb.Application.Interfaces
 {
-    public interface IHealthPlanService : IGenericService<HealthPlan, HealthPlanCreateDto, HealthPlanUpdateDto, HealthPlanBaseDto>
+    public interface IHealthPlanService : IGenericService<HealthPlan, HealthPlanCreateDto, HealthPlanUpdateDto, HealthPlanListDto>
     {
 
     }
