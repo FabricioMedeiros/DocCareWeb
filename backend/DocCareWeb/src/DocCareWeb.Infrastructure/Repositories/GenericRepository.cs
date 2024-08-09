@@ -32,10 +32,11 @@ namespace DocCareWeb.Infrastructure.Repositories
             return await _context.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task AddAsync(TEntity entity)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
             await _context.Set<TEntity>().AddAsync(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task UpdateAsync(TEntity entity)
