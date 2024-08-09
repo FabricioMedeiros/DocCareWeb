@@ -24,26 +24,31 @@ namespace DocCareWeb.Infrastructure.Mappings
             CreateMap<Doctor, DoctorBaseDto>().ReverseMap();
             CreateMap<Doctor, DoctorCreateDto>().ReverseMap();
             CreateMap<Doctor, DoctorUpdateDto>().ReverseMap();
+            CreateMap<Doctor, DoctorListDto>().ReverseMap();
 
             // Appointment mappings
             CreateMap<Appointment, AppointmentBaseDto>().ReverseMap();
             CreateMap<Appointment, AppointmentCreateDto>().ReverseMap();
             CreateMap<Appointment, AppointmentUpdateDto>().ReverseMap();
+            CreateMap<Appointment, AppointmentListDto>().ReverseMap();
 
             // Patient mappings
             CreateMap<Patient, PatientBaseDto>().ReverseMap();
             CreateMap<Patient, PatientCreateDto>().ReverseMap();
             CreateMap<Patient, PatientUpdateDto>().ReverseMap();
+            CreateMap<Patient, PatientListDto>().ReverseMap();
 
             // HealthPlan mappings
             CreateMap<HealthPlan, HealthPlanBaseDto>().ReverseMap();
             CreateMap<HealthPlan, HealthPlanCreateDto>().ReverseMap();
             CreateMap<HealthPlan, HealthPlanUpdateDto>().ReverseMap();
+            CreateMap<HealthPlan, HealthPlanListDto>().ReverseMap();
 
             // Specialty mappings
             CreateMap<Specialty, SpecialtyBaseDto>().ReverseMap();
             CreateMap<Specialty, SpecialtyCreateDto>().ReverseMap();
             CreateMap<Specialty, SpecialtyUpdateDto>().ReverseMap();
+            CreateMap<Specialty, SpecialtyListDto>().ReverseMap();
 
             // UserRegister mappings
             CreateMap<UserRegisterDto, ApplicationUser>().ReverseMap();
