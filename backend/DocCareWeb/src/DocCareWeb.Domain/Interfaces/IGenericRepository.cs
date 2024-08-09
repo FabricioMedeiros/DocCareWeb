@@ -7,7 +7,7 @@ namespace DocCareWeb.Domain.Interfaces
     {
         Task<IEnumerable<TEntity?>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null);
         Task<TEntity?> GetByIdAsync(int id);
-        Task AddAsync(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(int id);
     }
