@@ -9,18 +9,21 @@ namespace DocCareWeb.Application.Validators
         {
             RuleFor(a => a.Street)
                 .NotEmpty().WithMessage("A rua é obrigatória.")
-                .Length(2, 100).WithMessage("A rua deve ter entre 2 e 100 caracteres.");
+                .Length(2, 100).WithMessage("A rua deve ter entre 2 e 50 caracteres.");
 
             RuleFor(a => a.Number)
-                .NotEmpty().WithMessage("O número é obrigatório.");
+                .MaximumLength(20).WithMessage("O número deve ter no máximo 10 caracteres."); 
+
+            RuleFor(a => a.Complement)
+                .MaximumLength(20).WithMessage("O complemento deve ter no máximo 20 caracteres.");
 
             RuleFor(a => a.Neighborhood)
                 .NotEmpty().WithMessage("O bairro é obrigatório.")
-                .Length(2, 100).WithMessage("O bairro deve ter entre 2 e 100 caracteres.");
+                .Length(2, 50).WithMessage("O bairro deve ter entre 2 e 50 caracteres."); 
 
             RuleFor(a => a.City)
                 .NotEmpty().WithMessage("A cidade é obrigatória.")
-                .Length(2, 100).WithMessage("A cidade deve ter entre 2 e 100 caracteres.");
+                .Length(2, 50).WithMessage("A cidade deve ter entre 2 e 50 caracteres."); 
 
             RuleFor(a => a.State)
                 .NotEmpty().WithMessage("O estado é obrigatório.")
@@ -28,7 +31,7 @@ namespace DocCareWeb.Application.Validators
 
             RuleFor(a => a.ZipCode)
                 .NotEmpty().WithMessage("O CEP é obrigatório.")
-                .Matches(@"^\d{5}-\d{3}$").WithMessage("O CEP deve estar no formato 12345-678.");
+                .Matches(@"^\d{8}$").WithMessage("O CEP deve conter exatamente 8 dígitos numéricos.");
         }
     }
 
