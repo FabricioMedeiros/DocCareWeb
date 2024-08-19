@@ -32,7 +32,7 @@ namespace DocCareWeb.Application.Services
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationInMinutes),
+                expires: DateTime.Now.AddMinutes(_jwtSettings.ExpiryInMinutes),
                 signingCredentials: creds
             );
 
@@ -45,7 +45,8 @@ namespace DocCareWeb.Application.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("username", user.Name),
+                new Claim("userId", user.Id),
+                new Claim("userName", user.Name)                
             };
 
             var userClaims = await _userManager.GetClaimsAsync(user);
