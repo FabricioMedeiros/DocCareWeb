@@ -9,7 +9,7 @@ namespace DocCareWeb.Application.Validators
         {
             RuleFor(d => d.Name)
                 .NotEmpty().WithMessage("O nome é obrigatório.")
-                .Length(2, 100).WithMessage("O nome deve ter entre 2 e 100 caracteres.");
+                .Length(2, 60).WithMessage("O nome deve ter entre 2 e 60 caracteres.");
 
             RuleFor(d => d.SpecialtyId)
                 .NotEmpty().WithMessage("A especialidade é obrigatória.");
@@ -20,11 +20,11 @@ namespace DocCareWeb.Application.Validators
             RuleFor(d => d.Email)
                 .EmailAddress().WithMessage("O e-mail é inválido.");
 
-            RuleFor(d => d.CellPhone)
-                .Matches(@"^\(\d{2}\) \d{4,5}-\d{4}$").WithMessage("O celular é inválido.");
+            RuleFor(p => p.Phone)
+                   .Matches(@"^\d{10}$").WithMessage("O telefone fixo deve conter exatamente 10 dígitos numéricos.");
 
-            RuleFor(d => d.Phone)
-                .Matches(@"^\(\d{2}\) \d{4,5}-\d{4}$").WithMessage("O telefone é inválido.");
+            RuleFor(p => p.CellPhone)
+                .Matches(@"^\d{11}$").WithMessage("O celular deve conter exatamente 11 dígitos numéricos.");
         }
     }
 
