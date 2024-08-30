@@ -32,8 +32,7 @@ namespace DocCareWeb.Application.Services
             _createValidator = createValidator;
             _updateValidator = updateValidator;
             _mapper = mapper;
-        }       
-
+        }
         public virtual async Task<PagedResult<TListDto>> GetAllAsync(Dictionary<string, string>? filters, int? pageNumber = null, int? pageSize = null)
         {
             var parameter = Expression.Parameter(typeof(TEntity), "entity");
@@ -56,39 +55,32 @@ namespace DocCareWeb.Application.Services
             var entities = await _repository.GetAllAsync(lambda);
             var entitiesQuery = entities.AsQueryable();
 
+            int totalRecords = entitiesQuery.Count();
             if (pageNumber.HasValue && pageSize.HasValue)
             {
-                var totalCount = entitiesQuery.Count();
-                var pagedEntities = entitiesQuery.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value).ToList();
-
-                var pagedResult = new PagedResult<TListDto>
-                {
-                    Page = pageNumber.Value,
-                    PageSize = pageSize.Value,
-                    TotalRecords = totalCount,
-                    Items = _mapper.Map<IEnumerable<TListDto>>(pagedEntities)
-                };
-
-                return pagedResult;
+                entitiesQuery = entitiesQuery.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
             }
-            else
+
+            var pagedResult = new PagedResult<TListDto>
             {
-                var result = new PagedResult<TListDto>
-                {
-                    Page = 1,
-                    PageSize = entitiesQuery.Count(),
-                    TotalRecords = entitiesQuery.Count(),
-                    Items = _mapper.Map<IEnumerable<TListDto>>(entitiesQuery.ToList())
-                };
+                Page = pageNumber ?? 1,
+                PageSize = pageSize ?? totalRecords,
+                TotalRecords = totalRecords,
+                Items = _mapper.Map<IEnumerable<TListDto>>(entitiesQuery.ToList())
+            };
 
-                return result;
-            }
+            return pagedResult;
         }
 
-        public async Task<TListDto?> GetByIdAsync(int id)
+        public virtual async Task<TListDto?> GetByIdAsync(int id)
         {
             var entity = await _repository.GetByIdAsync(id);
             return _mapper.Map<TListDto>(entity);
+        }
+
+        public virtual async Task<TEntity?> GetByIdAsync(int id, bool returnEntity)
+        {
+            return await _repository.GetByIdAsync(id);
         }
 
         public virtual async Task<TListDto?> AddAsync(TCreateDto createDto)
@@ -97,6 +89,12 @@ namespace DocCareWeb.Application.Services
                 return null;
 
             var entity = _mapper.Map<TEntity>(createDto);
+            var createdEntity = await _repository.AddAsync(entity);
+            return _mapper.Map<TListDto>(createdEntity);
+        }
+
+        public virtual async Task<TListDto?> AddAsync(TEntity entity)
+        {
             var createdEntity = await _repository.AddAsync(entity);
             return _mapper.Map<TListDto>(createdEntity);
         }
@@ -110,11 +108,16 @@ namespace DocCareWeb.Application.Services
             await _repository.UpdateAsync(entity);
         }
 
+        public virtual async Task UpdateAsync(TEntity entity)
+        {
+            await _repository.UpdateAsync(entity);
+        }
+
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);
-        }
-
+        }  
+        
         private static Expression CreateComparisonExpression(ParameterExpression parameter, PropertyInfo property, string filterValue)
         {
             var propertyType = property.PropertyType;

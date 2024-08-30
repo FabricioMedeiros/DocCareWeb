@@ -12,8 +12,11 @@ namespace DocCareWeb.Application.Interfaces
         Task<bool> ValidateUpdateDto(TUpdateDto updateDto);
         Task<PagedResult<TListDto>> GetAllAsync(Dictionary<string, string>? filters, int? pageNumber = null, int? pageSize = null);
         Task<TListDto?> GetByIdAsync(int id);
+        Task<TEntity?> GetByIdAsync(int id, bool returnEntity);
         Task<TListDto?> AddAsync(TCreateDto createDto);
+        Task<TListDto?> AddAsync(TEntity entity);
         Task UpdateAsync(TUpdateDto updateDto);
+        Task UpdateAsync(TEntity entity);
         Task DeleteAsync(int id);
     }
 }
