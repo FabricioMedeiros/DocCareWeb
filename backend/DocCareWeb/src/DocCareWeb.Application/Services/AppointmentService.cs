@@ -2,66 +2,127 @@
 using DocCareWeb.Application.Dtos.Appointment;
 using DocCareWeb.Application.Interfaces;
 using DocCareWeb.Application.Notifications;
+using DocCareWeb.Application.Services;
 using DocCareWeb.Domain.Entities;
+using DocCareWeb.Domain.Enums;
 using DocCareWeb.Domain.Interfaces;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
-namespace DocCareWeb.Application.Services
+public class AppointmentService : GenericService<Appointment, AppointmentCreateDto, AppointmentUpdateDto, AppointmentListDto>, IAppointmentService
 {
-    public class AppointmentService : GenericService<Appointment, AppointmentCreateDto, AppointmentUpdateDto, AppointmentListDto>, IAppointmentService
+    private readonly IAppointmentRepository _appointmentRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public AppointmentService(
+        IAppointmentRepository appointmentRepository,
+        IValidator<AppointmentCreateDto> createValidator,
+        IValidator<AppointmentUpdateDto> updateValidator,
+        IMapper mapper,
+        INotificator notificator,
+        IHttpContextAccessor httpContextAccessor) : base(appointmentRepository, createValidator, updateValidator, mapper, notificator)
     {
-        private readonly IGenericRepository<Appointment> _appointmentRepository;
+        _appointmentRepository = appointmentRepository;
+        _httpContextAccessor = httpContextAccessor;
+    }
 
-        public AppointmentService(
-            IGenericRepository<Appointment> appointmentRepository,
-            IValidator<AppointmentCreateDto> createValidator,
-            IValidator<AppointmentUpdateDto> updateValidator,
-            IMapper mapper,
-            INotificator notificator)
-            : base(appointmentRepository, createValidator, updateValidator, mapper, notificator)
+    public override async Task<AppointmentListDto?> AddAsync(Appointment appointment)
+    {
+        var existingAppointments = await _appointmentRepository.GetAllAsync(a =>
+            a.DoctorId == appointment.DoctorId && 
+            a.AppointmentDate == appointment.AppointmentDate &&
+            a.AppointmentTime == appointment.AppointmentTime && 
+            a.Status != AppointmentStatus.Canceled);
+
+        if (existingAppointments.Any())
         {
-            _appointmentRepository = appointmentRepository;
+            Notify("Já existe uma consulta agendada para este médico no mesmo dia e horário.");
+            return null;
         }
 
-        public override async Task<AppointmentListDto?> AddAsync(AppointmentCreateDto createDto)
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId") ?? "Anonymous";
+        appointment.CreatedBy = userId;
+        appointment.CreatedAt = DateTime.Now;
+
+        var createdAppointment = await _appointmentRepository.AddAsync(appointment);
+        return _mapper.Map<AppointmentListDto>(createdAppointment);
+    }
+
+    public new async Task<bool> UpdateAsync(Appointment appointment)
+    {
+        var existingAppointments = await _appointmentRepository.GetAllAsync(a =>
+            a.DoctorId == appointment.DoctorId && 
+            a.AppointmentDate == appointment.AppointmentDate && 
+            a.AppointmentTime == appointment.AppointmentTime && 
+            a.Id != appointment.Id 
+            && a.Status != AppointmentStatus.Canceled);
+
+        if (existingAppointments.Any())
         {
-            var existingAppointments = await _appointmentRepository.GetAllAsync(a =>
-                a.DoctorId == createDto.DoctorId && a.AppointmentDate == createDto.AppointmentDate && a.AppointmentTime == createDto.AppointmentTime);
-
-            if (existingAppointments.Any())
-            {
-                Notify("Já existe uma consulta agendada para este médico no mesmo dia e horário.");
-                return null;
-            }
-
-            if (!await ValidateCreateDto(createDto))
-            {
-                return null;
-            }
-
-            var entity = _mapper.Map<Appointment>(createDto);
-            var createdAppointment = await _appointmentRepository.AddAsync(entity);
-            return _mapper.Map<AppointmentListDto>(createdAppointment);
+            Notify("Já existe uma consulta agendada para este médico no mesmo dia e horário.");
+            return false;
         }
 
-        public override async Task UpdateAsync(AppointmentUpdateDto updateDto)
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId") ?? "Anonymous";
+
+        appointment.LastUpdatedBy = userId;
+        appointment.LastUpdatedAt = DateTime.Now;       
+
+        await _appointmentRepository.UpdateAsync(appointment);
+        return true;
+    }
+    public async Task<bool> ChangeStatusAsync(Appointment appointment, AppointmentStatus newStatus)
+    {
+        if (!CanChangeStatus(appointment.Status, newStatus))
         {
-            var existingAppointments = await _appointmentRepository.GetAllAsync(a =>
-                a.DoctorId == updateDto.DoctorId && a.AppointmentDate == updateDto.AppointmentDate && a.AppointmentTime == updateDto.AppointmentTime && a.Id != updateDto.Id);
-
-            if (existingAppointments.Any())
-            {
-                Notify("Já existe uma consulta agendada para este médico no mesmo dia e horário.");
-                return;
-            }
-
-            if (!await ValidateUpdateDto(updateDto))
-            {
-                return;
-            }
-
-            var entity = _mapper.Map<Appointment>(updateDto);
-            await _appointmentRepository.UpdateAsync(entity);
+            Notify("Mudança de status não permitida.");
+            return false;
         }
+
+        if (!SetAppointmentStatus(appointment, newStatus))
+        {
+            return false;
+        }
+
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId") ?? "Anonymous";
+
+        appointment.LastUpdatedBy = userId;
+        appointment.LastUpdatedAt = DateTime.Now;   
+
+        await _appointmentRepository.UpdateAsync(appointment);
+
+        return true;
+    }
+
+    private bool CanChangeStatus(AppointmentStatus currentStatus, AppointmentStatus newStatus)
+    {
+        return (currentStatus == AppointmentStatus.Scheduled && newStatus == AppointmentStatus.Confirmed) ||
+               (currentStatus == AppointmentStatus.Confirmed &&
+                (newStatus == AppointmentStatus.Canceled || newStatus == AppointmentStatus.Completed));
+    }
+
+    public bool SetAppointmentStatus(Appointment appointment, AppointmentStatus newStatus)
+    {
+        switch (newStatus)
+        {
+            case AppointmentStatus.Scheduled:
+                appointment.Schedule();
+                break;
+            case AppointmentStatus.Confirmed:
+                appointment.Confirm();
+                break;
+            case AppointmentStatus.Canceled:
+                appointment.Cancel();
+                break;
+            case AppointmentStatus.Completed:
+                appointment.Complete();
+                break;
+            default:
+                Notify("Status inválido.");
+                return false;
+        }
+
+        return true;
     }
 }
