@@ -1,4 +1,5 @@
 ﻿using DocCareWeb.Application.Dtos.Patient;
+using DocCareWeb.Application.Validators;
 using FluentValidation;
 
 namespace DocCareWeb.Application.Validators
@@ -9,7 +10,7 @@ namespace DocCareWeb.Application.Validators
         {
             RuleFor(p => p.Name)
                 .NotEmpty().WithMessage("O nome é obrigatório.")
-                .Length(2, 100).WithMessage("O nome deve ter entre 2 e 100 caracteres.");
+                .Length(2, 60).WithMessage("O nome deve ter entre 2 e 60 caracteres.");
 
             RuleFor(p => p.Cpf)
                 .Must(CPFValidator.IsValid).WithMessage("O CPF é inválido.");
@@ -18,10 +19,10 @@ namespace DocCareWeb.Application.Validators
                 .EmailAddress().WithMessage("O e-mail é inválido.");
 
             RuleFor(p => p.Phone)
-                .Matches(@"^\(\d{2}\) \d{4,5}-\d{4}$").WithMessage("O telefone é inválido.");
+                  .Matches(@"^\d{10}$").WithMessage("O telefone fixo deve conter exatamente 10 dígitos numéricos.");
 
             RuleFor(p => p.CellPhone)
-                .Matches(@"^\(\d{2}\) \d{4,5}-\d{4}$").WithMessage("O celular é inválido.");
+                .Matches(@"^\d{11}$").WithMessage("O celular deve conter exatamente 11 dígitos numéricos.");
 
             RuleFor(p => p.Gender)
                 .IsInEnum().WithMessage("O gênero é inválido.");
@@ -31,9 +32,6 @@ namespace DocCareWeb.Application.Validators
 
             RuleFor(p => p.HealthPlanId)
                 .NotEmpty().WithMessage("O plano de saúde é obrigatório.");
-
-            RuleFor(p => p.Address)
-                .SetValidator(new AddressValidator()).WithMessage("O endereço é inválido.");
         }
     }
 
@@ -42,6 +40,10 @@ namespace DocCareWeb.Application.Validators
         public PatientCreateValidator()
         {
             Include(new PatientValidator());
+
+             RuleFor(p => p.Address)
+                .SetValidator(new AddressCreateValidator())
+                .WithMessage("O endereço é inválido.");
         }
     }
 
@@ -53,6 +55,10 @@ namespace DocCareWeb.Application.Validators
 
             RuleFor(p => p.Id)
                 .NotEmpty().WithMessage("O ID é obrigatório.");
+
+            RuleFor(p => p.Address)
+                .SetValidator(new AddressUpdateValidator())
+                .WithMessage("O endereço é inválido.");
         }
     }
 }
