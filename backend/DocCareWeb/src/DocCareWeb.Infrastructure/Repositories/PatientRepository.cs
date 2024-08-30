@@ -14,8 +14,7 @@ namespace DocCareWeb.Infrastructure.Repositories
         {
             IQueryable<Patient> query = _context.Set<Patient>()
                                                .Include(p => p.Address)
-                                               .Include(p => p.HealthPlan)
-                                               .Include(p => p.Appointments);
+                                               .Include(p => p.HealthPlan);
 
             if (filter != null)
             {
@@ -30,7 +29,6 @@ namespace DocCareWeb.Infrastructure.Repositories
             return await _context.Set<Patient>()
                                 .Include(p => p.Address)
                                 .Include(p => p.HealthPlan)
-                                .Include(p => p.Appointments)
                                 .FirstOrDefaultAsync(p => p.Id == id);
         }
     }
