@@ -19,18 +19,19 @@ namespace DocCareWeb.Infrastructure.Mappings
             CreateMap<Address, AddressBaseDto>().ReverseMap();
             CreateMap<Address, AddressCreateDto>().ReverseMap();
             CreateMap<Address, AddressUpdateDto>().ReverseMap();
-
-            // Doctor mappings
-            CreateMap<Doctor, DoctorBaseDto>().ReverseMap();
-            CreateMap<Doctor, DoctorCreateDto>().ReverseMap();
-            CreateMap<Doctor, DoctorUpdateDto>().ReverseMap();
-            CreateMap<Doctor, DoctorListDto>().ReverseMap();
+            CreateMap<Address, AddressListDto>().ReverseMap();
 
             // Appointment mappings
             CreateMap<Appointment, AppointmentBaseDto>().ReverseMap();
             CreateMap<Appointment, AppointmentCreateDto>().ReverseMap();
             CreateMap<Appointment, AppointmentUpdateDto>().ReverseMap();
             CreateMap<Appointment, AppointmentListDto>().ReverseMap();
+
+            // Doctor mappings
+            CreateMap<Doctor, DoctorBaseDto>().ReverseMap();
+            CreateMap<Doctor, DoctorCreateDto>().ReverseMap();
+            CreateMap<Doctor, DoctorUpdateDto>().ReverseMap();
+            CreateMap<Doctor, DoctorListDto>().ReverseMap();
 
             // Patient mappings
             CreateMap<Patient, PatientBaseDto>().ReverseMap();
@@ -55,6 +56,14 @@ namespace DocCareWeb.Infrastructure.Mappings
 
             //Login mappings
             CreateMap<LoginDto, ApplicationUser>().ReverseMap();
+
+            // Custom converters for TimeSpan
+            CreateMap<TimeSpan, string>().ConvertUsing(src => src.ToString(@"hh\:mm"));
+            CreateMap<string, TimeSpan>().ConvertUsing(src => TimeSpan.Parse(src));
+
+            // Custom converters for DateTime
+            CreateMap<DateTime, string>().ConvertUsing(src => src.ToString("yyyy-MM-dd"));
+            CreateMap<string, DateTime>().ConvertUsing(src => DateTime.Parse(src));
         }
     }
 }
