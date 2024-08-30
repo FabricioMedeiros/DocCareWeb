@@ -136,6 +136,9 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
 
+//Config. IHttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
 //Config. Notifications
 builder.Services.AddScoped(typeof(INotificator), typeof(Notificator));
 
