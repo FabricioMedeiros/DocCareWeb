@@ -11,8 +11,8 @@ namespace DocCareWeb.Application.Validators
                 .NotEmpty().WithMessage("A descrição é obrigatória.")
                 .Length(2, 60).WithMessage("A descrição deve ter entre 2 e 60 caracteres.");
 
-            RuleFor(h => h.Cost)
-                .NotNull().WithMessage("O valor da consulta não pode ser nulo.");
+            RuleFor(a => a.Cost)
+                .GreaterThanOrEqualTo(0).WithMessage("O valor da consulta deve ser maior ou igual a zero.");
         }
     }
 
