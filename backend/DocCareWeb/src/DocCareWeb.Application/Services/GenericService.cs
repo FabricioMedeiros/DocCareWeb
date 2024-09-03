@@ -84,10 +84,7 @@ namespace DocCareWeb.Application.Services
         }
 
         public virtual async Task<TListDto?> AddAsync(TCreateDto createDto)
-        {
-            if (!await ValidateCreateDto(createDto))
-                return null;
-
+        {          
             var entity = _mapper.Map<TEntity>(createDto);
             var createdEntity = await _repository.AddAsync(entity);
             return _mapper.Map<TListDto>(createdEntity);
@@ -100,10 +97,7 @@ namespace DocCareWeb.Application.Services
         }
 
         public virtual async Task UpdateAsync(TUpdateDto updateDto)
-        {
-            if (!await ValidateUpdateDto(updateDto))
-                return;
-
+        {     
             var entity = _mapper.Map<TEntity>(updateDto);
             await _repository.UpdateAsync(entity);
         }
@@ -153,39 +147,6 @@ namespace DocCareWeb.Application.Services
         {
             enumType = Nullable.GetUnderlyingType(enumType) ?? enumType;
             return Enum.Parse(enumType, value);
-        }
-
-        public virtual async Task<bool> ValidateCreateDto(TCreateDto createDto)
-        {
-            var validationResult = await _createValidator.ValidateAsync(createDto);
-
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    Notify(error.ErrorMessage);
-                }
-                return false;
-            }
-
-            return true;
-        }
-
-        public virtual async Task<bool> ValidateUpdateDto(TUpdateDto updateDto)
-        {
-            var validationResult = await _updateValidator.ValidateAsync(updateDto);
-
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    Notify(error.ErrorMessage);
-                }
-                return false;
-            }
-
-            return true;
-        }
-
+        }    
     }
 }

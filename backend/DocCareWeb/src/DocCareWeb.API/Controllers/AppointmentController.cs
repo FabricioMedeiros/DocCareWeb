@@ -15,19 +15,12 @@ namespace DocCareWeb.API.Controllers
     {
         private readonly IAppointmentService _appointmentService;
         private readonly IMapper _mapper;
-        private readonly IValidator<AppointmentCreateDto> _createValidator;
-        private readonly IValidator<AppointmentUpdateDto> _updateValidator;
-
         public AppointmentController(IAppointmentService appointmentService,
                                       IMapper mapper,
-                                      INotificator notificator,
-                                      IValidator<AppointmentCreateDto> createValidator,
-                                      IValidator<AppointmentUpdateDto> updateValidator) : base(notificator)
+                                      INotificator notificator) : base(notificator)
         {
             _appointmentService = appointmentService;
             _mapper = mapper;
-            _createValidator = createValidator;
-            _updateValidator = updateValidator;
         }
 
         [HttpGet]
@@ -50,21 +43,7 @@ namespace DocCareWeb.API.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AppointmentCreateDto appointmentDto)
-        {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
-            var validationResult = await _createValidator.ValidateAsync(appointmentDto);
-
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    NotifyError(error.ErrorMessage);
-                }
-
-                return CustomResponse();
-            }
-
+        {       
             var appointment = _mapper.Map<Appointment>(appointmentDto);
             
             var createdAppointment = await _appointmentService.AddAsync(appointment);
@@ -80,19 +59,6 @@ namespace DocCareWeb.API.Controllers
                 return CustomResponse();
             }
 
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
-            var validationResult = await _updateValidator.ValidateAsync(appointmentDto);
-
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    NotifyError(error.ErrorMessage);
-                }
-
-                return CustomResponse();
-            }
 
             var appointment = await _appointmentService.GetByIdAsync(id, true);
 

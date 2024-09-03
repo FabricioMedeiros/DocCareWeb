@@ -3,7 +3,6 @@ using DocCareWeb.Application.Dtos.Patient;
 using DocCareWeb.Application.Interfaces;
 using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -16,18 +15,12 @@ namespace DocCareWeb.API.Controllers
     {
         private readonly IPatientService _patientService;
         private readonly IMapper _mapper;
-        private readonly IValidator<PatientCreateDto> _createValidator;
-        private readonly IValidator<PatientUpdateDto> _updateValidator;
         public PatientController(IPatientService patientService, 
                                  IMapper mapper, 
-                                 INotificator notificator, 
-                                 IValidator<PatientCreateDto> createValidator,
-                                 IValidator<PatientUpdateDto> updateValidator) : base(notificator)
+                                 INotificator notificator) : base(notificator)
         {
             _patientService = patientService;
             _mapper = mapper;
-            _createValidator = createValidator;
-            _updateValidator = updateValidator;
         }
 
         [HttpGet]
@@ -49,12 +42,7 @@ namespace DocCareWeb.API.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PatientCreateDto patientDto)
-        {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
-            if (!await _patientService.ValidateCreateDto(patientDto))
-                return CustomResponse(); 
-            
+        {         
             var userId = User.FindFirstValue("userId");
 
             var patient = _mapper.Map<Patient>(patientDto);
@@ -73,12 +61,7 @@ namespace DocCareWeb.API.Controllers
                 NotifyError("O ID informado não é o mesmo que foi passado na query.");
                 return CustomResponse();
             }
-
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
-            if (!await _patientService.ValidateUpdateDto(patientDto))
-                return CustomResponse();
-
+            
             var userId = User.FindFirstValue("userId");
 
             var patient = await _patientService.GetByIdAsync(id, true);
