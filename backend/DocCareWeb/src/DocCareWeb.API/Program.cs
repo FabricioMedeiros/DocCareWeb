@@ -1,3 +1,4 @@
+using DocCareWeb.API.Filters;
 using DocCareWeb.Application.Configurations;
 using DocCareWeb.Application.Dtos.Address;
 using DocCareWeb.Application.Dtos.Appointment;
@@ -21,19 +22,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true; 
-    });
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>(); 
+})
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+});
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
