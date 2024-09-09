@@ -19,10 +19,12 @@ namespace DocCareWeb.Application.Validators
                 .EmailAddress().WithMessage("O e-mail é inválido.");
 
             RuleFor(p => p.Phone)
-                  .Matches(@"^\d{10}$").WithMessage("O telefone fixo deve conter exatamente 10 dígitos numéricos.");
+                .Matches(@"^\d{10}$").WithMessage("O telefone fixo deve conter exatamente 10 dígitos numéricos.")
+                .When(p => !string.IsNullOrEmpty(p.Phone));
 
             RuleFor(p => p.CellPhone)
-                .Matches(@"^\d{11}$").WithMessage("O celular deve conter exatamente 11 dígitos numéricos.");
+                .Matches(@"^\d{11}$").WithMessage("O celular deve conter exatamente 11 dígitos numéricos.")
+                .When(p => !string.IsNullOrEmpty(p.CellPhone));
 
             RuleFor(p => p.Gender)
                 .IsInEnum().WithMessage("O gênero é inválido.");
