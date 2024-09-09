@@ -88,7 +88,6 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId") ?? "Anonymous";
 
         appointment.LastUpdatedBy = userId;
-        appointment.LastUpdatedAt = DateTime.Now;   
 
         await _appointmentRepository.UpdateAsync(appointment);
 

@@ -28,6 +28,7 @@ namespace DocCareWeb.Domain.Entities
             }
 
             Status = AppointmentStatus.Scheduled;
+            LastUpdatedAt = DateTime.Now;
         }
 
         public void Confirm()
@@ -38,6 +39,7 @@ namespace DocCareWeb.Domain.Entities
             }
 
             Status = AppointmentStatus.Confirmed;
+            LastUpdatedAt = DateTime.Now;
         }
 
         public void Cancel()
@@ -48,6 +50,7 @@ namespace DocCareWeb.Domain.Entities
             }
 
             Status = AppointmentStatus.Canceled;
+            LastUpdatedAt = DateTime.Now;
         }
 
         public void Complete()
@@ -58,6 +61,7 @@ namespace DocCareWeb.Domain.Entities
             }
 
             Status = AppointmentStatus.Completed;
+            LastUpdatedAt = DateTime.Now;
         }
     }
 }
