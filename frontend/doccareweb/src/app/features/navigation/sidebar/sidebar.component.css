@@ -1,0 +1,26 @@
+.app-sidebar {
+    background-color: #007bff;
+    color: white;
+    width: 200px;
+    height: calc(100vh - 50px); 
+    position: fixed;
+    top: 50px; 
+    left: 0;
+    padding-top: 20px;
+    box-sizing: border-box;
+  }
+  
+  .app-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .app-sidebar li {
+    padding: 10px;
+  }
+  
+  .app-sidebar a {
+    color: white;
+    text-decoration: none;
+  }
+  
