@@ -1,0 +1,13 @@
+.app-container {
+    display: flex;
+    margin-top: 60px; 
+    margin-bottom: 60px; 
+    height: calc(100vh - 120px); 
+  }
+  
+  .content-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
