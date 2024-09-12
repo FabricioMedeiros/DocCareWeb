@@ -1,13 +1,12 @@
 .app-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: calc(100vh - 100px); 
-    margin: 0;
-  }
-  
-  .app-logo img {
-    max-width: 50%;
-    height: auto;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 100px);
+  margin: 0;
+}
+
+.app-logo img {
+  max-width: 50%;
+  height: auto;
+}
