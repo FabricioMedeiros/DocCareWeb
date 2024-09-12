@@ -1,4 +1,50 @@
-<nav class="app-sidebar">
+<nav class="app-sidebar" [class.closed]="isSidebarClosed">
+  <ul>
+    <li>
+      <a href="#" title="Home">
+        <i class="fa fa-home"></i>
+        <span class="menu-text" *ngIf="!isSidebarClosed">Home</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" title="Agendamentos">
+        <i class="fa fa-calendar-alt"></i>
+        <span class="menu-text" *ngIf="!isSidebarClosed">Agendamentos</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" title="Pacientes">
+        <i class="fa fa-user-injured"></i>
+        <span class="menu-text" *ngIf="!isSidebarClosed">Pacientes</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" title="Planos de Saúde">
+        <i class="fa fa-briefcase-medical"></i>
+        <span class="menu-text" *ngIf="!isSidebarClosed">Planos de Saúde</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" title="Médicos">
+        <i class="fa fa-user-md"></i>
+        <span class="menu-text" *ngIf="!isSidebarClosed">Médicos</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" title="Especialidades">
+        <i class="fa fa-stethoscope"></i>
+        <span class="menu-text" *ngIf="!isSidebarClosed">Especialidades</span>
+      </a>
+    </li>
+  </ul>
+  <!-- Botão para abrir/fechar a sidebar -->
+  <button (click)="toggleSidebar()" class="sidebar-toggle-btn">
+    <i class="fa" [class.fa-arrow-left]="!isSidebarClosed" [class.fa-arrow-right]="isSidebarClosed"></i>
+  </button>
+</nav>
+
+
+<!-- <nav class="app-sidebar">
     <ul>
       <li><a href="#">Home</a></li>
       <li><a href="#">Agendamentos</a></li>
@@ -8,4 +54,4 @@
       <li><a href="#">Especialidades</a></li>
     </ul>
   </nav>
-  
+   -->
