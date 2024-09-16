@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 export class AppComponent {
   constructor(private router: Router) {}
 
-  isLoginRoute(): boolean {
-    return this.router.url === '/login'; 
+  showOnlyComponentRoute(): boolean {
+    const specialRoutes = ['/login', '/register'];
+    return specialRoutes.includes(this.router.url);
   }
 }

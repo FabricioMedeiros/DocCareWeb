@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isLoginRoute()">
+<ng-container *ngIf="!showOnlyComponentRoute()">
   <app-header></app-header>
   <div class="app-container">
     <app-sidebar></app-sidebar>
@@ -9,9 +9,10 @@
   <app-footer></app-footer>
 </ng-container>
 
-<ng-container *ngIf="isLoginRoute()">
+<ng-container *ngIf="showOnlyComponentRoute()">
   <router-outlet></router-outlet> 
 </ng-container>
+
 
 <!-- <app-header></app-header>
 <div class="app-container">
