@@ -1,0 +1,68 @@
+.register-container {
+    max-width: 400px;
+    margin: 20px auto; /* Ajuste a margem superior e inferior */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .register-box {
+    padding: 20px;
+  }
+  
+  .register-header {
+    margin-bottom: 15px; /* Diminua o espaçamento inferior se necessário */
+  }
+  
+  .logo {
+    width: 100px;
+  }
+  
+  .text-center {
+    text-align: center;
+    margin-bottom: 15px; /* Ajuste a margem inferior */
+  }
+  
+  .form-group {
+    position: relative;
+    margin-bottom: 15px; /* Ajuste o espaçamento entre os campos de formulário */
+  }
+  
+  .input-line {
+    border: none;
+    border-bottom: 2px solid #ccc;
+    border-radius: 0;
+    box-shadow: none;
+    width: 100%;
+    padding: 8px 0;
+    background: none;
+  }
+  
+  .input-line:focus {
+    border-bottom: 2px solid #007bff;
+    outline: none;
+  }
+  
+  .input-group {
+    position: relative;
+  }
+  
+  .btn-toggle-password {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-toggle-password i {
+    font-size: 18px;
+  }
+  
+  .register-footer {
+    margin-top: 20px;
+  }
+  
