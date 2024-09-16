@@ -8,6 +8,8 @@ import { SidebarComponent } from './features/navigation/sidebar/sidebar.componen
 import { FooterComponent } from './features/navigation/footer/footer.component';
 import { LogoComponent } from './features/navigation/logo/logo.component';
 import { HomeComponent } from './features/navigation/home/home.component';
+import { LoginComponent } from './features/account/login/login.component';
+import { RegisterComponent } from './features/account/register/register.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { HomeComponent } from './features/navigation/home/home.component';
     SidebarComponent,
     FooterComponent,
     LogoComponent,
-    HomeComponent
+    HomeComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
