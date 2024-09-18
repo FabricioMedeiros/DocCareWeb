@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 export class AppComponent {
   constructor(private router: Router) {}
 
+  title = 'doccareweb';
+
   showOnlyComponentRoute(): boolean {
     const specialRoutes = ['/login', '/register'];
     return specialRoutes.includes(this.router.url);
