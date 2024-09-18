@@ -9,3 +9,30 @@ html {
   height: 100%;
   overflow-x: hidden;
 }
+
+.alert {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  word-break: break-word;
+  padding: 15px;
+  margin: 0;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.alert h3 {
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.alert ul {
+  padding-left: 10px;
+  margin: 0;
+}
+
+.alert li {
+  margin-bottom: 2px; 
+}
