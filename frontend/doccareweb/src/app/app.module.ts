@@ -8,15 +8,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HeaderComponent } from './features/navigation/header/header.component';
-import { SidebarComponent } from './features/navigation/sidebar/sidebar.component';
-import { FooterComponent } from './features/navigation/footer/footer.component';
-import { LogoComponent } from './features/navigation/logo/logo.component';
-import { HomeComponent } from './features/navigation/home/home.component';
-import { MenuLoginComponent } from './features/navigation/menu-login/menu-login.component';
+import { AccountModule } from './features/account/account.module';
+import { FooterComponent } from './features/navigation/components/footer/footer.component';
+import { HeaderComponent } from './features/navigation/components/header/header.component';
+import { HomeComponent } from './features/navigation/components/home/home.component';
+import { LogoComponent } from './features/navigation/components/logo/logo.component';
+import { MenuLoginComponent } from './features/navigation/components/menu-login/menu-login.component';
+import { SidebarComponent } from './features/navigation/components/sidebar/sidebar.component';
 
 import { LocalStorageUtils } from './utils/localstorage';
-import { AccountModule } from './features/account/account.module';
 
 @NgModule({
   declarations: [

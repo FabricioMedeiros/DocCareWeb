@@ -1,5 +1,5 @@
 import { CanActivateFn, CanDeactivateFn, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { RegisterComponent } from '../register/register.component';
+import { RegisterComponent } from '../components/register/register.component';
 import { inject } from '@angular/core';
 import { LocalStorageUtils } from 'src/app/utils/localstorage';
 

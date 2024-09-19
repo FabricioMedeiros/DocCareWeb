@@ -3,25 +3,28 @@ import { FormBuilder, FormGroup, FormControlName, Validators } from '@angular/fo
 import { Observable, fromEvent, merge } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { User } from '../../models/user';
+import { AuthService } from '../../services/auth.service';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class RegisterComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(FormControlName, { read: ElementRef }) formInputElements!: ElementRef[];
 
-  loginForm!: FormGroup;
+  registerForm!: FormGroup;
+  user!: User;
   errors: any[] = [];
-
+  
   validationMessages: ValidationMessages;
   genericValidator: GenericValidator;
   displayMessage: DisplayMessage = {};
-
+  
+  changesSaved: boolean = true;
   showPassword: boolean = false;
 
   constructor(
@@ -31,6 +34,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private router: Router
   ) {
     this.validationMessages = {
+      name: {
+        required: 'Informe o nome',
+      },
       email: {
         required: 'Informe o e-mail',
         email: 'E-mail inválido'
@@ -45,7 +51,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.loginForm = this.fb.group({
+    this.registerForm = this.fb.group({
+      name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(15)]]
     });
@@ -56,28 +63,31 @@ export class LoginComponent implements OnInit, AfterViewInit {
       .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
 
     merge(...controlBlurs).subscribe(() => {
-      this.displayMessage = this.genericValidator.processMessages(this.loginForm);
+      this.displayMessage = this.genericValidator.processMessages(this.registerForm);
+      this.changesSaved = false;
     });
   }
 
-  login(): void {
-    if (this.loginForm.dirty && this.loginForm.valid) {
-      const userLogin = Object.assign({}, this.loginForm.value);
+  registerUser(): void {
+    if (this.registerForm.dirty && this.registerForm.valid) {
+      this.user = Object.assign({}, this.user, this.registerForm.value);
 
-      this.authService.login(userLogin).subscribe({
+      this.authService.registerUser(this.user).subscribe({
         next: (success) => this.processSuccess(success),
         error: (error) => this.processFail(error)
       });
+
+      this.changesSaved = true;
     }
   }
 
   processSuccess(response: any): void {
-    this.loginForm.reset();
+    this.registerForm.reset();
     this.errors = [];
 
     this.authService.LocalStorage.saveLocalUserData(response);
 
-    const toast = this.toastr.success('Login realizado com sucesso!', 'Bem-vindo!');
+    const toast = this.toastr.success('Cadastro realizado com sucesso!', 'Bem-vindo!');
 
     if (toast) {
       toast.onHidden.subscribe(() => {
@@ -88,10 +98,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   processFail(fail: any): void {
     this.errors = fail.error.errors;
+    console.log('erros retornados: ' + this.errors);
     this.toastr.error('Ocorreu um erro.', 'Atenção');
   }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
+  
 }
