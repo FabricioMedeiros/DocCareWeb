@@ -1,11 +1,11 @@
 <ul class="navbar-nav">
     <ng-container *ngIf="isUserLoggedIn()">
         <li class="nav-item">
-            <a class="nav-link text-dark" href="javascript:void(0)">{{ user }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" href="javascript:void(0)" (click)="logout()">
-                Sair <span class="fas fa-sign-out-alt"></span>
+            <a class="nav-link" href="javascript:void(0)">
+                <span class="user-name">{{ user }}</span>
+                <span class="logout" (click)="logout()">
+                    Sair <span class="fas fa-sign-out-alt"></span>
+                </span>
             </a>
         </li>
     </ng-container>
