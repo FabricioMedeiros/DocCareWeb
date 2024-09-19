@@ -1,33 +1,51 @@
 <div class="login-container">
     <div class="login-box">
-        <div class="login-header text-center">
-            <img src="assets/logo.png" alt="Logo" class="logo mb-3" />
-            <h2>Bem-vindo</h2>
-            <p>Por favor, faça login na sua conta</p>
+      <div class="login-header text-center">
+        <img src="assets/logo.png" alt="Logo" class="logo mb-3" />
+        <h2>Bem-vindo</h2>
+      </div>
+  
+      <!-- Erros -->
+      <div class="alert alert-danger" *ngIf="errors.length > 0">
+        <h3>Atenção</h3>
+        <ul>
+          <li *ngFor="let error of errors">{{ error }}</li>
+        </ul>
+      </div>
+  
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" class="form-control input-line" placeholder="Digite seu email"
+            formControlName="email" [ngClass]="{'is-invalid': displayMessage['email']}" />
+          <span class="text-danger" *ngIf="displayMessage['email']">
+            <p [innerHTML]="displayMessage['email']"></p>
+          </span>
         </div>
-
-        <form>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" class="form-control input-line" placeholder="Digite seu email" required />
-            </div>
-
-            <div class="form-group mt-3">
-                <label for="password">Senha</label>
-                <div class="input-group">
-                    <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control input-line"
-                        placeholder="Digite sua senha" required />
-                    <button type="button" class="btn-toggle-password" (click)="togglePasswordVisibility()">
-                        <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-                    </button>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 mt-4">Entrar</button>
-        </form>
-
-        <div class="login-footer text-center mt-4">
-            <p>Não tem uma conta? <a href="/register">Cadastrar</a></p>
+  
+        <!-- Senha -->
+        <div class="form-group mt-3">
+          <label for="password">Senha</label>
+          <div class="input-group">
+            <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control input-line"
+              placeholder="Digite sua senha" formControlName="password"
+              [ngClass]="{'is-invalid': displayMessage['password']}" />
+            <button type="button" class="btn-toggle-password" (click)="togglePasswordVisibility()">
+              <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
+          <span class="text-danger" *ngIf="displayMessage['password']">
+            <p [innerHTML]="displayMessage['password']"></p>
+          </span>
         </div>
+  
+        <button type="submit" class="btn btn-primary w-100 mt-4" [disabled]="!loginForm.valid">Entrar</button>
+      </form>
+  
+      <div class="login-footer text-center mt-4">
+        <p>Não tem uma conta? <a href="/account/register">Registre-se</a></p>
+      </div>
     </div>
-</div>
+  </div>
+  
