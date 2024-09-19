@@ -13,21 +13,20 @@ import { SidebarComponent } from './features/navigation/sidebar/sidebar.componen
 import { FooterComponent } from './features/navigation/footer/footer.component';
 import { LogoComponent } from './features/navigation/logo/logo.component';
 import { HomeComponent } from './features/navigation/home/home.component';
-import { LoginComponent } from './features/account/login/login.component';
-import { RegisterComponent } from './features/account/register/register.component';
 import { MenuLoginComponent } from './features/navigation/menu-login/menu-login.component';
+
+import { LocalStorageUtils } from './utils/localstorage';
+import { AccountModule } from './features/account/account.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
+    MenuLoginComponent,
     SidebarComponent,
     FooterComponent,
     LogoComponent,
-    HomeComponent,
-    LoginComponent,
-    RegisterComponent,
-    MenuLoginComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -35,9 +34,10 @@ import { MenuLoginComponent } from './features/navigation/menu-login/menu-login.
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot(),    
+    ToastrModule.forRoot(), 
+    AccountModule   
   ],
-  providers: [],
+  providers: [LocalStorageUtils],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -7,12 +8,19 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(private router: Router) {}
-
   title = 'doccareweb';
+  showOnlyComponentRoute: boolean = false;
 
-  showOnlyComponentRoute(): boolean {
-    const specialRoutes = ['/login', '/register'];
-    return specialRoutes.includes(this.router.url);
+  constructor(private router: Router) {
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.updateShowOnlyComponentRoute(event.urlAfterRedirects);
+    });
+  }
+
+  private updateShowOnlyComponentRoute(url: string): void {
+    const specialRoutes = ['/account/login', '/account/register'];
+    this.showOnlyComponentRoute = specialRoutes.includes(url);
   }
 }
