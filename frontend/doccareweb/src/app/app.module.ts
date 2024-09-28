@@ -17,6 +17,7 @@ import { MenuLoginComponent } from './features/navigation/components/menu-login/
 import { SidebarComponent } from './features/navigation/components/sidebar/sidebar.component';
 
 import { LocalStorageUtils } from './utils/localstorage';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { LocalStorageUtils } from './utils/localstorage';
     HttpClientModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(), 
-    AccountModule   
+    AccountModule,
+    SharedModule  
   ],
   providers: [LocalStorageUtils],
   bootstrap: [AppComponent]
