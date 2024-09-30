@@ -1,0 +1,34 @@
+<div class="search-bar-container">
+  <div class="search-bar-controls">
+
+    <!-- ComboBox para selecionar a quantidade de registros por página  -->
+    <select
+      id="pageSizeSelect"
+      [(ngModel)]="selectedPageSize"
+      (change)="onPageSizeChange()"
+      class="form-select"
+      aria-label="Quantidade de Registros"
+      title="Selecione a quantidade de registros por página">
+      <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }} registros</option>
+    </select>
+
+    <!-- Campo de pesquisa com placeholder customizável -->
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      [placeholder]="placeholder"
+      class="form-control"
+      aria-label="Campo de Pesquisa"
+    />
+
+    <!-- Botão de pesquisa -->
+    <button type="button" class="btn btn-primary" (click)="onSearch()" aria-label="Pesquisar">
+      <i class="fa fa-search"></i>
+    </button>
+
+    <!-- Botão de limpar pesquisa (aparece apenas quando há texto) -->
+    <button *ngIf="searchTerm" type="button" class="btn btn-secondary" (click)="clearSearch()" aria-label="Limpar Pesquisa">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+</div>
