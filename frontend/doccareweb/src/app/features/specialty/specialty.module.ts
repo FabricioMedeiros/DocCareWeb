@@ -6,15 +6,18 @@ import { SpecialtyAppComponent } from './specialty.app.component';
 import { SpecialtyListComponent } from './components/specialty-list/specialty-list.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SpecialtyService } from './services/specialty.service';
-
+import { SpecialtyFormComponent } from './components/specialty-form/specialty-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     SpecialtyAppComponent,
-    SpecialtyListComponent
+    SpecialtyListComponent,
+    SpecialtyFormComponent,
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     SpecialtyRoutingModule,
     SharedModule
   ],
