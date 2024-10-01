@@ -1,0 +1,35 @@
+<div class="form-content-container">
+    <div class="card">
+      <div class="card-header">
+        <h3>Cadastro de Especialidades</h3>
+      </div>
+  
+      <form [formGroup]="specialtyForm" (ngSubmit)="saveSpecialty()">
+        <div class="card-body">
+            
+          <!-- Campo de Descrição -->
+          <div class="form-group">
+            <label for="description">Descrição</label>
+            <input 
+              type="text" 
+              id="description" 
+              class="form-control" 
+              formControlName="description" 
+              [ngClass]="{'is-invalid': displayMessage['description']}" />
+            
+            <!-- Mensagem de Erro -->
+            <span class="text-danger" *ngIf="displayMessage['description']">
+              <p [innerHTML]="displayMessage['description']"></p>
+            </span>
+          </div>
+        </div>
+  
+        <div class="card-footer">
+          <!-- Botões de Ação -->
+          <button type="submit" class="btn btn-primary"  [disabled]="!specialtyForm.valid">Salvar</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
