@@ -3,13 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { SpecialtyAppComponent } from './specialty.app.component';
 import { SpecialtyListComponent } from './components/specialty-list/specialty-list.component';
+import { SpecialtyFormComponent } from './components/specialty-form/specialty-form.component';
 
 
 const routes: Routes = [
   {
       path: '', component: SpecialtyAppComponent,
       children: [
-          { path: 'list', component: SpecialtyListComponent},  
+          { path: 'list', component: SpecialtyListComponent}, 
+          { path: 'new', component: SpecialtyFormComponent}, 
       ]
   }
 ];
