@@ -31,7 +31,7 @@
       </a>
     </li>
     <li>
-      <a href="#" title="Especialidades">
+      <a [routerLink]="['/specialty/list']" title="Especialidades">
         <i class="fa fa-stethoscope"></i>
         <span class="menu-text" *ngIf="!isSidebarClosed">Especialidades</span>
       </a>
@@ -42,16 +42,3 @@
     <i class="fa" [class.fa-arrow-left]="!isSidebarClosed" [class.fa-arrow-right]="isSidebarClosed"></i>
   </button>
 </nav>
-
-
-<!-- <nav class="app-sidebar">
-    <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Agendamentos</a></li>
-      <li><a href="#">Pacientes</a></li>
-      <li><a href="#">Planos de Saúde</a></li>     
-      <li><a href="#">Médicos</a></li>
-      <li><a href="#">Especialidades</a></li>
-    </ul>
-  </nav>
-   -->
