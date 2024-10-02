@@ -45,6 +45,13 @@ export class SpecialtyFormComponent implements OnInit, AfterViewInit {
       id: ['', []],
       description: ['', [Validators.required]],
     });
+
+    const resolvedData = this.route.snapshot.data['specialty']; 
+
+    if (resolvedData) {
+      this.isEditMode = true;
+      this.specialtyForm.patchValue(resolvedData.data);
+    }         
   }
 
   ngAfterViewInit(): void {
@@ -62,16 +69,25 @@ export class SpecialtyFormComponent implements OnInit, AfterViewInit {
     if (this.specialtyForm.dirty && this.specialtyForm.valid) {
       this.specialty = Object.assign({}, this.specialty, this.specialtyForm.value);
 
-      this.specialtyService.registerSpecialty(this.specialty).subscribe({
-        next: (success) => {
-
-          this.processSuccess(success);
-        },
-        error: (error) => {
-
-          this.processFail(error);
-        }
-      });
+      if (this.isEditMode) {
+        this.specialtyService.updateSpecialty(this.specialty).subscribe({
+          next: (success) => {
+            this.processSuccess(success);
+          },
+          error: (error) => {
+            this.processFail(error);
+          }
+        });
+      } else {
+        this.specialtyService.registerSpecialty(this.specialty).subscribe({
+          next: (success) => {
+            this.processSuccess(success);
+          },
+          error: (error) => {
+            this.processFail(error);
+          }
+        });
+      }
     }
 
     this.changesSaved = true;
@@ -81,7 +97,7 @@ export class SpecialtyFormComponent implements OnInit, AfterViewInit {
     this.specialtyForm.reset();
     this.errors = [];
 
-    let toast = this.toastr.success('Especialidade cadastrada com Sucesso!', 'Atenção!');
+    let toast = this.toastr.success(this.isEditMode ? 'Especialidade alterada com sucesso!' : 'Especialidade cadastrada com sucesso!', 'Atenção!');
 
     if (toast) {
       toast.onHidden.subscribe(() => {
@@ -96,7 +112,7 @@ export class SpecialtyFormComponent implements OnInit, AfterViewInit {
   }
 
   cancel() {
-    this.router.navigate(['/specialties']); 
+    this.router.navigate(['/specialty/list']); 
   }  
 }
 

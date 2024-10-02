@@ -1,35 +1,40 @@
 <div class="form-content-container">
+  <!-- Erros -->
+  <div class="alert alert-danger" *ngIf="errors.length > 0">
+    <h3>Atenção</h3>
+    <ul>
+      <li *ngFor="let error of errors">{{ error }}</li>
+    </ul>
+  </div>
+
+  <!-- Contêiner do Card -->
+  <div class="card-container">
     <div class="card">
       <div class="card-header">
         <h3>Cadastro de Especialidades</h3>
       </div>
-  
+
       <form [formGroup]="specialtyForm" (ngSubmit)="saveSpecialty()">
         <div class="card-body">
-            
           <!-- Campo de Descrição -->
           <div class="form-group">
             <label for="description">Descrição</label>
-            <input 
-              type="text" 
-              id="description" 
-              class="form-control" 
-              formControlName="description" 
+            <input type="text" id="description" class="form-control" formControlName="description"
               [ngClass]="{'is-invalid': displayMessage['description']}" />
-            
+
             <!-- Mensagem de Erro -->
             <span class="text-danger" *ngIf="displayMessage['description']">
               <p [innerHTML]="displayMessage['description']"></p>
             </span>
           </div>
         </div>
-  
+
         <div class="card-footer">
           <!-- Botões de Ação -->
-          <button type="submit" class="btn btn-primary"  [disabled]="!specialtyForm.valid">Salvar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!specialtyForm.valid">Salvar</button>
           <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
         </div>
       </form>
     </div>
   </div>
-  
+</div>
