@@ -46,15 +46,18 @@ export class SpecialtyService extends BaseService {
 
     updateSpecialty(specialty: Specialty): Observable<Specialty> {
         const headers = this.GetAuthHeaderJson();
-
+        const httpOptions = {
+            headers: headers
+        };
+    
         return this.http
-            .put<Specialty>(`${this.UrlServiceV1}specialty`, specialty, headers)
+            .put<Specialty>(`${this.UrlServiceV1}specialty/${specialty.id}`, specialty, headers)
             .pipe(
                 map(this.extractData),
                 catchError(this.serviceError)
             );
     }
-
+    
     deleteSpecialty(id: number): Observable<any> {
         const headers = this.GetAuthHeaderJson();
 
