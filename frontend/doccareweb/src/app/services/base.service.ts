@@ -26,7 +26,10 @@ export abstract class BaseService {
     }
 
     protected extractData(response: any) {
-        return response.data || {};
+        if (response === null || response === undefined) {
+            return {};
+        }
+        return response.data !== undefined ? response.data : response;
     }
 
     protected serviceError(response: Response | any) {
