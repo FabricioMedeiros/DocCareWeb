@@ -4,15 +4,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { SpecialtyAppComponent } from './specialty.app.component';
 import { SpecialtyListComponent } from './components/specialty-list/specialty-list.component';
 import { SpecialtyFormComponent } from './components/specialty-form/specialty-form.component';
-
+import { specialtyResolver } from './services/specialty.resolve';
 
 const routes: Routes = [
   {
-      path: '', component: SpecialtyAppComponent,
-      children: [
-          { path: 'list', component: SpecialtyListComponent}, 
-          { path: 'new', component: SpecialtyFormComponent}, 
-      ]
+    path: '', component: SpecialtyAppComponent,
+    children: [
+      { path: '', redirectTo: 'list', pathMatch: 'full' },
+      { path: 'list', component: SpecialtyListComponent }, 
+      { path: 'new', component: SpecialtyFormComponent }, 
+      { path: 'edit/:id', component: SpecialtyFormComponent, resolve: { specialty: specialtyResolver }},
+    ]
   }
 ];
 
