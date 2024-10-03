@@ -36,3 +36,32 @@ html {
 .alert li {
   margin-bottom: 2px; 
 }
+
+.no-results-message {
+  text-align: center;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #f8d7da; 
+  color: #721c24; 
+  border: 1px solid #f5c6cb; 
+  border-radius: 4px;
+}
+
+.custom-toast {
+  background-color: #0056b3 !important; 
+  color: #fff !important; 
+  border-color: #0056b3 !important; 
+  box-shadow: 0 0 10px rgba(0, 86, 179, 0.5) !important; 
+}
+
+.custom-toast .toast-title {
+  color: #ffffff !important; 
+}
+
+.custom-toast .toast-message {
+  color: #ffffff !important; 
+}
+
+.custom-toast .toast-progress {
+  background-color: #ffffff !important;
+}
