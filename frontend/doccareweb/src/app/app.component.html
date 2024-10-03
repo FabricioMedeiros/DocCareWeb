@@ -1,7 +1,9 @@
 <ng-container *ngIf="!showOnlyComponentRoute">
   <app-header></app-header>
   <div class="app-container">
-    <app-sidebar></app-sidebar>
+    <ng-container *ngIf="isUserLoggedIn()">
+      <app-sidebar></app-sidebar>
+    </ng-container>
     <div class="content-container">
       <router-outlet></router-outlet>
     </div>
@@ -10,5 +12,5 @@
 </ng-container>
 
 <ng-container *ngIf="showOnlyComponentRoute">
-  <router-outlet></router-outlet> 
+  <router-outlet></router-outlet>
 </ng-container>

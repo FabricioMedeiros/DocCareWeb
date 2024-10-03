@@ -3,6 +3,11 @@ import { JwtToken } from "../features/account/models/jtw.token";
 
 export class LocalStorageUtils {
 
+    public isUserLoggedIn(): boolean {
+        const token = this.getTokenUser();
+        return token !== null;
+    }
+
     public getUser() {
         const userJson = localStorage.getItem('doccareweb.user');
         return userJson ? JSON.parse(userJson) : null;
