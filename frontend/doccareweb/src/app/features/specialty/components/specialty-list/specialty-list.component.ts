@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Specialty } from '../../models/specialty';
 import { SpecialtyService } from '../../services/specialty.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-specialty-list',
@@ -11,7 +12,7 @@ import { SpecialtyService } from '../../services/specialty.service';
 })
 export class SpecialtyListComponent implements OnInit {
   public specialties: Specialty[] = [];
-  errorMessage: string = 'Não foi possível carregar os dados';
+  errorMessage: string = '';
   selectedSpecialty!: Specialty;
 
   currentPage: number = 1;
@@ -23,7 +24,8 @@ export class SpecialtyListComponent implements OnInit {
   constructor(
     private specialtyService: SpecialtyService, 
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +51,7 @@ export class SpecialtyListComponent implements OnInit {
   }
 
   loadSpecialties(searchTerm?: string): void {
+    this.spinner.show();
     this.loadingData = true;
     this.specialties = [];
     this.searchTerm = searchTerm ?? '';
@@ -61,7 +64,7 @@ export class SpecialtyListComponent implements OnInit {
         this.processLoadSpecialtiesFail(error);
       },
       complete: () => {
-        this.loadingData = false;
+        this.processCompleted();
       }
     });
   }
@@ -75,7 +78,13 @@ export class SpecialtyListComponent implements OnInit {
   private processLoadSpecialtiesFail(error: any) {
     this.errorMessage = error.error?.errors?.[0] || 'Ocorreu um erro desconhecido.';
     this.toastr.error('Ocorreu um erro.', 'Atenção');
+    this.spinner.hide();
   }  
+
+  private processCompleted() {
+    this.loadingData = false;
+    this.spinner.hide();
+  }
 
   addSpecialty() {
     this.router.navigate(['/specialty/new']);

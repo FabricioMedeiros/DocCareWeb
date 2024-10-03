@@ -1,7 +1,20 @@
+<!-- Spinner -->
+<ngx-spinner
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-pulse"
+  [fullScreen]="true">
+  <p style="color: white; font-size: 20px;">Carregando...</p>
+</ngx-spinner>
+
 <div class="content-list-container">  
+  
+  <!-- Opções de Pesquisa -->  
   <div class='options-filter-list-container'>
       <h1>Especialidades</h1>
 
+      <!-- Erros -->
       <div *ngIf="errorMessage && errorMessage.length > 0" class="alert alert-danger">
           <h3>Atenção!</h3>
           <ul>
@@ -26,6 +39,7 @@
       </a>
   </div>
 
+  <!-- Tabela -->
   <div class="table-container">
       <table class="table table-bordered table-striped">
           <thead>
@@ -51,6 +65,7 @@
           </tbody>
       </table>
 
+      <!-- Paginação -->
       <div *ngIf="specialties.length > 0">
           <app-pagination 
               [currentPage]="currentPage" 
