@@ -1,0 +1,11 @@
+.container-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 120px);
+    text-align: center;
+}
+
+.centered-text {
+    font-size: 40px;
+}
