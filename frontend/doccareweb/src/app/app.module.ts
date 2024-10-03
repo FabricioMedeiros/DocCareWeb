@@ -23,6 +23,7 @@ import { SharedModule } from './shared/shared.module';
 import { ErrorInterceptor } from './services/error.handler.service';
 import { ServiceUnavailableComponent } from './features/navigation/components/service-unavailable/service-unavailable.component';
 import { NotFoundComponent } from './features/navigation/components/not-found/not-found.component';
+import { NavigationService } from './services/navigation.service';
 
 export const httpInterceptorProviders = [
   { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
@@ -47,13 +48,13 @@ export const httpInterceptorProviders = [
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot({toastClass: 'ngx-toastr custom-toast'}),
+    ToastrModule.forRoot({ toastClass: 'ngx-toastr custom-toast' }),
     NgxSpinnerModule.forRoot(),
     ModalModule.forRoot(),
     AccountModule,
-    SharedModule  
+    SharedModule
   ],
-  providers: [LocalStorageUtils, BsModalService, httpInterceptorProviders],
+  providers: [LocalStorageUtils, BsModalService, httpInterceptorProviders, NavigationService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
