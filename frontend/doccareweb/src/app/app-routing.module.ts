@@ -3,13 +3,18 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './features/navigation/components/home/home.component';
 import { authGuard } from './features/navigation/services/auth.guard';
+import { NotFoundComponent } from './features/navigation/components/not-found/not-found.component';
+import { ServiceUnavailableComponent } from './features/navigation/components/service-unavailable/service-unavailable.component';
+import { navigationGuard } from './services/access.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account/login', pathMatch: 'full' },
   { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: 'account', loadChildren: () => import('./features/account/account.module').then(m => m.AccountModule) },
   { path: 'specialty', loadChildren: () => import('./features/specialty/specialty.module').then(m => m.SpecialtyModule) },
-  { path: '**', redirectTo: 'account/login' }
+  { path: 'service-unavailable', component: ServiceUnavailableComponent, canActivate: [navigationGuard] },
+  { path: 'not-found', component: NotFoundComponent, canActivate: [navigationGuard] },
+  { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({
