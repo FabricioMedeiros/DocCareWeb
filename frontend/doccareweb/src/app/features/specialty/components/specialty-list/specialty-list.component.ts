@@ -1,9 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+
 import { Specialty } from '../../models/specialty';
 import { SpecialtyService } from '../../services/specialty.service';
-import { NgxSpinnerService } from 'ngx-spinner';
+
 
 @Component({
   selector: 'app-specialty-list',
@@ -21,11 +25,15 @@ export class SpecialtyListComponent implements OnInit {
   searchTerm: string = '';
   loadingData: boolean = true;
 
+  bsModalRef!: BsModalRef;
+  @ViewChild('deleteModal') deleteModal!: TemplateRef<any>;  
+
   constructor(
     private specialtyService: SpecialtyService, 
     private router: Router,
     private toastr: ToastrService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private modalService: BsModalService
   ) {}
 
   ngOnInit(): void {
@@ -92,5 +100,31 @@ export class SpecialtyListComponent implements OnInit {
 
   editSpecialty(specialty: Specialty) {
     this.router.navigate(['/specialty/edit', specialty.id]);
+  }
+
+  openDeleteModal(template: TemplateRef<any>, specialty : Specialty) {
+    this.selectedSpecialty = specialty;
+    this.bsModalRef = this.modalService.show(template, { class: 'custom-modal-delete' });
+  } 
+
+  confirmDelete(specialty : Specialty): void {  
+    this.specialtyService.deleteSpecialty(specialty.id).subscribe({
+      next: success => {
+        this.processSuccessDelete(success, specialty);
+      },
+      error: error => {
+        this.processFailDelete(error);
+      }
+    });
+  }
+
+  processSuccessDelete(response: any, specialty : Specialty) {
+    this.bsModalRef.hide();
+    this.specialties = this.specialties.filter(item => item.id !== specialty.id);    
+    this.toastr.success('Registro Excluído com Sucesso!', 'Atenção!');
+  }
+
+  processFailDelete(fail: any) {
+    this.toastr.error('Ocorreu um erro.', 'Atenção');
   }
 }
