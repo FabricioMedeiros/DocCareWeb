@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { SpecialtyService } from '../../services/specialty.service';
 import { fromEvent, merge, Observable } from 'rxjs';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-specialty-form',
@@ -30,7 +31,8 @@ export class SpecialtyFormComponent implements OnInit, AfterViewInit {
     private specialtyService: SpecialtyService,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService) {
     this.validationMessages = {
       description: {
         required: 'Informe a Descrição',
@@ -49,8 +51,10 @@ export class SpecialtyFormComponent implements OnInit, AfterViewInit {
     const resolvedData = this.route.snapshot.data['specialty']; 
 
     if (resolvedData) {
+      this.spinner.show();
       this.isEditMode = true;
       this.specialtyForm.patchValue(resolvedData.data);
+      this.spinner.hide();
     }         
   }
 
