@@ -4,9 +4,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 
 import { AccountModule } from './features/account/account.module';
 import { FooterComponent } from './features/navigation/components/footer/footer.component';
@@ -18,7 +20,14 @@ import { SidebarComponent } from './features/navigation/components/sidebar/sideb
 
 import { LocalStorageUtils } from './utils/localstorage';
 import { SharedModule } from './shared/shared.module';
-import { NgxSpinnerModule } from 'ngx-spinner';
+import { ErrorInterceptor } from './services/error.handler.service';
+import { ServiceUnavailableComponent } from './features/navigation/components/service-unavailable/service-unavailable.component';
+import { NotFoundComponent } from './features/navigation/components/not-found/not-found.component';
+
+export const httpInterceptorProviders = [
+  { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+];
+
 
 @NgModule({
   declarations: [
@@ -28,7 +37,9 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     SidebarComponent,
     FooterComponent,
     LogoComponent,
-    HomeComponent
+    HomeComponent,
+    ServiceUnavailableComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -36,14 +47,13 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot({
-      toastClass: 'ngx-toastr custom-toast' // Configuração global da classe personalizada
-    }),
+    ToastrModule.forRoot({toastClass: 'ngx-toastr custom-toast'}),
     NgxSpinnerModule.forRoot(),
+    ModalModule.forRoot(),
     AccountModule,
     SharedModule  
   ],
-  providers: [LocalStorageUtils],
+  providers: [LocalStorageUtils, BsModalService, httpInterceptorProviders],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
