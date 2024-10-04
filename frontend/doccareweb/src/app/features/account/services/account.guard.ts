@@ -9,11 +9,9 @@ export const canActivate: CanActivateFn = (route: ActivatedRouteSnapshot, state:
   const token = localStorageUtils.getTokenUser();
 
   if (token) {
-    console.log('Usuário logado, redirecionando para home.');
     router.navigate(['/home']);
     return false;
   }
-  console.log('Usuário não logado, permitindo acesso.');
   return true;
 };
 
