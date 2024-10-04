@@ -1,4 +1,3 @@
-import { AuthService } from './services/auth.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -11,6 +10,7 @@ import { AccountAppComponent } from './account.app.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { AccountService } from './services/account.service';
 
 
 @NgModule({
@@ -28,7 +28,7 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
   ],
   providers: [
-    AuthService  
+    AccountService  
   ]
 })
 export class AccountModule { }
