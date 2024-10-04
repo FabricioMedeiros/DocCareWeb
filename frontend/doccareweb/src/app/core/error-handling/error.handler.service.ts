@@ -4,8 +4,8 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { Router } from '@angular/router';
 
-import { NavigationService } from './navigation.service';
-import { LocalStorageUtils } from '../utils/localstorage';
+import { NavigationService } from '../../core/services/navigation.service';
+import { LocalStorageUtils } from '../../utils/localstorage';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {

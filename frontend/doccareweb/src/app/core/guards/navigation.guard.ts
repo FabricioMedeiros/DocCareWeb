@@ -1,6 +1,6 @@
 import { CanActivateFn, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { inject } from '@angular/core';
-import { NavigationService } from './navigation.service';
+import { NavigationService } from '../services/navigation.service';
 
 export const navigationGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
   const navigationService = inject(NavigationService);
@@ -14,3 +14,6 @@ export const navigationGuard: CanActivateFn = (route: ActivatedRouteSnapshot, st
     return false;
   }
 };
+
+
+

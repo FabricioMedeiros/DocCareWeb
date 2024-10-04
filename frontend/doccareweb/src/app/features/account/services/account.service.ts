@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { BaseService } from 'src/app/services/base.service';
+import { BaseService } from 'src/app/core/services/base.service';
 import { User } from '../models/user'; 
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService extends BaseService {
+export class AccountService extends BaseService {
 
   constructor(private http: HttpClient) {
     super();
