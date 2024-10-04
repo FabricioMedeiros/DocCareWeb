@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ElementRef, ViewChildren } from '@ang
 import { FormBuilder, FormGroup, FormControlName, Validators } from '@angular/forms';
 import { Observable, fromEvent, merge } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../models/user';
 import { AccountService } from '../../services/account.service';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
@@ -26,12 +26,14 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   
   changesSaved: boolean = true;
   showPassword: boolean = false;
+  returnUrl: String = '';  
 
   constructor(
     private fb: FormBuilder,
     private accountService: AccountService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private route : ActivatedRoute
   ) {
     this.validationMessages = {
       name: {
@@ -47,6 +49,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       }
     };
 
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
     this.genericValidator = new GenericValidator(this.validationMessages);
   }
 
@@ -91,7 +94,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
     if (toast) {
       toast.onHidden.subscribe(() => {
-        this.router.navigate(['/home']);
+        this.returnUrl ? this.router.navigate([this.returnUrl]) : this.router.navigate(['/home']);
       });
     }
   }

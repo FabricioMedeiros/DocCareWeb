@@ -9,7 +9,9 @@ export const canActivate: CanActivateFn = (route: ActivatedRouteSnapshot, state:
   const token = localStorageUtils.getTokenUser();
 
   if (token) {
-    router.navigate(['/home']);
+    const returnUrl = route.queryParams['returnUrl'] || '/home';
+
+    router.navigateByUrl(returnUrl);
     return false;
   }
   return true;

@@ -24,8 +24,7 @@ import { AccountService } from './services/account.service';
     RouterModule,
     AccountRoutingModule,
     FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
+    ReactiveFormsModule
   ],
   providers: [
     AccountService  

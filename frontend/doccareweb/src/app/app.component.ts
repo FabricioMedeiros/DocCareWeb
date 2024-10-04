@@ -12,7 +12,7 @@ export class AppComponent {
   title = 'doccareweb';
   showOnlyComponentRoute: boolean = false;
   token: string | null = "";
- 
+
   localStorageUtils = new LocalStorageUtils();
 
   constructor(private router: Router) {
@@ -25,12 +25,11 @@ export class AppComponent {
 
   private updateShowOnlyComponentRoute(url: string): void {
     const specialRoutes = ['/account/login', '/account/register'];
-    this.showOnlyComponentRoute = specialRoutes.includes(url);
+    this.showOnlyComponentRoute = specialRoutes.some(route => url.includes(route));
   }
 
   isUserLoggedIn(): boolean {
-    this.token = this.localStorageUtils.getTokenUser() ;
-  
-    return this.token !== null;                                     
+    this.token = this.localStorageUtils.getTokenUser();
+    return this.token !== null;
   }
 }
