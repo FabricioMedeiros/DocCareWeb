@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './features/navigation/components/home/home.component';
-import { authGuard } from './features/navigation/services/auth.guard';
 import { NotFoundComponent } from './features/navigation/components/not-found/not-found.component';
 import { ServiceUnavailableComponent } from './features/navigation/components/service-unavailable/service-unavailable.component';
-import { navigationGuard } from './services/access.guard';
+import { navigationGuard } from './core/guards/navigation.guard';
+import { authGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account/login', pathMatch: 'full' },
