@@ -21,7 +21,7 @@
   <div class="card-container">
     <div class="card">
       <div class="card-header">
-        <h3>Cadastro de Especialidades</h3>
+        <h3>{{ isEditMode ? 'Editar Especialidade' : 'Cadastro de Especialidade' }}</h3>
       </div>
 
       <form [formGroup]="specialtyForm" (ngSubmit)="saveSpecialty()">
