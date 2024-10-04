@@ -8,8 +8,16 @@
 
 .search-bar-controls {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px; 
+}
+
+.search-bar-input-buttons {
+  display: flex;
   align-items: center;
   gap: 10px;
+  flex: 1;
 }
 
 .search-bar-controls select {
@@ -17,11 +25,40 @@
 }
 
 .search-bar-controls input {
-  flex: 1;
+  flex: 1; 
 }
 
 .search-bar-controls button {
   display: flex;
-  align-items: center;
+  justify-content: center;
+  align-items: center; 
   gap: 5px;
+}
+
+/* Para telas pequenas */
+@media (max-width: 768px) {
+  .search-bar-controls {
+    flex-direction: column; 
+  } 
+
+  .search-bar-controls select {
+    width: 100%; 
+  }  
+
+  .search-bar-input-buttons {
+    flex-direction: row;
+    width: 100%; 
+  }
+
+  .search-bar-input-buttons input {
+    flex: 1; 
+    min-width: 100px; 
+  }
+  
+  .search-bar-input-buttons button {
+    flex: 0; 
+    min-width: 40px; 
+    justify-content: center;
+    align-items: center; 
+  }
 }
