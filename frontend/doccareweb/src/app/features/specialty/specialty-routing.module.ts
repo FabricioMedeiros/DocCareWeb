@@ -5,15 +5,18 @@ import { SpecialtyAppComponent } from './specialty.app.component';
 import { SpecialtyListComponent } from './components/specialty-list/specialty-list.component';
 import { SpecialtyFormComponent } from './components/specialty-form/specialty-form.component';
 import { specialtyResolver } from './services/specialty.resolve';
+import { canDeactivateSpecialtyForm } from './services/specialty.guard';
+import { authGuard } from 'src/app/core/guards/auth.guard';
+
 
 const routes: Routes = [
   {
     path: '', component: SpecialtyAppComponent,
     children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
-      { path: 'list', component: SpecialtyListComponent }, 
-      { path: 'new', component: SpecialtyFormComponent }, 
-      { path: 'edit/:id', component: SpecialtyFormComponent, resolve: { specialty: specialtyResolver }},
+      { path: 'list', component: SpecialtyListComponent,  canActivate: [authGuard]  }, 
+      { path: 'new', component: SpecialtyFormComponent,  canActivate: [authGuard], canDeactivate: [canDeactivateSpecialtyForm] }, 
+      { path: 'edit/:id', component: SpecialtyFormComponent, canActivate: [authGuard],  canDeactivate: [canDeactivateSpecialtyForm], resolve: { specialty: specialtyResolver }},
     ]
   }
 ];
