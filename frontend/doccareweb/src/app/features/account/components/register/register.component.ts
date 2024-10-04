@@ -4,7 +4,7 @@ import { Observable, fromEvent, merge } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { User } from '../../models/user';
-import { AuthService } from '../../services/auth.service';
+import { AccountService } from '../../services/account.service';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
 
 @Component({
@@ -29,7 +29,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
+    private accountService: AccountService,
     private toastr: ToastrService,
     private router: Router
   ) {
@@ -72,7 +72,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     if (this.registerForm.dirty && this.registerForm.valid) {
       this.user = Object.assign({}, this.user, this.registerForm.value);
 
-      this.authService.registerUser(this.user).subscribe({
+      this.accountService.registerUser(this.user).subscribe({
         next: (success) => this.processSuccess(success),
         error: (error) => this.processFail(error)
       });
@@ -85,7 +85,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     this.registerForm.reset();
     this.errors = [];
 
-    this.authService.LocalStorage.saveLocalUserData(response);
+    this.accountService.LocalStorage.saveLocalUserData(response);
 
     const toast = this.toastr.success('Cadastro realizado com sucesso!', 'Bem-vindo!');
 

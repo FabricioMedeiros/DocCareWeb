@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormControlName, Validators } from '@angular/fo
 import { Observable, fromEvent, merge } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AccountService } from '../../services/account.service';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
 
 @Component({
@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
+    private accountService: AccountService,
     private toastr: ToastrService,
     private router: Router
   ) {
@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (this.loginForm.dirty && this.loginForm.valid) {
       const userLogin = Object.assign({}, this.loginForm.value);
 
-      this.authService.login(userLogin).subscribe({
+      this.accountService.login(userLogin).subscribe({
         next: (success) => this.processSuccess(success),
         error: (error) => this.processFail(error)
       });
@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.loginForm.reset();
     this.errors = [];
 
-    this.authService.LocalStorage.saveLocalUserData(response);
+    this.accountService.LocalStorage.saveLocalUserData(response);
 
     const toast = this.toastr.success('Login realizado com sucesso!', 'Bem-vindo!');
 
