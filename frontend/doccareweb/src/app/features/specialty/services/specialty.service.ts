@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { BaseService } from "src/app/services/base.service";
+import { BaseService } from "src/app/core/services/base.service";
 import { Specialty } from "../models/specialty";
 
 

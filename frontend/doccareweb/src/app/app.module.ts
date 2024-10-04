@@ -20,10 +20,10 @@ import { SidebarComponent } from './features/navigation/components/sidebar/sideb
 
 import { LocalStorageUtils } from './utils/localstorage';
 import { SharedModule } from './shared/shared.module';
-import { ErrorInterceptor } from './services/error.handler.service';
 import { ServiceUnavailableComponent } from './features/navigation/components/service-unavailable/service-unavailable.component';
 import { NotFoundComponent } from './features/navigation/components/not-found/not-found.component';
-import { NavigationService } from './services/navigation.service';
+import { NavigationService } from './core/services/navigation.service';
+import { ErrorInterceptor } from './core/error-handling/error.handler.service';
 
 export const httpInterceptorProviders = [
   { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
