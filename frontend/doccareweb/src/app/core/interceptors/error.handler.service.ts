@@ -5,7 +5,7 @@ import { catchError } from "rxjs/operators";
 import { Router } from '@angular/router';
 
 import { NavigationService } from '../../core/services/navigation.service';
-import { LocalStorageUtils } from '../../utils/localstorage';
+import { LocalStorageUtils } from '../utils/localstorage';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
