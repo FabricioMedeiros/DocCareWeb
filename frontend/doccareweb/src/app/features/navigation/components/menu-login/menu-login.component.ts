@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LocalStorageUtils } from 'src/app/utils/localstorage';
+import { LocalStorageUtils } from 'src/app/core/utils/localstorage';
 
 @Component({
   selector: 'app-menu-login',
@@ -26,6 +26,6 @@ export class MenuLoginComponent {
 
   logout() {
     this.localStorageUtils.clearLocalUserData();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/account/login']);
   }
 }
