@@ -10,7 +10,15 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px; 
+  flex-wrap: wrap; /* Permite a quebra de linha */
+  gap: 10px;
+}
+
+.search-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap; /* Mantém todos os itens na mesma linha */
 }
 
 .search-bar-input-buttons {
@@ -25,40 +33,44 @@
 }
 
 .search-bar-controls input {
-  flex: 1; 
+  flex: 1; /* Garante que o input ocupe todo o espaço possível */
 }
 
 .search-bar-controls button {
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   gap: 5px;
+}
+
+.search-bar-controls div {
+  font-weight: bold;
 }
 
 /* Para telas pequenas */
 @media (max-width: 768px) {
   .search-bar-controls {
-    flex-direction: column; 
-  } 
+    flex-direction: column; /* Muda para coluna em telas pequenas */
+  }
+
+  .search-bar-row {
+    flex-direction: row; /* Mantém os elementos na mesma linha */
+    width: 100%;
+  }
 
   .search-bar-controls select {
-    width: 100%; 
-  }  
-
-  .search-bar-input-buttons {
-    flex-direction: row;
-    width: 100%; 
+    width: 100%;
   }
 
   .search-bar-input-buttons input {
-    flex: 1; 
-    min-width: 100px; 
+    flex: 1;
+    min-width: 100px;
   }
-  
+
   .search-bar-input-buttons button {
-    flex: 0; 
-    min-width: 40px; 
+    flex: 0;
+    min-width: 40px;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
   }
 }
