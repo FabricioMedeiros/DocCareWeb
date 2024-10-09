@@ -1,7 +1,7 @@
 import { CanActivateFn, CanDeactivateFn, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RegisterComponent } from '../components/register/register.component';
 import { inject } from '@angular/core';
-import { LocalStorageUtils } from 'src/app/utils/localstorage';
+import { LocalStorageUtils } from 'src/app/core/utils/localstorage';
 
 export const canActivate: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
   const localStorageUtils = inject(LocalStorageUtils);

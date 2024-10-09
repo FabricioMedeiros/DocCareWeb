@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { LocalStorageUtils } from '../../utils/localstorage';
+import { LocalStorageUtils } from '../utils/localstorage';
 
 @Injectable({
   providedIn: 'root'
