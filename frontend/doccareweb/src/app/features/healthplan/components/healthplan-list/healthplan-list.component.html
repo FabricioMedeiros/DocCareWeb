@@ -1,1 +1,88 @@
-<p>healthplan-list works!</p>
+<!-- Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-pulse" [fullScreen]="true">
+    <p style="color: white; font-size: 20px;">Carregando...</p>
+</ngx-spinner>
+
+<div class="content-list-container">
+
+    <!-- Opções de Pesquisa -->
+    <div class='options-filter-list-container'>
+        <h1>Planos de saúde</h1>
+
+        <!-- Erros -->
+        <div *ngIf="errorMessage && errorMessage.length > 0" class="alert alert-danger">
+            <h3>Atenção!</h3>
+            <ul>
+                <li>{{ errorMessage }}</li>
+            </ul>
+        </div>
+
+        <!-- Barra de Pesquisa -->
+        <app-search-bar 
+           [placeholder]="placeholderSearch"
+           [pageSizeOptions]="[10, 30, 50]"
+           [initialSearchTerm]="initialTermSearch"
+           (search)="onSearch($event)" (clear)="clearSearch()">
+        </app-search-bar>
+
+        <div *ngIf="healthPlans.length === 0 && searchTerm !== '' && !errorMessage && !loadingData"
+            class="no-results-message">
+            Nenhum resultado encontrado.
+        </div>
+
+        <a class="btn btn-new btn-outline-primary" (click)="addHealthPlan()">
+            <i class="fas fa-plus"></i> Cadastrar
+        </a>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-container">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th class="align-rigth">Valor</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let healthPlan of healthPlans">
+                    <td class="align-left width-75-percent">{{ healthPlan.description }}</td>
+                    <td class="align-rigth">{{ healthPlan.cost | currencyFormat }}</td>
+                    <td class="action-column">
+                        <div class="button-group">
+                            <button class="btn btn-action btn-warning" (click)="editHealthPlan(healthPlan)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-action btn-danger" (click)="openDeleteModal(template, healthPlan)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Paginação -->
+        <div *ngIf="healthPlans.length > 0">
+            <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChanged)="onPageChanged($event)">
+            </app-pagination>
+        </div>
+
+        <!-- Modal -->
+        <ng-template #template>
+            <div class="modal-header">
+                <h4 class="modal-title text-danger">Atenção</h4>
+                <button type="button" class="close" aria-label="Close" (click)="bsModalRef.hide()">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Confirma a exclusão deste registro: {{selectedHealthPlan.description}}?</p>
+                <button type="button" class="modal-btn btn btn-danger"
+                    (click)="confirmDelete(selectedHealthPlan)">Excluir</button>
+                <button type="button" class="modal-btn btn btn-secondary" (click)="bsModalRef.hide()">Cancelar</button>
+            </div>
+        </ng-template>
+    </div>
+</div>
