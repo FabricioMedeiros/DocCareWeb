@@ -18,8 +18,12 @@
         </div>
 
         <!-- Barra de Pesquisa -->
-        <app-search-bar [placeholder]="'Pesquisar Especialidade'" [pageSizeOptions]="[10, 30, 50]"
-            (search)="onSearch($event)" (clear)="clearSearch()">
+        <app-search-bar 
+            [placeholder]="placeholderSearch" 
+            [pageSizeOptions]="[10, 30, 50]"
+            [initialSearchTerm]="initialTermSearch" 
+            (search)="onSearch($event)" 
+            (clear)="clearSearch()">
         </app-search-bar>
 
         <div *ngIf="specialties.length === 0 && searchTerm !== '' && !errorMessage && !loadingData"

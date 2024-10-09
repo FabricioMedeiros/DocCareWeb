@@ -1,13 +1,14 @@
 import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd, Event } from '@angular/router';
+
+import { filter, map } from 'rxjs/operators';
 
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 import { Specialty } from '../../models/specialty';
 import { SpecialtyService } from '../../services/specialty.service';
-
 
 @Component({
   selector: 'app-specialty-list',
@@ -25,6 +26,9 @@ export class SpecialtyListComponent implements OnInit {
   searchTerm: string = '';
   loadingData: boolean = true;
 
+  @Input() placeholderSearch: string = 'Pesquise pela descrição';
+  @Input() initialTermSearch: string = '';
+
   bsModalRef!: BsModalRef;
   @ViewChild('deleteModal') deleteModal!: TemplateRef<any>;  
 
@@ -34,27 +38,31 @@ export class SpecialtyListComponent implements OnInit {
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private modalService: BsModalService
-  ) {}
+  ) {
+    this.router.events.pipe(
+      filter((e: Event): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e: NavigationEnd) => e)
+    ).subscribe((event: NavigationEnd) => {
+      if (!event.url.includes('/specialty')) {
+        this.specialtyService.clearLocalCurrentPageList();
+        this.specialtyService.clearLocalSearchTerm();
+      } 
+    });
+  }
 
   ngOnInit(): void {
-    this.loadSpecialties();
-  }
+    const storedPage = this.specialtyService.getLocalCurrentPageList();
+    const storedSearchTerm = this.specialtyService.getLocalSearchTerm();
+  
+    if (storedPage) {
+      this.currentPage = parseInt(storedPage, 10);
+    }
+  
+    if (storedSearchTerm) {
+      this.searchTerm = storedSearchTerm;
+      this.initialTermSearch = storedSearchTerm;
+    }
 
-  onSearch(event: { pageSize: number, term: string }): void {
-    this.pageSize = event.pageSize;
-    this.searchTerm = event.term;
-    this.currentPage = 1;
-    this.loadSpecialties(this.searchTerm);
-  }
-
-  clearSearch(): void {
-    this.searchTerm = '';
-    this.currentPage = 1;
-    this.loadSpecialties();
-  }
-
-  onPageChanged(page: number) {
-    this.currentPage = page;
     this.loadSpecialties(this.searchTerm);
   }
 
@@ -95,19 +103,25 @@ export class SpecialtyListComponent implements OnInit {
   }
 
   addSpecialty() {
+    this.specialtyService.clearLocalCurrentPageList();
+    this.specialtyService.clearLocalSearchTerm();
+    this.currentPage = 1;
+    this.searchTerm = '';
     this.router.navigate(['/specialty/new']);
   }
 
   editSpecialty(specialty: Specialty) {
+    this.specialtyService.saveLocalCurrentPageList(this.currentPage);
+    this.specialtyService.saveLocalSearchTerm(this.searchTerm);
     this.router.navigate(['/specialty/edit', specialty.id]);
   }
 
-  openDeleteModal(template: TemplateRef<any>, specialty : Specialty) {
+  openDeleteModal(template: TemplateRef<any>, specialty: Specialty) {
     this.selectedSpecialty = specialty;
     this.bsModalRef = this.modalService.show(template, { class: 'custom-modal-delete' });
   } 
 
-  confirmDelete(specialty : Specialty): void {  
+  confirmDelete(specialty: Specialty): void {  
     this.specialtyService.deleteSpecialty(specialty.id).subscribe({
       next: success => {
         this.processSuccessDelete(success, specialty);
@@ -118,13 +132,35 @@ export class SpecialtyListComponent implements OnInit {
     });
   }
 
-  processSuccessDelete(response: any, specialty : Specialty) {
+  processSuccessDelete(response: any, specialty: Specialty) {
     this.bsModalRef.hide();
     this.specialties = this.specialties.filter(item => item.id !== specialty.id);    
-    this.toastr.success('Registro Excluído com Sucesso!', 'Atenção!');
+    this.toastr.success('Registro excluído com sucesso!', 'Atenção!');
   }
 
   processFailDelete(fail: any) {
     this.toastr.error('Ocorreu um erro.', 'Atenção');
+  }
+
+  onSearch(event: { pageSize: number, term: string }): void {
+    this.pageSize = event.pageSize;
+    this.searchTerm = event.term;
+    this.currentPage = 1;
+    this.specialtyService.saveLocalSearchTerm(this.searchTerm);
+
+    this.loadSpecialties(this.searchTerm);
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.currentPage = 1;
+    this.loadSpecialties();
+  }
+
+  onPageChanged(page: number) {
+    this.currentPage = page;
+    this.specialtyService.saveLocalCurrentPageList(this.currentPage);
+
+    this.loadSpecialties(this.searchTerm);
   }
 }
