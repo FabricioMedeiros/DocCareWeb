@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { LocalStorageUtils } from './utils/localstorage';
+import { LocalStorageUtils } from './core/utils/localstorage';
 
 @Component({
   selector: 'app-root',

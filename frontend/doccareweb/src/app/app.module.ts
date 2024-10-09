@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -17,13 +17,15 @@ import { HomeComponent } from './features/navigation/components/home/home.compon
 import { LogoComponent } from './features/navigation/components/logo/logo.component';
 import { MenuLoginComponent } from './features/navigation/components/menu-login/menu-login.component';
 import { SidebarComponent } from './features/navigation/components/sidebar/sidebar.component';
-
-import { LocalStorageUtils } from './utils/localstorage';
-import { SharedModule } from './shared/shared.module';
-import { ServiceUnavailableComponent } from './features/navigation/components/service-unavailable/service-unavailable.component';
 import { NotFoundComponent } from './features/navigation/components/not-found/not-found.component';
+import { ServiceUnavailableComponent } from './features/navigation/components/service-unavailable/service-unavailable.component';
+
+import { LocalStorageUtils } from './core/utils/localstorage';
+import { SharedModule } from './shared/shared.module';
+
 import { NavigationService } from './core/services/navigation.service';
-import { ErrorInterceptor } from './core/error-handling/error.handler.service';
+import { ErrorInterceptor } from './core/interceptors/error.handler.service';
+
 
 export const httpInterceptorProviders = [
   { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
@@ -54,7 +56,9 @@ export const httpInterceptorProviders = [
     AccountModule,
     SharedModule
   ],
-  providers: [LocalStorageUtils, BsModalService, httpInterceptorProviders, NavigationService],
+  providers: [LocalStorageUtils, BsModalService, httpInterceptorProviders, 
+    NavigationService
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
