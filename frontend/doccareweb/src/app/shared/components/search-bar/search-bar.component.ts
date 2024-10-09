@@ -7,6 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class SearchBarComponent implements OnInit {
   @Input() placeholder: string = 'Pesquisar...'; 
+  @Input() initialSearchTerm: string = '';
   @Input() pageSizeOptions: number[] = [10, 30, 50]; 
   @Output() search: EventEmitter<{ pageSize: number, term: string }> = new EventEmitter();
   @Output() clear: EventEmitter<void> = new EventEmitter<void>(); 
@@ -16,7 +17,9 @@ export class SearchBarComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.searchTerm = this.initialSearchTerm;
+  }
 
   onSearch(): void {
     this.emitSearch();
