@@ -1,1 +1,63 @@
-<p>healthplan-form works!</p>
+<!-- Spinner -->
+<ngx-spinner
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-pulse"
+  [fullScreen]="true">
+  <p style="color: white; font-size: 20px;">Carregando...</p>
+</ngx-spinner>
+
+<div class="form-content-container">
+  <!-- Erros -->
+  <div class="alert alert-danger" *ngIf="errors.length > 0">
+    <h3>Atenção</h3>
+    <ul>
+      <li *ngFor="let error of errors">{{ error }}</li>
+    </ul>
+  </div>
+
+  <!-- Contêiner do Card -->
+  <div class="card-container">
+    <div class="card">
+      <div class="card-header">
+        <h3>{{ isEditMode ? 'Editar Plano de Saúde' : 'Cadastro de Plano de Saúde' }}</h3>
+      </div>
+
+      <form [formGroup]="healthPlanForm" (ngSubmit)="saveHealthPlan()">
+        <div class="card-body">
+          <!-- Campo de Descrição -->
+          <div class="form-group">
+            <label for="description">Descrição</label>
+            <input type="text" id="description" class="form-control" formControlName="description" #descriptionInput
+              [ngClass]="{'is-invalid': displayMessage['description']}" />
+
+            <!-- Mensagem de Erro -->
+            <span class="text-danger" *ngIf="displayMessage['description']">
+              <p [innerHTML]="displayMessage['description']"></p>
+            </span>
+            </div>            
+            
+            <!-- Campo de Valor da Consulta -->
+            <div class="form-group">
+              <label for="cost">Valor da Consulta</label>
+              <input type="text" id="cost" class="form-control small-input" formControlName="cost" currencyMask
+                [options]="{ allowNegative: false, allowZero: false, prefix: 'R$ ', thousands: '.', decimal: ',', decimalLimit: 2 }"
+                [ngClass]="{'is-invalid': displayMessage['cost']}" />
+            
+              <!-- Mensagem de Erro -->
+              <span class="text-danger" *ngIf="displayMessage['cost']">
+                <p [innerHTML]="displayMessage['cost']"></p>
+              </span>
+            </div>            
+          </div>
+
+        <div class="card-footer">
+          <!-- Botões de Ação -->
+          <button type="submit" class="btn btn-primary" [disabled]="!healthPlanForm.valid">Salvar</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

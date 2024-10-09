@@ -1,0 +1,6 @@
+@import 'src/app/core/styles/shared-form-styles.css';
+
+.small-input {
+    max-width: 150px;
+  }
+  
