@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'account', loadChildren: () => import('./features/account/account.module').then(m => m.AccountModule) },
   { path: 'specialty', loadChildren: () => import('./features/specialty/specialty.module').then(m => m.SpecialtyModule) },
   { path: 'healthplan', loadChildren: () => import('./features/healthplan/healthplan.module').then(m => m.HealthplanModule) },
+  { path: 'doctor', loadChildren: () => import('./features/doctor/doctor.module').then(m => m.DoctorModule) },
   { path: 'service-unavailable', component: ServiceUnavailableComponent, canActivate: [navigationGuard] },
   { path: 'not-found', component: NotFoundComponent, canActivate: [navigationGuard] },
   { path: '**', component: NotFoundComponent }
