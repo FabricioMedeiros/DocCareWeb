@@ -19,10 +19,11 @@
 
         <!-- Barra de Pesquisa -->
         <app-search-bar 
-           [placeholder]="placeholderSearch"
-           [pageSizeOptions]="[10, 30, 50]"
-           [initialSearchTerm]="initialTermSearch"
-           (search)="onSearch($event)" (clear)="clearSearch()">
+            [placeholder]="placeholderSearch" 
+            [pageSizeOptions]="[10, 30, 50]"
+            [initialSearchTerm]="initialTermSearch" 
+            (search)="onSearch($event)" 
+            (clear)="clearSearch()">
         </app-search-bar>
 
         <div *ngIf="healthPlans.length === 0 && searchTerm !== '' && !errorMessage && !loadingData"
@@ -41,14 +42,14 @@
             <thead>
                 <tr>
                     <th>Descrição</th>
-                    <th class="align-rigth">Valor</th>
+                    <th class="align-right">Valor</th>
                     <th class="text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let healthPlan of healthPlans">
                     <td class="align-left width-75-percent">{{ healthPlan.description }}</td>
-                    <td class="align-rigth">{{ healthPlan.cost | currencyFormat }}</td>
+                    <td class="align-right">{{ healthPlan.cost | currencyFormat }}</td>
                     <td class="action-column">
                         <div class="button-group">
                             <button class="btn btn-action btn-warning" (click)="editHealthPlan(healthPlan)">
@@ -77,11 +78,12 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body text-center">
-                <p>Confirma a exclusão deste registro: {{selectedHealthPlan.description}}?</p>
-                <button type="button" class="modal-btn btn btn-danger"
-                    (click)="confirmDelete(selectedHealthPlan)">Excluir</button>
-                <button type="button" class="modal-btn btn btn-secondary" (click)="bsModalRef.hide()">Cancelar</button>
+            <div class="modal-body text-center custom-modal-delete">
+                <p>Confirma a exclusão deste plano de saúde: {{selectedHealthPlan.description}}?</p>
+                <div class="button-container">
+                    <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedHealthPlan)">Sim</button>
+                    <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Não</button>
+                </div>
             </div>
         </ng-template>
     </div>
