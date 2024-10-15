@@ -6,7 +6,7 @@ import { genericResolver } from 'src/app/core/resolvers/generic-resolver';
 import { DoctorFormComponent } from './components/doctor-form/doctor-form.component';
 import { DoctorListComponent } from './components/doctor-list/doctor-list.component';
 import { DoctorComponent } from './doctor.component';
-import { DoctorService } from './services/doctor.service';
+import { DoctorService } from '../../shared/services/doctor.service';
 
 const routes: Routes = [
   {
@@ -18,7 +18,7 @@ const routes: Routes = [
       { path: 'edit/:id', component: DoctorFormComponent, 
         canActivate: [authGuard],  
         canDeactivate: [canDeactivateForm], resolve: {
-        doctor: genericResolver(DoctorService, (service, id) => service.getSpecialtyById(id))
+        doctor: genericResolver(DoctorService, (service, id) => service.getDoctorById(id))
       }},
     ]
   }
