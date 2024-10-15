@@ -5,7 +5,6 @@ import { SpecialtyRoutingModule } from './specialty-routing.module';
 import { SpecialtyComponent } from './specialty.component';
 import { SpecialtyListComponent } from './components/specialty-list/specialty-list.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { SpecialtyService } from './services/specialty.service';
 import { SpecialtyFormComponent } from './components/specialty-form/specialty-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -23,6 +22,6 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     SharedModule,
     NgxSpinnerModule
   ],
-  providers:[SpecialtyService]
+  providers:[]
 })
 export class SpecialtyModule { }
