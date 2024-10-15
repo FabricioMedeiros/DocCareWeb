@@ -68,19 +68,20 @@
             </app-pagination>
         </div>
 
-        <!-- Modal -->
-        <ng-template #template>
+         <!-- Modal -->
+         <ng-template #template>
             <div class="modal-header">
                 <h4 class="modal-title text-danger">Atenção</h4>
                 <button type="button" class="close" aria-label="Close" (click)="bsModalRef.hide()">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body text-center">
-                <p>Confirma a exclusão deste registro: {{selectedSpecialty.description}}?</p>
-                <button type="button" class="modal-btn btn btn-danger"
-                    (click)="confirmDelete(selectedSpecialty)">Excluir</button>
-                <button type="button" class="modal-btn btn btn-secondary" (click)="bsModalRef.hide()">Cancelar</button>
+            <div class="modal-body text-center custom-modal-delete">
+                <p>Confirma a exclusão desta especialidade: {{selectedSpecialty.description}}?</p>
+                <div class="button-container">
+                    <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedSpecialty)">Sim</button>
+                    <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Não</button>
+                </div>
             </div>
         </ng-template>
     </div>
