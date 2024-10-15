@@ -5,7 +5,7 @@ import { authGuard } from 'src/app/core/guards/auth.guard';
 import { canDeactivateForm } from 'src/app/core/guards/can-deactivate-form.guard';
 import { genericResolver } from 'src/app/core/resolvers/generic-resolver';
 
-import { SpecialtyService } from './services/specialty.service';
+import { SpecialtyService } from '../../shared/services/specialty.service';
 import { SpecialtyComponent } from './specialty.component';
 import { SpecialtyListComponent } from './components/specialty-list/specialty-list.component';
 import { SpecialtyFormComponent } from './components/specialty-form/specialty-form.component';
