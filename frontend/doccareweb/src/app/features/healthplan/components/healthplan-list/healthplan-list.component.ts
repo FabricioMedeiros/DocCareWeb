@@ -73,7 +73,7 @@ export class HealthplanListComponent implements OnInit {
     this.healthPlans = [];
     this.searchTerm = searchTerm ?? '';
 
-    this.healthPlanService.getAllHealtPlans(this.currentPage, this.pageSize, 'Description', this.searchTerm).subscribe({
+    this.healthPlanService.getAllHealthPlans(this.currentPage, this.pageSize, 'Description', this.searchTerm).subscribe({
       next: response => {
         this.processLoadHealthPlansSuccess(response);
       },

@@ -10,20 +10,23 @@ export class HealthPlanService extends BaseService {
 
     constructor(private http: HttpClient) { super(); }
 
-    getAllHealtPlans(page: number, pageSize: number, field?: string, value?: string): Observable<any> {
+    getAllHealthPlans(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
         const headers = this.GetAuthHeaderJson();
         
-        let url = `${this.UrlServiceV1}healthplan?pageNumber=${page}&pageSize=${pageSize}`;
-
+        let url = `${this.UrlServiceV1}healthplan`;
+    
+        if (page !== undefined && pageSize !== undefined) {
+            url += `?pageNumber=${page}&pageSize=${pageSize}`;
+        }
+    
         if (field && value) {
-            url += `&filters[${field}]=${value}`;
+            url += `${(page !== undefined && pageSize !== undefined) ? '&' : '?'}filters[${field}]=${value}`;
         }
     
         return this.http
             .get<any>(url, headers)
             .pipe(catchError(super.serviceError));
     }    
-  
 
     getHealthPlanById(id: number): Observable<HealthPlan> {
         const headers = this.GetAuthHeaderJson();
