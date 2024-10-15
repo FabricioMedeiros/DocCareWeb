@@ -91,18 +91,34 @@ html {
 
 /* Estilos para o modal de exclusão de registro */
 .custom-modal-delete .modal-dialog {
-  max-width: 500px; 
+  max-width: 500px;
   margin: 1.75rem auto;
 }
 
 .custom-modal-delete .modal-content {
-  border-radius: 8px; 
+  border-radius: 8px;
 }
 
 .custom-modal-delete .modal-title {
-  font-size: 1.25rem; 
+  font-size: 1.25rem;
 }
 
 .custom-modal-delete .modal-body p {
-  font-size: 1rem; 
+  font-size: 1rem;
+}
+
+.custom-modal-delete .modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.custom-modal-delete .button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px; 
+}
+
+.custom-modal-delete .button-container button {
+  width: 120px; 
 }
