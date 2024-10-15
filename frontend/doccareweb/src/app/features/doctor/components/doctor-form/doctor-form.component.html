@@ -1,1 +1,103 @@
-<p>doctor-form works!</p>
+<!-- Spinner -->
+<ngx-spinner
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-pulse"
+  [fullScreen]="true">
+  <p style="color: white; font-size: 20px;">Carregando...</p>
+</ngx-spinner>
+
+<div class="form-content-container">
+  <!-- Erros -->
+  <div class="alert alert-danger" *ngIf="errors.length > 0">
+    <h3>Atenção</h3>
+    <ul>
+      <li *ngFor="let error of errors">{{ error }}</li>
+    </ul>
+  </div>
+
+  <!-- Contêiner do Card -->
+  <div class="card-container">
+    <div class="card">
+      <div class="card-header">
+        <h3>{{ isEditMode ? 'Editar Médico' : 'Cadastro de Médico' }}</h3>
+      </div>
+
+      <form [formGroup]="doctorForm" (ngSubmit)="saveDoctor()">
+        <div class="card-body">
+          <!-- Nome -->
+          <div class="form-group">
+            <label for="name">Nome</label>
+            <input type="text" id="name" class="form-control" formControlName="name" 
+              [ngClass]="{'is-invalid': displayMessage['name']}" />
+
+            <!-- Mensagem de Erro -->
+            <span class="text-danger" *ngIf="displayMessage['name']">
+              <p [innerHTML]="displayMessage['name']"></p>
+            </span>
+          </div>
+
+          <!-- CRM e Especialidade -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="crm">CRM</label>
+              <input type="text" id="crm" class="form-control" formControlName="crm" mask="000000/AA"
+                [ngClass]="{'is-invalid': displayMessage['crm']}" />
+              <span class="text-danger" *ngIf="displayMessage['crm']">
+                <p [innerHTML]="displayMessage['crm']"></p>
+              </span>
+            </div>          
+
+            <div class="form-group col-md-6">
+              <label for="specialtyId">Especialidade</label>
+              <select id="specialtyId" class="form-control" formControlName="specialtyId">
+                <option *ngFor="let specialty of specialties" [value]="specialty.id">{{ specialty.description }}</option>
+              </select>
+              <span class="text-danger" *ngIf="displayMessage['specialtyId']">
+                <p [innerHTML]="displayMessage['specialtyId']"></p>
+              </span>
+            </div>
+          </div>
+
+          <!-- E-mail -->
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" class="form-control" formControlName="email"
+              [ngClass]="{'is-invalid': displayMessage['email']}" />
+            <span class="text-danger" *ngIf="displayMessage['email']">
+              <p [innerHTML]="displayMessage['email']"></p>
+            </span>
+          </div>
+
+          <!-- Telefones -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="phone">Telefone Fixo</label>
+              <input type="text" id="phone" class="form-control" formControlName="phone" mask="(00) 0000-0000"
+                [ngClass]="{'is-invalid': displayMessage['phone']}" />
+              <span class="text-danger" *ngIf="displayMessage['phone']">
+                <p [innerHTML]="displayMessage['phone']"></p>
+              </span>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="cellPhone">Celular</label>
+              <input type="text" id="cellPhone" class="form-control" formControlName="cellPhone" mask="(00) 00000-0000"
+                [ngClass]="{'is-invalid': displayMessage['cellPhone']}" />
+              <span class="text-danger" *ngIf="displayMessage['cellPhone']">
+                <p [innerHTML]="displayMessage['cellPhone']"></p>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <!-- Botões de Ação -->
+          <button type="submit" class="btn btn-primary" [disabled]="!doctorForm.valid">Salvar</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
