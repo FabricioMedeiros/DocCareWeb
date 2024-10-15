@@ -84,8 +84,8 @@
       <div class="modal-body text-center custom-modal-delete">
         <p>Confirma a exclusão deste médico: {{selectedDoctor.name}}?</p>
         <div class="button-container">
-          <button type="button" class="btn" (click)="confirmDelete(selectedDoctor)">Sim</button>
-          <button type="button" class="btn btn-outline-secondary" (click)="bsModalRef.hide()">Não</button>
+          <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedDoctor)">Sim</button>
+          <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Não</button>
         </div>
       </div>
     </ng-template>
