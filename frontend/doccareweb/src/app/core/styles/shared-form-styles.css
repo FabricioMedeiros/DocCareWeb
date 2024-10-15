@@ -1,54 +1,119 @@
-/*Estilos para páginas de cadastro*/
+/* Estilos para páginas de cadastro */
 .form-content-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    justify-content: center; 
-    height: 100%;
-    min-height: calc(100vh - 120px); 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto; 
+  min-height: calc(100vh - 120px);
+  padding: 0; 
+  box-sizing: border-box;
+}
+
+.alert {
+  width: 500px;
+  margin-bottom: 20px;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+.card {
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; 
+}
+
+.card-header {
+  background-color: #0056b3;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+.card-header h3 {
+  font-size: 1.2rem;
+  margin: 0;
+  padding: 10px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+button {
+  width: 100px;
+}
+
+.text-danger {
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+.text-danger p {
+  margin: 0; 
+  padding: 0;
+}
+
+/* Ajuste para telas pequenas */
+@media (max-width: 768px) {
+  .form-content-container {
+    padding: 20px; 
+    height: auto; 
   }
-  
-  .alert {
-    width: 500px; 
-    margin-bottom: 20px; 
-  }
-  
+
   .card-container {
-    display: flex;
-    justify-content: center; 
+    padding: 0 20px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: none;
+  }
+
+  .alert {
     width: 100%;
   }
-  
-  .card {
-    width: 500px; 
-    min-width: 500px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-  }
-  
-  .card-header {
-    background-color: #0056b3; 
-    color: white; 
-    text-align: center; 
-    padding: 10px; 
-  }
-  
-  .card-header h3 {
-    font-size: 1.2rem; 
-    margin: 0; 
-  }
-  
-  .card-body {
-    padding: 20px; 
-  }
-  
-  .card-footer {
+
+  .form-group, .form-row {
+    width: 100%;
     display: flex;
-    justify-content: center; 
-    gap: 10px; 
-    padding: 10px; 
+    flex-direction: column;
+    gap: 2px;
   }
-  
-  button {
-    width: 100px; 
+
+  .form-group.col-md-6, .form-row .form-group.col-md-6 {
+    width: 100%;
   }
-  
+
+  .card-header {
+    background-color: #0056b3;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+  }
+
+  .card-header h3 {
+    font-size: 1.2rem;
+    margin: 0;
+    padding: 10px;
+  }
+
+  .text-danger p {
+    margin: 0;
+  }
+}
