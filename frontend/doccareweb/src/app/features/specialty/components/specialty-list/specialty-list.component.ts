@@ -8,7 +8,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 import { Specialty } from '../../models/specialty';
-import { SpecialtyService } from '../../services/specialty.service';
+import { SpecialtyService } from '../../../../shared/services/specialty.service';
 
 @Component({
   selector: 'app-specialty-list',

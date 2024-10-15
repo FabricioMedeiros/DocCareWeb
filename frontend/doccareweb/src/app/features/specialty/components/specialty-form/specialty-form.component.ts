@@ -4,7 +4,7 @@ import { Specialty } from '../../models/specialty';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/core/validators/generic-form-validation';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { SpecialtyService } from '../../services/specialty.service';
+import { SpecialtyService } from '../../../../shared/services/specialty.service';
 import { fromEvent, merge, Observable } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FormCanDeactivate } from 'src/app/core/guards/form-can-deactivate.interface';
