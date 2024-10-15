@@ -25,6 +25,7 @@ import { SharedModule } from './shared/shared.module';
 
 import { NavigationService } from './core/services/navigation.service';
 import { ErrorInterceptor } from './core/interceptors/error.handler.service';
+import { PatientModule } from './features/patient/patient.module';
 
 
 export const httpInterceptorProviders = [
@@ -54,7 +55,8 @@ export const httpInterceptorProviders = [
     NgxSpinnerModule.forRoot(),
     ModalModule.forRoot(),
     AccountModule,
-    SharedModule
+    SharedModule,
+    PatientModule
   ],
   providers: [LocalStorageUtils, BsModalService, httpInterceptorProviders, 
     NavigationService
