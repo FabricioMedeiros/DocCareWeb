@@ -11,6 +11,9 @@ import { SpecialtyService } from './services/specialty.service';
 import { DoctorService } from './services/doctor.service';
 import { PhoneMaskPipe } from './pipes/phone-mask.pipe';
 import { CrmMaskPipe } from './pipes/crm-mask.pipe';
+import { PatientService } from './services/patient.service';
+import { CpfMaskPipe } from './pipes/cpf-mask.pipe';
+import { HealthPlanService } from './services/healthplan.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +21,8 @@ import { CrmMaskPipe } from './pipes/crm-mask.pipe';
     SearchBarComponent,
     CurrencyFormatPipe,
     PhoneMaskPipe,
-    CrmMaskPipe 
+    CrmMaskPipe,
+    CpfMaskPipe 
   ],
   imports: [
     CommonModule,
@@ -33,9 +37,10 @@ import { CrmMaskPipe } from './pipes/crm-mask.pipe';
     CurrencyFormatPipe,
     PhoneMaskPipe,
     CrmMaskPipe,
+    CpfMaskPipe,
     NgxMaskDirective, 
     NgxMaskPipe 
   ],
-  providers: [provideNgxMask(), SpecialtyService, DoctorService]
+  providers: [provideNgxMask(), SpecialtyService, DoctorService, PatientService, HealthPlanService]
 })
 export class SharedModule { }
