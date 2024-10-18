@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ValidationMessages, GenericValidator, DisplayMessage } from 'src/app/core/validators/generic-form-validation';
 import { FormCanDeactivate } from 'src/app/core/guards/form-can-deactivate.interface';
 import { HealthPlan } from './../../models/healthplan';
-import { HealthPlanService } from '../../services/healthplan.service';
+import { HealthPlanService } from '../../../../shared/services/healthplan.service';
 
 @Component({
   selector: 'app-healthplan-form',

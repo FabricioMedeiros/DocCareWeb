@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
 import { BaseService } from "src/app/core/services/base.service";
-import { HealthPlan } from "../models/healthplan";
+import { HealthPlan } from "../../features/healthplan/models/healthplan";
 
 @Injectable()
 export class HealthPlanService extends BaseService {

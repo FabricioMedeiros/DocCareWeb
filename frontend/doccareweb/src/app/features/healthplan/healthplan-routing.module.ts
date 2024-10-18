@@ -8,7 +8,7 @@ import { genericResolver } from 'src/app/core/resolvers/generic-resolver';
 import { HealthplanComponent } from './healthplan.component';
 import { HealthplanFormComponent } from './components/healthplan-form/healthplan-form.component';
 import { HealthplanListComponent } from './components/healthplan-list/healthplan-list.component';
-import { HealthPlanService } from './services/healthplan.service';
+import { HealthPlanService } from '../../shared/services/healthplan.service';
 
 
 
