@@ -1,1 +1,93 @@
-<p>patient-list works!</p>
+<!-- Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-pulse" [fullScreen]="true">
+    <p style="color: white; font-size: 20px;">Carregando...</p>
+  </ngx-spinner>
+  
+  <div class="content-list-container">
+  
+    <!-- Opções de Pesquisa -->
+    <div class='options-filter-list-container'>
+      <h1>Pacientes</h1>
+  
+      <!-- Erros -->
+      <div *ngIf="errorMessage && errorMessage.length > 0" class="alert alert-danger">
+        <h3>Atenção!</h3>
+        <ul>
+          <li>{{ errorMessage }}</li>
+        </ul>
+      </div>
+  
+      <!-- Barra de Pesquisa -->
+      <app-search-bar [placeholder]="placeholderSearch" [pageSizeOptions]="[10, 30, 50]"
+        [initialSearchTerm]="initialTermSearch" (search)="onSearch($event)" (clear)="clearSearch()">
+      </app-search-bar>
+  
+      <div *ngIf="patients.length === 0 && searchTerm !== '' && !errorMessage && !loadingData" class="no-results-message">
+        Nenhum resultado encontrado.
+      </div>
+  
+      <a class="btn btn-new btn-outline-primary" (click)="addpatient()">
+        <i class="fas fa-plus"></i> Cadastrar
+      </a>
+    </div>
+  
+    <!-- Tabela -->
+    <div class="table-container">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Telefone</th>
+            <th>Celular</th>
+            <th>Email</th>
+            <th>Plano de Saúde</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let patient of patients">
+            <td>{{ patient.name }}</td>
+            <td>{{ patient.cpf | cpfMask }}</td>           
+            <td>{{ patient.phone | phoneMask }}</td>
+            <td>{{ patient.cellPhone | phoneMask }}</td>
+            <td>{{ patient.email }}</td>
+            <td>{{ patient.healthPlan.description }}</td>
+            <td class="action-column">
+              <div class="button-group">
+                <button class="btn btn-action btn-warning" (click)="editpatient(patient)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-action btn-danger" (click)="openDeleteModal(template, patient)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <!-- Paginação -->
+      <div *ngIf="patients.length > 0">
+        <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChanged)="onPageChanged($event)">
+        </app-pagination>
+      </div>
+  
+      <!-- Modal -->
+      <ng-template #template>
+        <div class="modal-header">
+          <h4 class="modal-title text-danger">Atenção</h4>
+          <button type="button" class="close" aria-label="Close" (click)="bsModalRef.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body text-center custom-modal-delete">
+          <p>Confirma a exclusão deste médico: {{selectedPatient.name}}?</p>
+          <div class="button-container">
+            <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedPatient)">Sim</button>
+            <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Não</button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
