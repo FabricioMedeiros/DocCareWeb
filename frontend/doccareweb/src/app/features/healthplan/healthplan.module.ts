@@ -9,7 +9,7 @@ import { HealthPlanRoutingModule } from './healthplan-routing.module';
 import { HealthplanComponent } from './healthplan.component';
 import { HealthplanListComponent } from './components/healthplan-list/healthplan-list.component';
 import { HealthplanFormComponent } from './components/healthplan-form/healthplan-form.component';
-import { HealthPlanService } from './services/healthplan.service';
+import { HealthPlanService } from '../../shared/services/healthplan.service';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 @NgModule({
