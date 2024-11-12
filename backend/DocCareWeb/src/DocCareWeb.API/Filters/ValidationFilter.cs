@@ -66,16 +66,15 @@ namespace DocCareWeb.API.Filters
 
         private void CreateResponse(ActionExecutingContext context)
         {
-            var problemDetails = new ValidationProblemDetails(new Dictionary<string, string[]>
-                    {
-                        { "Messages", _notificator.GetNotifications().Select(n => n.Message).ToArray() }
-                    })
+            var errors = _notificator.GetNotifications().Select(n => n.Message);
+
+            var response = new
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "One or more validation errors occurred."
+                success = false,
+                errors = errors
             };
 
-            context.Result = new BadRequestObjectResult(problemDetails);
+            context.Result = new BadRequestObjectResult(response);
         }
     }
 }
