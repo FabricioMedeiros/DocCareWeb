@@ -23,8 +23,18 @@ namespace DocCareWeb.Infrastructure.Mappings
 
             // Appointment mappings
             CreateMap<Appointment, AppointmentBaseDto>().ReverseMap();
-            CreateMap<Appointment, AppointmentCreateDto>().ReverseMap();
-            CreateMap<Appointment, AppointmentUpdateDto>().ReverseMap();
+            CreateMap<Appointment, AppointmentCreateDto>();
+            CreateMap<AppointmentCreateDto, Appointment>()
+               .ForMember(dest => dest.AppointmentDate,
+                          opt => opt.MapFrom(src => DateTime.Parse(src.AppointmentDate).Date))
+               .ForMember(dest => dest.AppointmentTime,
+                          opt => opt.MapFrom(src => TimeSpan.Parse(src.AppointmentTime)));
+            CreateMap<Appointment, AppointmentUpdateDto>();
+            CreateMap<AppointmentUpdateDto, Appointment>()
+               .ForMember(dest => dest.AppointmentDate,
+                          opt => opt.MapFrom(src => DateTime.Parse(src.AppointmentDate).Date))
+               .ForMember(dest => dest.AppointmentTime,
+                          opt => opt.MapFrom(src => TimeSpan.Parse(src.AppointmentTime)));
             CreateMap<Appointment, AppointmentListDto>().ReverseMap();
 
             // Doctor mappings
@@ -32,18 +42,21 @@ namespace DocCareWeb.Infrastructure.Mappings
             CreateMap<Doctor, DoctorCreateDto>().ReverseMap();
             CreateMap<Doctor, DoctorUpdateDto>().ReverseMap();
             CreateMap<Doctor, DoctorListDto>().ReverseMap();
+            CreateMap<Doctor, DoctorBasicInfoDto>().ReverseMap();
 
             // Patient mappings
             CreateMap<Patient, PatientBaseDto>().ReverseMap();
             CreateMap<Patient, PatientCreateDto>().ReverseMap();
             CreateMap<Patient, PatientUpdateDto>().ReverseMap();
             CreateMap<Patient, PatientListDto>().ReverseMap();
+            CreateMap<Patient, PatientBasicInfoDto>().ReverseMap();
 
             // HealthPlan mappings
             CreateMap<HealthPlan, HealthPlanBaseDto>().ReverseMap();
             CreateMap<HealthPlan, HealthPlanCreateDto>().ReverseMap();
             CreateMap<HealthPlan, HealthPlanUpdateDto>().ReverseMap();
             CreateMap<HealthPlan, HealthPlanListDto>().ReverseMap();
+            CreateMap<HealthPlan, HealthPlanBasicInfoDto>().ReverseMap();
 
             // Specialty mappings
             CreateMap<Specialty, SpecialtyBaseDto>().ReverseMap();
