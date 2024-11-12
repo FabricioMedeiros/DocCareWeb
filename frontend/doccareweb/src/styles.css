@@ -49,43 +49,37 @@ html {
   border-radius: 4px;
 }
 
-/* Estilos do Toastr para notificações normais */
-.custom-toast {
-  background-color: #0056b3 !important; 
-  color: #fff !important; 
-  border-color: #0056b3 !important; 
-  box-shadow: 0 0 10px rgba(0, 86, 179, 0.5) !important; 
+/* Estilos para notificações de sucesso */
+.toast-success {
+  background-color: #0056b3 !important; /* Azul */
+  color: #fff !important;
+  border-color: #0056b3 !important;
+  box-shadow: 0 0 10px rgba(0, 86, 179, 0.5) !important;
 }
 
-.custom-toast .toast-title {
-  color: #ffffff !important; 
+.toast-success .toast-title,
+.toast-success .toast-message {
+  color: #ffffff !important;
 }
 
-.custom-toast .toast-message {
-  color: #ffffff !important; 
-}
-
-.custom-toast .toast-progress {
+.toast-success .toast-progress {
   background-color: #ffffff !important;
 }
 
-/* Estilos do Toastr para notificações de erro */
-.error-toast {
-  background-color: #d9534f !important; 
-  color: #fff !important; 
-  border-color: #d9534f !important; 
-  box-shadow: 0 0 10px rgba(217, 83, 79, 0.5) !important; 
+/* Estilos para notificações de erro */
+.toast-error {
+  background-color: #d9534f !important; /* Vermelho */
+  color: #fff !important;
+  border-color: #d9534f !important;
+  box-shadow: 0 0 10px rgba(217, 83, 79, 0.5) !important;
 }
 
-.error-toast .toast-title {
-  color: #ffffff !important; 
+.toast-error .toast-title,
+.toast-error .toast-message {
+  color: #ffffff !important;
 }
 
-.error-toast .toast-message {
-  color: #ffffff !important; 
-}
-
-.error-toast .toast-progress {
+.toast-error .toast-progress {
   background-color: #ffffff !important;
 }
 
