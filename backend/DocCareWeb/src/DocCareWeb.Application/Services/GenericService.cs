@@ -42,10 +42,12 @@ namespace DocCareWeb.Application.Services
             {
                 foreach (var filter in filters)
                 {
+                    // Verifica se a propriedade existe na entidade
                     var property = typeof(TEntity).GetProperty(filter.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-                    if (property == null) continue;
 
-                    var comparison = CreateComparisonExpression(parameter, property, filter.Value);
+                    if (property == null) continue;
+                 
+                    var comparison = CreateNestedComparisonExpression(parameter, property.Name, filter.Value); // Usar property.Name
                     combinedExpression = Expression.AndAlso(combinedExpression, comparison);
                 }
             }
@@ -110,13 +112,9 @@ namespace DocCareWeb.Application.Services
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);
-        }  
-        
-        private static Expression CreateComparisonExpression(ParameterExpression parameter, PropertyInfo property, string filterValue)
+        }
+        private static Expression CreateComparisonExpression(Expression left, Type propertyType, string filterValue)
         {
-            var propertyType = property.PropertyType;
-            var left = Expression.Property(parameter, property.Name);
-
             Expression comparison = propertyType switch
             {
                 Type _ when typeof(string).IsAssignableFrom(propertyType) =>
@@ -142,6 +140,27 @@ namespace DocCareWeb.Application.Services
 
             return comparison;
         }
+
+        private static Expression CreateNestedComparisonExpression(ParameterExpression parameter, string propertyPath, string filterValue)
+        {
+            // Divida o caminho da propriedade (ex: "doctor[id]") em partes
+            var properties = propertyPath.Split(new[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+
+            Expression expression = parameter;
+
+            // Navega pelas propriedades
+            foreach (var prop in properties)
+            {
+                expression = Expression.PropertyOrField(expression, prop);
+            }
+
+            var propertyType = ((MemberExpression)expression).Type;
+            var comparison = CreateComparisonExpression(expression, propertyType, filterValue);
+
+            return comparison;
+        }
+
+
 
         private static object ParseEnum(Type enumType, string value)
         {
