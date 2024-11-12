@@ -4,22 +4,23 @@ import { catchError, map, Observable } from "rxjs";
 
 import { BaseService } from "src/app/core/services/base.service";
 import { Appointment } from "../../features/appointment/models/appointment";
+import { AppointmentStatus } from "src/app/features/appointment/models/appointment-status";
 
 @Injectable()
 export class AppointmentService extends BaseService {
-    
+
     constructor(private http: HttpClient) { super(); }
 
     getAllAppointments(filters?: { [key: string]: string }): Observable<any> {
         const headers = this.GetAuthHeaderJson();
-        
+
         let url = `${this.UrlServiceV1}appointment`;
-    
+
         if (filters) {
             const filterParams = Object.keys(filters)
-                .map(key => `${key}=${filters[key]}`) 
+                .map(key => `${key}=${filters[key]}`)
                 .join('&');
-            
+
             url += `?${filterParams}`;
         }
 
@@ -27,7 +28,7 @@ export class AppointmentService extends BaseService {
             .get<any>(url, headers)
             .pipe(catchError(super.serviceError));
     }
-    
+
     getAppointmentById(id: number): Observable<Appointment> {
         const headers = this.GetAuthHeaderJson();
 
@@ -49,7 +50,7 @@ export class AppointmentService extends BaseService {
 
     updateAppointment(appointment: Appointment): Observable<Appointment> {
         const headers = this.GetAuthHeaderJson();
-        
+
         return this.http
             .put<Appointment>(`${this.UrlServiceV1}appointment/${appointment.id}`, appointment, headers)
             .pipe(
@@ -58,23 +59,47 @@ export class AppointmentService extends BaseService {
             );
     }
 
-    updateAppointmentStatus(appointment: Appointment): Observable<any> {
+    updateAppointmentStatus(id: number, status: AppointmentStatus): Observable<any> {
         const headers = this.GetAuthHeaderJson();
-        
-        return this.http
-            .put(`${this.UrlServiceV1}appointment/${appointment.id}/status`, appointment.status,  headers)
+
+        const statusData = {
+            id: id,
+            status: status
+        };
+
+         return this.http
+            .put(`${this.UrlServiceV1}appointment/${id}/status`, statusData, headers)
             .pipe(
                 map(this.extractData),
                 catchError(this.serviceError)
             );
-    } 
-    
-    saveLocalCurrentDateList(date: Date): void {
-        localStorage.setItem('currentDateAppointmentList', date.toString());
     }
-    
+
+    saveLocalCurrentDateList(date: Date): void {
+        localStorage.setItem('currentDateAppointmentList', date.toISOString());
+    }
+
     getLocalCurrentDateList(): Date | null {
         const storedDate = localStorage.getItem('currentDateAppointmentList');
-        return storedDate ? new Date(storedDate) : null;
+        const parsedDate = storedDate ? new Date(storedDate) : null;
+
+        return parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate : null;
+    }
+    
+
+    clearLocalCurrentDateList(): void {
+        localStorage.removeItem('currentDateAppointmentList');
+    }
+
+    saveLocalCurrentDoctorList(doctor: number): void {
+        localStorage.setItem('currentDoctorAppointmentList', doctor.toString());
+    }
+
+    getLocalCurrentDoctorList(): string {
+        return localStorage.getItem('currentDoctorAppointmentList') || '';
+    }
+
+    clearLocalCurrentDoctorList(): void {
+        localStorage.removeItem('currentDoctorAppointmentList');
     }
 }
