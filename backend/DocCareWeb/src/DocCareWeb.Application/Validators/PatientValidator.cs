@@ -1,5 +1,4 @@
 ﻿using DocCareWeb.Application.Dtos.Patient;
-using DocCareWeb.Application.Validators;
 using FluentValidation;
 
 namespace DocCareWeb.Application.Validators
@@ -31,9 +30,6 @@ namespace DocCareWeb.Application.Validators
 
             RuleFor(p => p.BirthDate)
                 .LessThan(DateTime.Now).WithMessage("A data de nascimento deve ser no passado.");
-
-            RuleFor(p => p.HealthPlanId)
-                .NotEmpty().WithMessage("O plano de saúde é obrigatório.");
         }
     }
 
@@ -43,7 +39,10 @@ namespace DocCareWeb.Application.Validators
         {
             Include(new PatientValidator());
 
-             RuleFor(p => p.Address)
+            RuleFor(p => p.HealthPlanId)
+            .NotEmpty().WithMessage("O plano de saúde é obrigatório.");
+
+            RuleFor(p => p.Address)
                 .SetValidator(new AddressCreateValidator())
                 .WithMessage("O endereço é inválido.");
         }
@@ -57,6 +56,9 @@ namespace DocCareWeb.Application.Validators
 
             RuleFor(p => p.Id)
                 .NotEmpty().WithMessage("O ID é obrigatório.");
+
+            RuleFor(p => p.HealthPlanId)
+              .NotEmpty().WithMessage("O plano de saúde é obrigatório.");
 
             RuleFor(p => p.Address)
                 .SetValidator(new AddressUpdateValidator())

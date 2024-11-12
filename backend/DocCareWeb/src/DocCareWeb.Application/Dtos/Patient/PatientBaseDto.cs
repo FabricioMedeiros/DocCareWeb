@@ -11,7 +11,7 @@ namespace DocCareWeb.Application.Dtos.Patient
         }
 
         [JsonConstructor]
-        public PatientBaseDto(string name, string? cpf, string? rg, Gender gender, DateTime birthDate, string? email, string? phone, string? cellPhone, string? notes, int healthPlanId)
+        public PatientBaseDto(string name, string? cpf, string? rg, Gender gender, DateTime birthDate, string? email, string? phone, string? cellPhone, string? notes)
         {
             Name = name;
             Cpf = cpf;
@@ -22,7 +22,6 @@ namespace DocCareWeb.Application.Dtos.Patient
             Phone = phone;
             CellPhone = cellPhone;
             Notes = notes;
-            HealthPlanId = healthPlanId;
         }
 
         [JsonPropertyOrder(2)]
@@ -43,7 +42,5 @@ namespace DocCareWeb.Application.Dtos.Patient
         public string? CellPhone { get; set; }
         [JsonPropertyOrder(10)]
         public string? Notes { get; set; }
-        [JsonPropertyOrder(11)]
-        public int HealthPlanId { get; set; }
     }
 }
