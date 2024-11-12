@@ -1,0 +1,236 @@
+
+.container {
+    margin: 5px auto;
+    padding: 10px 20px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.title {
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    margin-bottom: 8px;
+}
+
+.col-left {
+    flex: 0 0 auto;
+    width: auto;
+    align-items: flex-start;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    min-height: 80%;
+}
+
+.col-right {
+    flex: 1;
+    padding: 0;
+}
+
+.text-center h2 {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.align-left {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.btn-new {
+    margin: 0;
+    max-width: 120px;
+}
+
+.table-container {
+    margin: 0 15px;
+}
+
+.alert {
+    margin: 0 15px;
+    font-size: 1rem;
+    border-color: lightskyblue;
+    background-color: lightskyblue;
+    color: white;
+}
+
+h4 {
+    font-size: 16px;
+    margin: 5px;
+}
+
+.text-start {
+    text-align: left !important;
+}
+
+.custom-select {
+    margin-top: 0;
+}
+
+/* Estilos do Calendário */
+.custom-datepicker,
+.custom-select {
+    width: 100%;
+    display: block;
+    margin-bottom: 5px;
+}
+
+::ng-deep .bs-datepicker-inline-container,
+::ng-deep .bs-datepicker,
+::ng-deep .bs-datepicker>div {
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+::ng-deep .bs-datepicker .bs-datepicker-head {
+    background-color: #0056b3 !important;
+}
+
+::ng-deep .bs-datepicker .bs-datepicker-head .current {
+    color: #fff !important;
+}
+
+::ng-deep .bs-datepicker .bs-datepicker-body .bs-datepicker-table td,
+::ng-deep .bs-datepicker .bs-datepicker-body .bs-datepicker-table th {
+    border: none !important;
+}
+
+/* Estilizar o fundo do dia selecionado no calendário */
+::ng-deep .theme-blue .bs-datepicker-body table td span.selected,
+::ng-deep .theme-blue .bs-datepicker-body table td.selected span {
+    background-color: lightskyblue !important;
+    color: #fff !important;
+}
+
+/* Estilos da Tabela */
+.table {
+    margin-top: 0;
+}
+
+.table thead {
+    background-color: #0056b3;
+    color: white;
+}
+
+.table td {
+    vertical-align: middle;
+    height: auto;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Estilos dos Status */
+.status-scheduled {
+    background-color: lightyellow;
+}
+
+.status-confirmed {
+    background-color: lightgreen;
+    color: #fff;
+}
+
+.status-canceled {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.status-completed {
+    background-color: #2196f3;
+    color: #fff;
+}
+
+.action-column .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.action-column i {
+    font-size: 1.2rem;
+}
+
+/* Estilização do popover */
+.popover-status-options {
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.status-options {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.status-options button {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.status-options button:last-child {
+    margin-bottom: 0;
+}
+
+.status-options button:hover {
+    opacity: 0.8;
+}
+
+
+@media (max-width: 1098px) {
+
+    .col-left,
+    .col-right {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .col-left {
+        margin: 0 0 8px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .custom-select {
+        width: 100%;
+    }
+
+    .table-container {
+        margin: 5px 0 0 0;
+    }
+
+    .custom-datepicker {
+        width: 280px;
+        margin: 0;
+    }
+
+    .group-column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 0 auto;
+    }
+
+}

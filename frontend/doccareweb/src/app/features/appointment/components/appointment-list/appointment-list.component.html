@@ -1,1 +1,112 @@
-<p>appointment-list works!</p>
+<!-- Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-pulse" [fullScreen]="true">
+  <p style="color: white; font-size: 20px;">Carregando...</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="row">
+    <!-- Coluna Esquerda  -->
+    <div class="col-left d-flex flex-column text-center">
+
+      <div class="group-column">
+
+        <div class="align-left">
+          <a class="btn btn-new btn-outline-primary" (click)="addAppointment()">
+            <i class="fas fa-plus"></i> Cadastrar
+          </a>
+        </div>
+
+        <!-- Calendário  -->
+        <bs-datepicker-inline #datepicker [(bsValue)]="currentDate" (bsValueChange)="onDateChange($event)"
+          [bsConfig]="{ containerClass: 'theme-blue', showWeekNumbers: false, dateInputFormat: 'DD/MM/YYYY' }"
+          class="custom-datepicker">
+        </bs-datepicker-inline>
+
+        <!-- Médicos  -->
+        <h4 class="text-start">Médico</h4>
+        <select class="form-control custom-select" [(ngModel)]="selectedDoctor" (change)="onDoctorChange($event)">
+          <option *ngFor="let doctor of doctors" [value]="doctor.id">{{ doctor.name }}</option>
+        </select>
+
+      </div>
+    </div>
+
+    <!-- Coluna Direita  -->
+    <div class="col-right">
+      <div class="title text-center">Agendamentos</div>
+
+      <!-- Alerta  -->
+      <div *ngIf="appointments.length === 0 && !loadingData" class="alert alert-warning text-center">
+        Não há consultas agendadas para o médico na data selecionada.
+      </div>
+
+      <!-- Tabela  -->
+      <div class="table-container">
+        <table class="table table-bordered table-striped" *ngIf="appointments.length > 0">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th class="text-center">Hora</th>
+              <th class="d-none d-md-table-cell">Telefone</th>
+              <th class="d-none d-md-table-cell">Celular</th>
+              <th>Status</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let appointment of appointments">
+              <td>{{ appointment.patient.name }}</td>
+              <td class="text-center">{{ appointment.appointmentTime}}</td>
+              <td class="d-none d-md-table-cell">{{ appointment.patient.phone | phoneMask}}</td>
+              <td class="d-none d-md-table-cell">{{ appointment.patient.cellPhone | phoneMask }}</td>
+              <td [ngClass]="getStatusClass(appointment.status)">
+                {{ getStatusText(appointment.status) }}
+              </td>
+
+              <!-- Botões de ação -->
+              <td class="action-column text-center">
+                <div class="button-group">
+                  <button class="btn btn-action btn-warning" (click)="editAppointment(appointment)">
+                    <i class="fas fa-pen"></i>
+                  </button>
+
+                  <!-- Botão que abre o popover -->
+                  <button class="btn btn-action btn-primary" [popover]="statusOptions"
+                    [popoverContext]="{ appointment: appointment }" popoverTitle="Atualizar Status" triggers="click"
+                    placement="bottom" container="body" [outsideClick]="true"> <i class="fas fa-sync-alt"></i> </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Template do Popover com Opções de Status -->
+<ng-template #statusOptions let-appointment="appointment">
+  <div class="popover-status-options">
+    <div class="status-options">
+      <!-- Exibir as opções baseadas no status -->
+      <div *ngIf="appointment?.status === appointmentStatus.Scheduled">
+        <button class="status-confirmed"
+          (click)="updateAppointmentStatus(appointment, appointmentStatus.Confirmed, popover)">Confirmar</button>
+        <button class="status-canceled"
+          (click)="updateAppointmentStatus(appointment, appointmentStatus.Canceled, popover)">Cancelar</button>
+        <button class="status-completed"
+          (click)="updateAppointmentStatus(appointment, appointmentStatus.Completed, popover)">Concluir</button>
+      </div>
+      <div *ngIf="appointment?.status === appointmentStatus.Confirmed">
+        <button class="status-canceled"
+          (click)="updateAppointmentStatus(appointment, appointmentStatus.Canceled, popover)">Cancelar</button>
+        <button class="status-completed"
+          (click)="updateAppointmentStatus(appointment, appointmentStatus.Completed, popover)">Concluir</button>
+      </div>
+      <div
+        *ngIf="appointment?.status === appointmentStatus.Canceled || appointment?.status === appointmentStatus.Completed">
+        <span>Status não pode ser alterado</span>
+      </div>
+    </div>
+  </div>
+</ng-template>
