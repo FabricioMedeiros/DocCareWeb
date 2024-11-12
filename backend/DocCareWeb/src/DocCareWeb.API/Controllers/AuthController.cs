@@ -29,8 +29,6 @@ namespace DocCareWeb.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegisterDto userRegisterDto)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             var user = new ApplicationUser
             {
                 UserName = userRegisterDto.Email,
@@ -59,8 +57,6 @@ namespace DocCareWeb.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, false, true);
 
             if (result.Succeeded)
