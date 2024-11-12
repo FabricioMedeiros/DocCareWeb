@@ -11,9 +11,6 @@ namespace DocCareWeb.Application.Validators
                 .NotEmpty().WithMessage("O nome é obrigatório.")
                 .Length(2, 60).WithMessage("O nome deve ter entre 2 e 60 caracteres.");
 
-            RuleFor(d => d.SpecialtyId)
-                .NotEmpty().WithMessage("A especialidade é obrigatória.");
-
             RuleFor(d => d.Crm)
                 .MaximumLength(20).WithMessage("O CRM deve ter no máximo 20 caracteres.");
 
@@ -33,6 +30,9 @@ namespace DocCareWeb.Application.Validators
         public DoctorCreateValidator()
         {
             Include(new DoctorValidator());
+
+            RuleFor(d => d.SpecialtyId)
+               .NotEmpty().WithMessage("A especialidade é obrigatória.");
         }
     }
 
@@ -44,6 +44,9 @@ namespace DocCareWeb.Application.Validators
 
             RuleFor(d => d.Id)
                 .NotEmpty().WithMessage("O ID é obrigatório.");
+
+            RuleFor(d => d.SpecialtyId)
+               .NotEmpty().WithMessage("A especialidade é obrigatória.");
         }
     }
 }
