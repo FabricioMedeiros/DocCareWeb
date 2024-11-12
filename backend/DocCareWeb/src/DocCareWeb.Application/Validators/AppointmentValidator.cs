@@ -8,18 +8,36 @@ namespace DocCareWeb.Application.Validators
 {
     public class AppointmentValidator : AbstractValidator<AppointmentBaseDto>
     {
+        public AppointmentValidator()
+        {
+            RuleFor(a => a.AppointmentTime)
+                .NotEmpty().WithMessage("A hora da consulta é obrigatória.");
+
+            RuleFor(a => a.Cost)
+                .GreaterThanOrEqualTo(0).WithMessage("O valor da consulta deve ser maior ou igual a zero.");
+        }
+    }
+
+    public class AppointmentCreateValidator : AbstractValidator<AppointmentCreateDto>
+    {
         private readonly IDoctorService _doctorService;
         private readonly IPatientService _patientService;
         private readonly IHealthPlanService _healthPlanService;
 
-        public AppointmentValidator(
+        public AppointmentCreateValidator(
             IDoctorService doctorService,
             IPatientService patientService,
             IHealthPlanService healthPlanService)
         {
+            Include(new AppointmentValidator());
+
             _doctorService = doctorService;
             _patientService = patientService;
             _healthPlanService = healthPlanService;
+
+            RuleFor(a => a.AppointmentDate)
+                .Must(date => DateTime.TryParse(date, out var parsedDate) && parsedDate >= DateTime.Today)
+                .WithMessage("A data da consulta deve ser igual ou superior à data atual.");
 
             RuleFor(a => a.DoctorId)
                 .NotEmpty().WithMessage("O ID do médico é obrigatório.")
@@ -35,27 +53,6 @@ namespace DocCareWeb.Application.Validators
                 .NotEmpty().WithMessage("O ID do plano de saúde é obrigatório.")
                 .MustAsync(async (id, cancellation) => (await _healthPlanService.GetByIdAsync(id)) != null)
                 .WithMessage("O plano de saúde especificado não existe.");
-
-            RuleFor(a => a.AppointmentTime)
-                .NotEmpty().WithMessage("A hora da consulta é obrigatória.");
-
-            RuleFor(a => a.Cost)
-                .GreaterThanOrEqualTo(0).WithMessage("O valor da consulta deve ser maior ou igual a zero.");
-        }
-    }
-
-    public class AppointmentCreateValidator : AbstractValidator<AppointmentCreateDto>
-    {
-        public AppointmentCreateValidator(
-            IDoctorService doctorService,
-            IPatientService patientService,
-            IHealthPlanService healthPlanService)
-        {
-            Include(new AppointmentValidator(doctorService, patientService, healthPlanService));
-
-            RuleFor(a => a.AppointmentDate)
-                .Must(date => DateTime.TryParse(date, out var parsedDate) && parsedDate >= DateTime.Today)
-                .WithMessage("A data da consulta deve ser igual ou superior à data atual.");
         }
     }
 
@@ -77,18 +74,15 @@ namespace DocCareWeb.Application.Validators
             _patientService = patientService;
             _healthPlanService = healthPlanService;
 
-            Include(new AppointmentValidator(doctorService, patientService, healthPlanService));
+            Include(new AppointmentValidator());
 
             RuleFor(a => a.Id)
                 .NotEmpty().WithMessage("O ID é obrigatório.");
 
             RuleFor(a => a.AppointmentDate)
                 .MustAsync(async (dto, date, cancellation) => await ValidateUpdateDateAsync(dto.Id, date, cancellation))
-                .WithMessage("A data da consulta não atende aos critérios definidos.");
-
-            RuleFor(a => a)
-                .MustAsync(async (dto, cancellation) => await CanUpdateAsync(dto.Id, cancellation))
-                .WithMessage("Não é permitido alterar o agendamento com o status atual.");
+                .When(a => !string.IsNullOrEmpty(a.AppointmentDate)) 
+                .WithMessage("A data da consulta não pode ser retroativa.");
         }
 
         private async Task<bool> ValidateUpdateDateAsync(int appointmentId, string date, CancellationToken cancellation)
@@ -98,16 +92,12 @@ namespace DocCareWeb.Application.Validators
 
             var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
 
-            return appointment?.Status == AppointmentStatus.Scheduled || parsedDate >= DateTime.Today;
-        }
+            if (appointment?.Status == AppointmentStatus.Scheduled && parsedDate < DateTime.Today)
+            {
+                return false; 
+            }
 
-        private async Task<bool> CanUpdateAsync(int appointmentId, CancellationToken cancellation)
-        {
-            var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
-
-            return appointment?.Status != AppointmentStatus.Confirmed &&
-                   appointment?.Status != AppointmentStatus.Completed &&
-                   appointment?.Status != AppointmentStatus.Canceled;
+            return true;
         }
     }
 }
