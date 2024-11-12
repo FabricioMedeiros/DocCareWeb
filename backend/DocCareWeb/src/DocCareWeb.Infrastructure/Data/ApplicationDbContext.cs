@@ -52,13 +52,13 @@ namespace DocCareWeb.Infrastructure.Data
                 entity.Property(p => p.CreatedBy).IsRequired();
                 entity.Property(a => a.Notes).HasMaxLength(500);
 
-                entity.HasOne(a => a.Doctor)
-                      .WithMany(d => d.Appointments)
+                entity.HasOne(a => a.Doctor )
+                      .WithMany()
                       .HasForeignKey(a => a.DoctorId)
                       .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(a => a.Patient)
-                      .WithMany(p => p.Appointments)
+                      .WithMany()
                       .HasForeignKey(a => a.PatientId)
                       .OnDelete(DeleteBehavior.Restrict);
 
@@ -75,13 +75,8 @@ namespace DocCareWeb.Infrastructure.Data
                 entity.Property(d => d.Crm).IsRequired().HasMaxLength(20);
                 entity.Property(d => d.CellPhone).IsRequired().HasMaxLength(11);
                 entity.Property(d => d.Email).IsRequired().HasMaxLength(60);
-                entity.HasMany(d => d.Appointments)
-                      .WithOne(a => a.Doctor)
-                      .HasForeignKey(a => a.DoctorId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
                 entity.HasOne(d => d.Specialty)
-                      .WithMany(s => s.Doctors)
+                      .WithMany()
                       .HasForeignKey(d => d.SpecialtyId)
                       .OnDelete(DeleteBehavior.Restrict);
             });
@@ -108,10 +103,6 @@ namespace DocCareWeb.Infrastructure.Data
                       .WithMany(hp => hp.Patients)
                       .HasForeignKey(p => p.HealthPlanId)
                       .OnDelete(DeleteBehavior.Restrict);
-                entity.HasMany(p => p.Appointments)
-                      .WithOne(a => a.Patient)
-                      .HasForeignKey(a => a.PatientId)
-                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<HealthPlan>(entity =>
@@ -129,10 +120,6 @@ namespace DocCareWeb.Infrastructure.Data
             {
                 entity.HasKey(s => s.Id);
                 entity.Property(s => s.Description).IsRequired().HasMaxLength(50);
-                entity.HasMany(s => s.Doctors)
-                      .WithOne(d => d.Specialty)
-                      .HasForeignKey(d => d.SpecialtyId)
-                      .OnDelete(DeleteBehavior.Restrict);
             });            
         }
     }

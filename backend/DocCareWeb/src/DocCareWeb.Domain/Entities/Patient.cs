@@ -19,7 +19,6 @@ namespace DocCareWeb.Domain.Entities
         public HealthPlan? HealthPlan { get; set; }
         public int AddressId { get; set; }
         public Address? Address { get; set; }
-        public ICollection<Appointment>? Appointments { get; set; }
         public DateTime CreatedAt { get; set; }
         public required string CreatedBy { get; set; }
         public DateTime? LastUpdatedAt { get; set; }

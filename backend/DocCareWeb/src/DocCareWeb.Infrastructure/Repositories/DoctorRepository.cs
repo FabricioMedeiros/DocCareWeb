@@ -13,8 +13,7 @@ namespace DocCareWeb.Infrastructure.Repositories
         public override async Task<IEnumerable<Doctor?>> GetAllAsync(Expression<Func<Doctor, bool>>? filter = null)
         {
             IQueryable<Doctor> query = _context.Set<Doctor>()
-                                               .Include(d => d.Specialty)
-                                               .Include(d => d.Appointments);
+                                               .Include(d => d.Specialty);
 
             if (filter != null)
             {
@@ -28,7 +27,6 @@ namespace DocCareWeb.Infrastructure.Repositories
         {
             return await _context.Set<Doctor>()
                                  .Include(d => d.Specialty)
-                                 .Include(d => d.Appointments)
                                  .FirstOrDefaultAsync(d => d.Id == id);
         }
     }
