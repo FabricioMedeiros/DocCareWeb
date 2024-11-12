@@ -9,6 +9,10 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { PopoverModule } from 'ngx-bootstrap/popover';
 
 import { AccountModule } from './features/account/account.module';
 import { FooterComponent } from './features/navigation/components/footer/footer.component';
@@ -25,13 +29,11 @@ import { SharedModule } from './shared/shared.module';
 
 import { NavigationService } from './core/services/navigation.service';
 import { ErrorInterceptor } from './core/interceptors/error.handler.service';
-import { PatientModule } from './features/patient/patient.module';
 
 
 export const httpInterceptorProviders = [
   { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 ];
-
 
 @NgModule({
   declarations: [
@@ -51,12 +53,15 @@ export const httpInterceptorProviders = [
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot({ toastClass: 'ngx-toastr custom-toast' }),
+    ToastrModule.forRoot({ toastClass: 'ngx-toastr custom-toast', preventDuplicates: true }),
     NgxSpinnerModule.forRoot(),
     ModalModule.forRoot(),
+    BsDatepickerModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    TooltipModule.forRoot(),
+    PopoverModule.forRoot(),
     AccountModule,
-    SharedModule,
-    PatientModule
+    SharedModule
   ],
   providers: [LocalStorageUtils, BsModalService, httpInterceptorProviders, 
     NavigationService
