@@ -43,7 +43,7 @@ namespace DocCareWeb.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PatientCreateDto patientDto)
         {         
-            var userId = User.FindFirstValue("userId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var patient = _mapper.Map<Patient>(patientDto);
             patient.CreatedBy = userId!;
@@ -62,7 +62,7 @@ namespace DocCareWeb.API.Controllers
                 return CustomResponse();
             }
             
-            var userId = User.FindFirstValue("userId");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var patient = await _patientService.GetByIdAsync(id, true);
             if (patient == null) return NotFound();
@@ -73,7 +73,7 @@ namespace DocCareWeb.API.Controllers
 
             await _patientService.UpdateAsync(patient);
 
-            return Ok();
+            return CustomResponse();
         }
 
         [HttpDelete("{id:int}")]
@@ -85,7 +85,7 @@ namespace DocCareWeb.API.Controllers
 
             await _patientService.DeleteAsync(id);
 
-            return Ok();
+            return CustomResponse();
         }
     }
 }

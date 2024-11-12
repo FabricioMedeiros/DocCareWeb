@@ -50,8 +50,6 @@ namespace DocCareWeb.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DoctorCreateDto doctorDto)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             var validationResult = _createValidator.Validate(doctorDto);
 
             if (!validationResult.IsValid)
@@ -78,8 +76,6 @@ namespace DocCareWeb.API.Controllers
                 NotifyError("O ID informado não é o mesmo que foi passado na query.");
                 return CustomResponse();
             }
-
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             var validationResult = _updateValidator.Validate(doctorDto);
 
@@ -112,7 +108,7 @@ namespace DocCareWeb.API.Controllers
 
             await _doctorService.DeleteAsync(id);
 
-            return Ok();
+            return CustomResponse();
         }
     }
 }

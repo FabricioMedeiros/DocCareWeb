@@ -36,8 +36,6 @@ namespace DocCareWeb.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] HealthPlanCreateDto healthPlanDto)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             var createdHealhPlan = await _healthPlanService.AddAsync(healthPlanDto);
             return CustomResponse(createdHealhPlan);
         }
@@ -51,11 +49,9 @@ namespace DocCareWeb.API.Controllers
                 return CustomResponse();
             }
 
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             await _healthPlanService.UpdateAsync(healthPlanDto);
 
-            return Ok();
+            return CustomResponse();
         }
 
         [HttpDelete("{id:int}")]

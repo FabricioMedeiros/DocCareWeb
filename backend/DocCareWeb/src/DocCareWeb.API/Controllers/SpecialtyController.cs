@@ -36,8 +36,6 @@ namespace DocCareWeb.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] SpecialtyCreateDto specialtyDto)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             var createdSpecialty = await _specialtyService.AddAsync(specialtyDto);
             return CustomResponse(createdSpecialty);
         }
@@ -51,11 +49,9 @@ namespace DocCareWeb.API.Controllers
                 return CustomResponse();
             }
 
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
-
             await _specialtyService.UpdateAsync(specialtyDto);
 
-            return Ok();
+            return CustomResponse();
         }
 
         [HttpDelete("{id:int}")]

@@ -90,7 +90,7 @@ namespace DocCareWeb.API.Controllers
 
             if (!result) return CustomResponse();
 
-            return Ok();
+            return CustomResponse();
         }
 
         [HttpDelete("{id:int}")]
@@ -102,7 +102,7 @@ namespace DocCareWeb.API.Controllers
 
             await _appointmentService.DeleteAsync(id);
 
-            return Ok();
+            return CustomResponse();
         }
     }
 }
