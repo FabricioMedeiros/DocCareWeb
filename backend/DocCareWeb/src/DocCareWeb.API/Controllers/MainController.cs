@@ -1,4 +1,5 @@
 ﻿using DocCareWeb.Application.Notifications;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -14,28 +15,30 @@ namespace DocCareWeb.API.Controllers
             _notificator = notificator;
         }
 
+        protected bool IsValid()
+        {
+            return !_notificator.HasNotification();
+        }
+
         protected ActionResult CustomResponse(object? result = null)
         {
-            if (_notificator.HasNotification())
+            if (IsValid())
             {
-                return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
+                return Ok(new
                 {
-                    { "Messages", _notificator.GetNotifications().Select(n => n.Message).ToArray() }
-                }));
+                    success = true,
+                    data = result
+                });
             }
 
-            return Ok(result);
+            return BadRequest(new
+            {
+                success = false,
+                errors = _notificator.GetNotifications().Select(n => n.Message)
+            });
         }
 
-        protected ActionResult CustomResponse(ModelStateDictionary modelState)
-        {
-            if (!modelState.IsValid)
-                NotifyModelStateErrors(modelState);
-
-            return CustomResponse();
-        }
-
-        protected void NotifyModelStateErrors(ModelStateDictionary modelState)
+        protected void CustomResponse(ModelStateDictionary modelState)
         {
             var errors = modelState.Values.SelectMany(e => e.Errors);
             foreach (var error in errors)
@@ -43,6 +46,18 @@ namespace DocCareWeb.API.Controllers
                 var errorMsg = error.Exception == null ? error.ErrorMessage : error.Exception.Message;
                 NotifyError(errorMsg);
             }
+
+            CustomResponse();
+        }
+
+        protected ActionResult CustomResponse(ValidationResult validationResult)
+        {
+            foreach (var erro in validationResult.Errors)
+            {
+                NotifyError(erro.ErrorMessage);
+            }
+
+            return CustomResponse();
         }
 
         protected void NotifyError(string message)
