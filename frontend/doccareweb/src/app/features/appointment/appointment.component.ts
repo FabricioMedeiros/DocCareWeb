@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
   selector: 'app-appointment',
@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./appointment.component.css']
 })
 export class AppointmentComponent {
+ 
 
 }
