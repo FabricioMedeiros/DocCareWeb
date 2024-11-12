@@ -43,10 +43,11 @@ namespace DocCareWeb.Application.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("userId", user.Id),
-                new Claim("userName", user.Name)                
+              new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+              new Claim("userId", user.Id),
+              new Claim("username", user.Name),
+              new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+              new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             var userClaims = await _userManager.GetClaimsAsync(user);
