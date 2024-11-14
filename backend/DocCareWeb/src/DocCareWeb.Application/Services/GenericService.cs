@@ -33,6 +33,7 @@ namespace DocCareWeb.Application.Services
             _updateValidator = updateValidator;
             _mapper = mapper;
         }
+
         public virtual async Task<PagedResult<TListDto>> GetAllAsync(Dictionary<string, string>? filters, int? pageNumber = null, int? pageSize = null)
         {
             var parameter = Expression.Parameter(typeof(TEntity), "entity");
@@ -42,13 +43,16 @@ namespace DocCareWeb.Application.Services
             {
                 foreach (var filter in filters)
                 {
-                    // Verifica se a propriedade existe na entidade
-                    var property = typeof(TEntity).GetProperty(filter.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
-                    if (property == null) continue;
-                 
-                    var comparison = CreateNestedComparisonExpression(parameter, property.Name, filter.Value); // Usar property.Name
-                    combinedExpression = Expression.AndAlso(combinedExpression, comparison);
+                    try
+                    {
+                        var comparison = CreateNestedComparisonExpression(parameter, filter.Key, filter.Value);
+                        combinedExpression = Expression.AndAlso(combinedExpression, comparison);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Erro ao criar expressão para filtro '{filter.Key}': {ex.Message}");
+                        continue;
+                    }
                 }
             }
 
@@ -58,6 +62,7 @@ namespace DocCareWeb.Application.Services
             var entitiesQuery = entities.AsQueryable();
 
             int totalRecords = entitiesQuery.Count();
+
             if (pageNumber.HasValue && pageSize.HasValue)
             {
                 entitiesQuery = entitiesQuery.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
@@ -113,54 +118,80 @@ namespace DocCareWeb.Application.Services
         {
             await _repository.DeleteAsync(id);
         }
+
         private static Expression CreateComparisonExpression(Expression left, Type propertyType, string filterValue)
         {
-            Expression comparison = propertyType switch
+            Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+            var filterValues = filterValue.Split(',').Select(v => v.Trim()).ToList();
+
+            if (filterValues.Count > 1)
             {
-                Type _ when typeof(string).IsAssignableFrom(propertyType) =>
-                    Expression.Call(left, "Contains", null, Expression.Constant(filterValue, typeof(string))),
+                var parsedValues = filterValues.Select(value => ConvertToType(underlyingType, value)).ToList();
 
-                Type _ when typeof(bool).IsAssignableFrom(propertyType) =>
-                    Expression.Equal(left, Expression.Constant(bool.Parse(filterValue))),
+                var listType = typeof(List<>).MakeGenericType(underlyingType);
+                var typedList = Activator.CreateInstance(listType);
 
-                Type _ when typeof(DateTime).IsAssignableFrom(propertyType) =>
-                    Expression.Equal(left, Expression.Constant(DateTime.Parse(filterValue))),
+                var addMethod = listType.GetMethod("Add");
+                foreach (var val in parsedValues)
+                {
+                    addMethod!.Invoke(typedList, new[] { val });
+                }
 
-                Type _ when propertyType.IsPrimitive || propertyType.IsValueType =>
-                    Expression.Equal(left, Expression.Constant(Convert.ChangeType(filterValue, propertyType))),
+                var valuesExpression = Expression.Constant(typedList);
+                var containsMethod = listType.GetMethod("Contains");
 
-                _ when propertyType.IsEnum || Nullable.GetUnderlyingType(propertyType)?.IsEnum == true =>
-                    Expression.Equal(left, Expression.Constant(ParseEnum(propertyType, filterValue))),
+                return Expression.Call(valuesExpression, containsMethod!, left);
+            }
 
-                _ when propertyType == typeof(Guid) || Nullable.GetUnderlyingType(propertyType) == typeof(Guid) =>
-                    Expression.Equal(left, Expression.Constant(Guid.Parse(filterValue))),
+            object parsedValue = ConvertToType(underlyingType, filterValue);
+            Expression right = Expression.Constant(parsedValue, underlyingType);
 
-                _ => throw new NotSupportedException($"Unsupported property type: {propertyType}")
+            if (underlyingType == typeof(string))
+            {
+                var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                return Expression.Call(left, containsMethod!, right);
+            }
+
+            return Expression.Equal(left, Expression.Convert(right, left.Type));
+        }
+
+        private static object ConvertToType(Type targetType, string value)
+        {
+            Type underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+            return underlyingType switch
+            {
+                { } when underlyingType == typeof(bool) => bool.Parse(value),
+                { } when underlyingType == typeof(DateTime) => DateTime.Parse(value),
+                { } when underlyingType == typeof(Guid) => Guid.Parse(value),
+                { } when underlyingType.IsEnum => Enum.Parse(underlyingType, value),
+                _ => Convert.ChangeType(value, underlyingType!)
             };
-
-            return comparison;
         }
 
         private static Expression CreateNestedComparisonExpression(ParameterExpression parameter, string propertyPath, string filterValue)
         {
-            // Divida o caminho da propriedade (ex: "doctor[id]") em partes
-            var properties = propertyPath.Split(new[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+            var properties = propertyPath.Split('.', StringSplitOptions.RemoveEmptyEntries);
 
             Expression expression = parameter;
 
-            // Navega pelas propriedades
             foreach (var prop in properties)
             {
-                expression = Expression.PropertyOrField(expression, prop);
+                var propertyInfo = expression.Type.GetProperty(prop, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                if (propertyInfo == null)
+                {
+                    throw new InvalidOperationException($"Property '{prop}' not found on type '{expression.Type.Name}'");
+                }
+
+                expression = Expression.Property(expression, propertyInfo);
             }
 
             var propertyType = ((MemberExpression)expression).Type;
+
             var comparison = CreateComparisonExpression(expression, propertyType, filterValue);
 
             return comparison;
-        }
-
-
+        }       
 
         private static object ParseEnum(Type enumType, string value)
         {

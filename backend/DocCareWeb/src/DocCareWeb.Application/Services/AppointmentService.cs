@@ -96,7 +96,6 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
 
     private bool CanChangeStatus(AppointmentStatus currentStatus, AppointmentStatus newStatus)
     {
-        // Permitir transição para Confirmado, Cancelado ou Concluído
         if (currentStatus == AppointmentStatus.Scheduled)
         {
             return newStatus == AppointmentStatus.Confirmed ||
@@ -104,13 +103,11 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
                    newStatus == AppointmentStatus.Completed;
         }
 
-        // Permitir transição de Confirmado para Concluído ou Cancelado
         if (currentStatus == AppointmentStatus.Confirmed)
         {
             return newStatus == AppointmentStatus.Completed || newStatus == AppointmentStatus.Canceled;
         }
 
-        // Não permite transições após Concluído ou Cancelado
         if (currentStatus == AppointmentStatus.Completed || currentStatus == AppointmentStatus.Canceled)
         {
             return false;
@@ -118,7 +115,6 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
 
         return false;
     }
-
 
     public bool SetAppointmentStatus(Appointment appointment, AppointmentStatus newStatus)
     {

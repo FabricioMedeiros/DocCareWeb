@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using DocCareWeb.API.Filters;
 using DocCareWeb.Application.Dtos.Appointment;
 using DocCareWeb.Application.Interfaces;
 using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,11 +24,13 @@ namespace DocCareWeb.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] Dictionary<string, string>? filters, [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
+        public async Task<IActionResult> GetAll([ModelBinder(BinderType = typeof(FilterBinder))] Dictionary<string, string>? filters,
+                                                [FromQuery] int? pageNumber = null,
+                                                [FromQuery] int? pageSize = null)
         {
             var appointments = await _appointmentService.GetAllAsync(filters, pageNumber, pageSize);
             return CustomResponse(appointments);
-        }
+        }      
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
@@ -39,7 +41,6 @@ namespace DocCareWeb.API.Controllers
 
             return CustomResponse(appointment);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AppointmentCreateDto appointmentDto)
@@ -70,7 +71,7 @@ namespace DocCareWeb.API.Controllers
 
             if (!result) CustomResponse();
 
-            return Ok();
+            return CustomResponse();
         }
 
         [HttpPut("{id:int}/status")]
