@@ -11,23 +11,28 @@ export class AppointmentService extends BaseService {
 
     constructor(private http: HttpClient) { super(); }
 
-    getAllAppointments(filters?: { [key: string]: string }): Observable<any> {
+    getAllAppointments(page?: number, pageSize?: number, filters?: { [key: string]: string }): Observable<any> {
         const headers = this.GetAuthHeaderJson();
-
+    
         let url = `${this.UrlServiceV1}appointment`;
-
+    
+        if (page !== undefined && pageSize !== undefined) {
+            url += `?pageNumber=${page}&pageSize=${pageSize}`;
+        }
+    
         if (filters) {
             const filterParams = Object.keys(filters)
                 .map(key => `${key}=${filters[key]}`)
                 .join('&');
-
-            url += `?${filterParams}`;
+    
+            url += `${(page !== undefined && pageSize !== undefined) ? '&' : '?'}${filterParams}`;
         }
-
+    
         return this.http
             .get<any>(url, headers)
             .pipe(catchError(super.serviceError));
     }
+    
 
     getAppointmentById(id: number): Observable<Appointment> {
         const headers = this.GetAuthHeaderJson();
@@ -101,5 +106,29 @@ export class AppointmentService extends BaseService {
 
     clearLocalCurrentDoctorList(): void {
         localStorage.removeItem('currentDoctorAppointmentList');
+    }
+
+    saveLocalCurrentPageList(page: number): void {
+        localStorage.setItem('currentPageAppointmentList', page.toString());
+    }
+
+    getLocalCurrentPageList(): string {
+        return localStorage.getItem('currentPageAppointmentList') || '';
+    }
+
+    clearLocalCurrentPageList(): void {
+        localStorage.removeItem('currentPageAppointmentList');
+    }
+
+    saveLocalSearchTerm(searchTerm: string): void {
+        localStorage.setItem('searchTermAppointmentList', searchTerm);
+    }
+
+    getLocalSearchTerm(): string {
+        return localStorage.getItem('searchTermAppointmentList') || '';
+    }
+
+    clearLocalSearchTerm(): void {
+        localStorage.removeItem('searchTermAppointmentList');
     }
 }

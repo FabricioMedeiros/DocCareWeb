@@ -3,7 +3,14 @@
   <p style="color: white; font-size: 20px;">Carregando...</p>
 </ngx-spinner>
 
-<div class="container">
+<div class="container-content">
+  <div class="row">
+    <!-- Título -->
+    <div class="title">
+      <h1>Agendamentos</h1>
+    </div>
+  </div>
+
   <div class="row">
     <!-- Coluna Esquerda  -->
     <div class="col-left d-flex flex-column text-center">
@@ -33,11 +40,19 @@
 
     <!-- Coluna Direita  -->
     <div class="col-right">
-      <div class="title text-center">Agendamentos</div>
+      <!-- Barra de Pesquisa -->
+      <app-search-bar [placeholder]="placeholderSearch" [pageSizeOptions]="[10, 30, 50]"
+        [initialSearchTerm]="initialTermSearch" (search)="onSearch($event)" (clear)="clearSearch()">
+      </app-search-bar>
 
       <!-- Alerta  -->
       <div *ngIf="appointments.length === 0 && !loadingData" class="alert alert-warning text-center">
-        Não há consultas agendadas para o médico na data selecionada.
+        <ng-container *ngIf="!isFilteringByDateDoctor">
+          Não foram encontradas consultas Agendadas ou Confirmadas para este paciente.
+        </ng-container>
+        <ng-container *ngIf="isFilteringByDateDoctor">
+          Não há consultas agendadas para o médico na data selecionada.
+        </ng-container>
       </div>
 
       <!-- Tabela  -->
@@ -46,6 +61,7 @@
           <thead>
             <tr>
               <th>Paciente</th>
+              <th *ngIf="!isFilteringByDateDoctor" class="text-center">Data</th>
               <th class="text-center">Hora</th>
               <th class="d-none d-md-table-cell">Telefone</th>
               <th class="d-none d-md-table-cell">Celular</th>
@@ -56,6 +72,8 @@
           <tbody>
             <tr *ngFor="let appointment of appointments">
               <td>{{ appointment.patient.name }}</td>
+              <td class="text-center" *ngIf="!isFilteringByDateDoctor">{{ appointment.appointmentDate |
+                date:'dd/MM/yyyy' }}</td>
               <td class="text-center">{{ appointment.appointmentTime}}</td>
               <td class="d-none d-md-table-cell">{{ appointment.patient.phone | phoneMask}}</td>
               <td class="d-none d-md-table-cell">{{ appointment.patient.cellPhone | phoneMask }}</td>
@@ -79,6 +97,13 @@
             </tr>
           </tbody>
         </table>
+
+        <!-- Paginação -->
+        <div *ngIf="appointments.length > 0">
+          <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChanged)="onPageChanged($event)">
+          </app-pagination>
+        </div>
+
       </div>
     </div>
   </div>

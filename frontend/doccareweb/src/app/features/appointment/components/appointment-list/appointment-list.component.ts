@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Event, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 
@@ -31,6 +31,15 @@ export class AppointmentListComponent implements OnInit {
   currentDate!: Date;
   loadingData: boolean = true;
   isPopoverVisible = false;
+  isFilteringByDateDoctor: boolean = true;
+
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalPages: number = 1;
+  searchTerm: string = '';
+
+  @Input() placeholderSearch: string = 'Pesquise pelo nome do paciente';
+  @Input() initialTermSearch: string = '';
 
   constructor(
     private appointmentService: AppointmentService,
@@ -38,18 +47,18 @@ export class AppointmentListComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private spinner: NgxSpinnerService
-  ) 
-  {
+  ) {
     this.router.events.pipe(
-     filter((e: Event): e is NavigationEnd => e instanceof NavigationEnd),
-     map((e: NavigationEnd) => e) 
-   ).subscribe((event: NavigationEnd) => {
-     if (!event.url.includes('/appointment')) {
-       this.appointmentService.clearLocalCurrentDateList();
-       this.appointmentService.clearLocalCurrentDoctorList();
-     } 
-   });
- }
+      filter((e: Event): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e: NavigationEnd) => e)
+    ).subscribe((event: NavigationEnd) => {
+      if (!event.url.includes('/appointment')) {
+        this.appointmentService.clearLocalCurrentDateList();
+        this.appointmentService.clearLocalCurrentDoctorList();
+        this.appointmentService.clearLocalSearchTerm();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loadLocalData();
@@ -60,6 +69,8 @@ export class AppointmentListComponent implements OnInit {
   private loadLocalData(): void {
     const storedDate = this.appointmentService.getLocalCurrentDateList();
     const storedDoctor = this.appointmentService.getLocalCurrentDoctorList();
+    const storedPage = this.appointmentService.getLocalCurrentPageList();
+    const storedSearchTerm = this.appointmentService.getLocalSearchTerm();
 
     if (storedDate) {
       this.currentDate = new Date(storedDate);
@@ -69,22 +80,50 @@ export class AppointmentListComponent implements OnInit {
 
     if (storedDoctor) {
       this.selectedDoctor = +storedDoctor;
+    }    
+  
+    if (storedPage) {
+      this.currentPage = parseInt(storedPage, 10);
+    }
+  
+    if (storedSearchTerm) {
+      this.searchTerm = storedSearchTerm;
+      this.initialTermSearch = storedSearchTerm;
     }
   }
 
   loadAppointments(): void {
-    if (!this.currentDate || !this.selectedDoctor) return;
     this.spinner.show();
     this.loadingData = true;
     this.appointments = [];
 
     try {
-      const filters = {
-        appointmentDate: DateUtils.formatDateToYYYYMMDD(this.currentDate),
-        doctorId: this.selectedDoctor.toString()
-      };
+      const filters: any = {};
 
-      this.appointmentService.getAllAppointments(filters).subscribe({
+      const hasPatientFilter = this.searchTerm && this.searchTerm.trim() !== '';
+      const hasDoctorFilter = !!this.selectedDoctor;
+      const hasDateFilter = !!this.currentDate;
+
+      if (!hasPatientFilter && (!hasDoctorFilter || !hasDateFilter)) {
+        this.spinner.hide();
+        return;
+      }
+      
+      if (hasPatientFilter) {
+        this.isFilteringByDateDoctor = false;
+        filters['Patient[Name]'] = this.searchTerm.trim();
+
+        const statusArray = [AppointmentStatus.Scheduled, AppointmentStatus.Confirmed];
+        filters['Status'] = encodeURIComponent(statusArray.join(','));
+      }
+
+      if (!hasPatientFilter && (hasDoctorFilter && hasDateFilter)) {
+        this.isFilteringByDateDoctor = true;
+        filters['AppointmentDate'] = DateUtils.formatDateToYYYYMMDD(this.currentDate);
+        filters['Doctor[Id]'] = this.selectedDoctor.toString();
+      }
+
+      this.appointmentService.getAllAppointments(this.currentPage, this.pageSize, filters).subscribe({
         next: response => {
           this.processloadAppointmentsSuccess(response);
         },
@@ -116,11 +155,18 @@ export class AppointmentListComponent implements OnInit {
     }));
 
     this.appointments.sort((a, b) => {
+      const dateA = new Date(a.appointmentDate).getTime();
+      const dateB = new Date(b.appointmentDate).getTime();
+      
+      if (dateA !== dateB) {
+        return dateA - dateB; 
+      }
+
       const timeA = DateUtils.convertTimeToMilliseconds(a.appointmentTime);
       const timeB = DateUtils.convertTimeToMilliseconds(b.appointmentTime);
-      return timeA - timeB; 
+      return timeA - timeB;
     });
-;  }
+  }
 
   private processloadAppointmentsFail(error: any) {
     if (error?.status === 401) {
@@ -167,6 +213,7 @@ export class AppointmentListComponent implements OnInit {
   }
 
   addAppointment() {
+    this.appointmentService.clearLocalSearchTerm();
     this.router.navigate(['/appointment/new']);
   }
 
@@ -202,7 +249,7 @@ export class AppointmentListComponent implements OnInit {
       default:
         return '';
     }
-  }  
+  }
 
   updateAppointmentStatus(appointment: AppointmentList, status: AppointmentStatus, popover: any) {
     this.appointmentService.updateAppointmentStatus(appointment.id, status).subscribe({
@@ -227,5 +274,26 @@ export class AppointmentListComponent implements OnInit {
   processFail(fail: any) {
     this.errorMessage = fail.error.errors;
     this.toastr.error('Ocorreu um erro.', 'Atenção');
+  }
+
+  onSearch(event: { pageSize: number, term: string }): void {
+    this.pageSize = event.pageSize;
+    this.searchTerm = event.term;
+    this.currentPage = 1;
+    this.appointmentService.saveLocalSearchTerm(this.searchTerm);
+
+    this.loadAppointments();
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.currentPage = 1;
+    this.loadAppointments();
+  }
+
+  onPageChanged(page: number) {
+    this.currentPage = page;
+    this.appointmentService.saveLocalCurrentPageList(this.currentPage);
+    this.loadAppointments();
   }
 }

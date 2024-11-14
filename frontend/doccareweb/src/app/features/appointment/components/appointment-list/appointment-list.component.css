@@ -1,37 +1,54 @@
-
-.container {
-    margin: 5px auto;
-    padding: 10px 20px;
+.container-content {
+    background-color: #ffffff;
+    margin: 5px 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: calc(100vh - 140px);
 }
 
 .row {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box; 
+    margin: 0; 
 }
 
 .title {
-    font-size: 25px;
-    font-weight: bold;
-    text-align: center;
+    margin: 0;
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    height: 48px;
-    margin-bottom: 8px;
+    justify-content: center; 
+    height: 50px;
+    background-color: #0056b3;
+}
+
+.title h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0;
+    line-height: 50px; 
 }
 
 .col-left {
-    flex: 0 0 auto;
+    margin: 10px 0 0 10px;
+    flex: 0 0 250px;
     width: auto;
     align-items: flex-start;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     padding: 10px;
     min-height: 80%;
+    box-sizing: border-box;
 }
 
 .col-right {
     flex: 1;
     padding: 0;
+    box-sizing: border-box; 
+    overflow-x: auto; 
 }
 
 .text-center h2 {
@@ -49,10 +66,6 @@
 .btn-new {
     margin: 0;
     max-width: 120px;
-}
-
-.table-container {
-    margin: 0 15px;
 }
 
 .alert {
@@ -74,11 +87,11 @@ h4 {
 
 .custom-select {
     margin-top: 0;
+    width: 100%;
 }
 
 /* Estilos do Calendário */
-.custom-datepicker,
-.custom-select {
+.custom-datepicker {
     width: 100%;
     display: block;
     margin-bottom: 5px;
@@ -107,7 +120,7 @@ h4 {
     border: none !important;
 }
 
-/* Estilizar o fundo do dia selecionado no calendário */
+/* Fundo do dia selecionado no calendário */
 ::ng-deep .theme-blue .bs-datepicker-body table td span.selected,
 ::ng-deep .theme-blue .bs-datepicker-body table td.selected span {
     background-color: lightskyblue !important;
@@ -115,8 +128,16 @@ h4 {
 }
 
 /* Estilos da Tabela */
+.table-container {
+    margin: 0 15px;
+    overflow-x: auto; 
+}
+
 .table {
-    margin-top: 0;
+    margin-top: 5px;
+    width: 100%;
+    min-width: 600px; 
+    border-collapse: collapse;
 }
 
 .table thead {
@@ -129,6 +150,7 @@ h4 {
     height: auto;
 }
 
+/* Grupo de botões */
 .button-group {
     display: flex;
     justify-content: center;
@@ -197,8 +219,11 @@ h4 {
     opacity: 0.8;
 }
 
-
+/* Media Queries para Responsividade */
 @media (max-width: 1098px) {
+    .container-content {
+        margin: 10px;
+    }
 
     .col-left,
     .col-right {
@@ -207,18 +232,15 @@ h4 {
     }
 
     .col-left {
-        margin: 0 0 8px 0;
+        margin: 0;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .custom-select {
-        width: 100%;
-    }
-
     .table-container {
-        margin: 5px 0 0 0;
+        margin: 10px 0;
+        overflow-x: auto;
     }
 
     .custom-datepicker {
@@ -233,4 +255,27 @@ h4 {
         margin: 0 auto;
     }
 
+    .table {
+        min-width: 600px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container-content {
+        padding: 10px;
+    }
+
+    .col-left{    
+        padding: 10px;
+    }  
+    
+    .table{
+        margin: 0 15px 10px 15px;
+    }
+
+    .table td,
+    .table th {
+        padding: 8px;
+        font-size: 14px;
+    }
 }
