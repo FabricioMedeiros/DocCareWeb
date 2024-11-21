@@ -10,7 +10,7 @@ export class HealthPlanService extends BaseService {
 
     constructor(private http: HttpClient) { super(); }
 
-    getAllHealthPlans(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
+    getAll(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
         const headers = this.GetAuthHeaderJson();
         
         let url = `${this.UrlServiceV1}healthplan`;
@@ -61,7 +61,7 @@ export class HealthPlanService extends BaseService {
             );
     }
     
-    deleteHealthPlan(id: number): Observable<any> {
+    delete(id: number): Observable<any> {
         const headers = this.GetAuthHeaderJson();
 
         return this.http
