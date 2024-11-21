@@ -24,7 +24,7 @@
         <h3>{{ isEditMode ? 'Editar Especialidade' : 'Cadastro de Especialidade' }}</h3>
       </div>
 
-      <form [formGroup]="specialtyForm" (ngSubmit)="saveSpecialty()">
+      <form [formGroup]="form" (ngSubmit)="saveSpecialty()">
         <div class="card-body">
           <!-- Campo de Descrição -->
           <div class="form-group">
@@ -41,8 +41,8 @@
 
         <div class="card-footer">
           <!-- Botões de Ação -->
-          <button type="submit" class="btn btn-primary" [disabled]="!specialtyForm.valid">Salvar</button>
-          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Salvar</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel('/specialty/list')">Cancelar</button>
         </div>
       </form>
     </div>

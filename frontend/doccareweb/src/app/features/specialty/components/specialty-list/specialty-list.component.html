@@ -7,7 +7,10 @@
 
     <!-- Opções de Pesquisa -->
     <div class='options-filter-list-container'>
-        <h1>Especialidades</h1>
+        <!-- Título -->
+        <div class="title">
+            <h1>Especialidades</h1>
+        </div>
 
         <!-- Erros -->
         <div *ngIf="errorMessage && errorMessage.length > 0" class="alert alert-danger">
@@ -18,20 +21,16 @@
         </div>
 
         <!-- Barra de Pesquisa -->
-        <app-search-bar 
-            [placeholder]="placeholderSearch" 
-            [pageSizeOptions]="[10, 30, 50]"
-            [initialSearchTerm]="initialTermSearch" 
-            (search)="onSearch($event)" 
-            (clear)="clearSearch()">
+        <app-search-bar [placeholder]="placeholderSearch" [pageSizeOptions]="[10, 30, 50]"
+            [initialSearchTerm]="initialTermSearch" (search)="onSearch($event)" (clear)="clearSearch()">
         </app-search-bar>
 
-        <div *ngIf="specialties.length === 0 && searchTerm !== '' && !errorMessage && !loadingData"
+        <div *ngIf="items.length === 0 && searchTerm !== '' && !errorMessage && !loadingData"
             class="no-results-message">
             Nenhum resultado encontrado.
         </div>
 
-        <a class="btn btn-new btn-outline-primary" (click)="addSpecialty()">
+        <a class="btn btn-new btn-outline-primary" (click)="addItem('specialty/new')">
             <i class="fas fa-plus"></i> Cadastrar
         </a>
     </div>
@@ -46,11 +45,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let specialty of specialties">
+                <tr *ngFor="let specialty of items">
                     <td class="align-left">{{ specialty.description }}</td>
                     <td class="action-column">
                         <div class="button-group">
-                            <button class="btn btn-action btn-warning" (click)="editSpecialty(specialty)">
+                            <button class="btn btn-action btn-warning" (click)="editItem(specialty, 'specialty/edit')">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn btn-action btn-danger" (click)="openDeleteModal(template, specialty)">
@@ -63,13 +62,13 @@
         </table>
 
         <!-- Paginação -->
-        <div *ngIf="specialties.length > 0">
+        <div *ngIf="items.length > 0">
             <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChanged)="onPageChanged($event)">
             </app-pagination>
         </div>
 
-         <!-- Modal -->
-         <ng-template #template>
+        <!-- Modal -->
+        <ng-template #template>
             <div class="modal-header">
                 <h4 class="modal-title text-danger">Atenção</h4>
                 <button type="button" class="close" aria-label="Close" (click)="bsModalRef.hide()">
@@ -77,9 +76,9 @@
                 </button>
             </div>
             <div class="modal-body text-center custom-modal-delete">
-                <p>Confirma a exclusão desta especialidade: {{selectedSpecialty.description}}?</p>
+                <p>Confirma a exclusão desta especialidade: {{selectedItem.description}}?</p>
                 <div class="button-container">
-                    <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedSpecialty)">Sim</button>
+                    <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedItem)">Sim</button>
                     <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Não</button>
                 </div>
             </div>
