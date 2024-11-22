@@ -24,7 +24,7 @@
         <h3>{{ isEditMode ? 'Editar Médico' : 'Cadastro de Médico' }}</h3>
       </div>
 
-      <form [formGroup]="doctorForm" (ngSubmit)="saveDoctor()">
+      <form [formGroup]="form" (ngSubmit)="saveDoctor()">
         <div class="card-body">
           <!-- Nome -->
           <div class="form-group">
@@ -94,8 +94,8 @@
 
         <div class="card-footer">
           <!-- Botões de Ação -->
-          <button type="submit" class="btn btn-primary" [disabled]="!doctorForm.valid">Salvar</button>
-          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Salvar</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel('doctor/list')">Cancelar</button>
         </div>
       </form>
     </div>
