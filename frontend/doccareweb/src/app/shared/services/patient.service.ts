@@ -10,7 +10,7 @@ import { SearchZipCode } from "src/app/features/patient/models/address";
 export class PatientService extends BaseService {
     constructor(private http: HttpClient) { super(); }
 
-    getAllPatients(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
+    getAll(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
         const headers = this.GetAuthHeaderJson();
         
         let url = `${this.UrlServiceV1}patient`;
@@ -58,7 +58,7 @@ export class PatientService extends BaseService {
             );
     }
     
-    deletePatient(id: number): Observable<any> {
+    delete(id: number): Observable<any> {
         const headers = this.GetAuthHeaderJson();
 
         return this.http

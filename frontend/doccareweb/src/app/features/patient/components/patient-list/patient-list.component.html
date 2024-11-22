@@ -7,7 +7,10 @@
   
     <!-- Opções de Pesquisa -->
     <div class='options-filter-list-container'>
-      <h1>Pacientes</h1>
+      <!-- Título -->
+      <div class="title">
+        <h1>Pacientes</h1>
+      </div>
   
       <!-- Erros -->
       <div *ngIf="errorMessage && errorMessage.length > 0" class="alert alert-danger">
@@ -22,11 +25,11 @@
         [initialSearchTerm]="initialTermSearch" (search)="onSearch($event)" (clear)="clearSearch()">
       </app-search-bar>
   
-      <div *ngIf="patients.length === 0 && searchTerm !== '' && !errorMessage && !loadingData" class="no-results-message">
+      <div *ngIf="items.length === 0 && searchTerm !== '' && !errorMessage && !loadingData" class="no-results-message">
         Nenhum resultado encontrado.
       </div>
   
-      <a class="btn btn-new btn-outline-primary" (click)="addpatient()">
+      <a class="btn btn-new btn-outline-primary" (click)="addItem('patient/new')">
         <i class="fas fa-plus"></i> Cadastrar
       </a>
     </div>
@@ -46,7 +49,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let patient of patients">
+          <tr *ngFor="let patient of items">
             <td>{{ patient.name }}</td>
             <td>{{ patient.cpf | cpfMask }}</td>           
             <td>{{ patient.phone | phoneMask }}</td>
@@ -55,7 +58,7 @@
             <td>{{ patient.healthPlan.description }}</td>
             <td class="action-column">
               <div class="button-group">
-                <button class="btn btn-action btn-warning" (click)="editpatient(patient)">
+                <button class="btn btn-action btn-warning" (click)="editItem(patient, 'patient/edit')">
                   <i class="fas fa-edit"></i>
                 </button>
                 <button class="btn btn-action btn-danger" (click)="openDeleteModal(template, patient)">
@@ -68,7 +71,7 @@
       </table>
   
       <!-- Paginação -->
-      <div *ngIf="patients.length > 0">
+      <div *ngIf="items.length > 0">
         <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChanged)="onPageChanged($event)">
         </app-pagination>
       </div>
@@ -82,9 +85,9 @@
           </button>
         </div>
         <div class="modal-body text-center custom-modal-delete">
-          <p>Confirma a exclusão deste médico: {{selectedPatient.name}}?</p>
+          <p>Confirma a exclusão deste médico: {{selectedItem.name}}?</p>
           <div class="button-container">
-            <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedPatient)">Sim</button>
+            <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedItem)">Sim</button>
             <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Não</button>
           </div>
         </div>

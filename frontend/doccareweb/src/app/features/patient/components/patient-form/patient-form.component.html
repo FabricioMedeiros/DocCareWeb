@@ -36,15 +36,15 @@
       </ul>
 
       <!-- Formulário -->
-      <form [formGroup]="patientForm" (ngSubmit)="savePatient()">
+      <form [formGroup]="form" (ngSubmit)="savePatient()">
         <div class="tab-content">
           <!-- Aba Dados Pessoais -->
           <div class="tab-pane" [ngClass]="{'active show': currentTab === 'personal-data'}" id="personal-data"
             role="tabpanel">
             <div class="card-body">
               <!-- Nome e Sexo  -->
-              <div class="form-group row">
-                <div class="col-md-8">
+              <div class="form-row">
+                <div class="form-group col-md-8">
                   <label for="name">Nome</label>
                   <input type="text" id="name" class="form-control" formControlName="name"
                     [ngClass]="{'is-invalid': displayMessage['name']}" />
@@ -53,14 +53,17 @@
                   </span>
                 </div>
 
-                <div class="col-md-4" style="padding-left: 0;">
+                <div class="form-group col-md-4">
                   <label for="gender">Sexo</label>
                   <select id="gender" class="form-control" formControlName="gender">
                       <option [ngValue]="Gender.Male">Masculino</option>
                       <option [ngValue]="Gender.Female">Feminino</option>
                       <option [ngValue]="Gender.Other">Outro</option>
                   </select>
-                </div>
+                  <span class="text-danger" *ngIf="displayMessage['gender']">
+                    <p [innerHTML]="displayMessage['gender']"></p>
+                  </span>
+                </div>           
               </div>
 
               <!-- Data de nascimento, CPF, RG -->
@@ -147,7 +150,7 @@
                       <input type="text" id="zipCode" class="form-control" formControlName="zipCode" mask="00000-000"
                         [ngClass]="{'is-invalid': displayMessage['zipCode']}" />
                       <button type="button" class="btn btn-primary btn-sm btn-search-zipcode ml-2"
-                        (click)="searchZipCode(patientForm.get('address.zipCode')?.value)">
+                        (click)="searchZipCode(form.get('address.zipCode')?.value)">
                         <i class="fa fa-search"></i>
                       </button>
                     </div>
@@ -218,7 +221,7 @@
             <div class="card-body">
               <div class="notes-tab">
               <div class="form-group">
-                <label for="notes">Observações do paciente</label>
+                <label for="notes">Observações</label>
                 <textarea id="notes" class="form-control" formControlName="notes" rows="4"></textarea>
               </div>
             </div>
@@ -229,7 +232,7 @@
         <!-- Botões -->
         <div class="card-footer">
           <button type="submit" class="btn btn-primary">Salvar</button>
-          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel('patient/list')">Cancelar</button>
         </div>
       </form>
     </div>
