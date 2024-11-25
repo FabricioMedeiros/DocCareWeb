@@ -185,7 +185,7 @@ export class AppointmentListComponent implements OnInit {
   }
 
   loadDoctors(): void {
-    this.doctorService.getAllDoctors().subscribe({
+    this.doctorService.getAll().subscribe({
       next: (response) => {
         if (response && response.data) {
           this.doctors = response.data.items;

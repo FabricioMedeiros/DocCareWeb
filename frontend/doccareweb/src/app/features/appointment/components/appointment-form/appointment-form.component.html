@@ -34,7 +34,7 @@
             </ul>
 
             <!-- Formulário -->
-            <form [formGroup]="appointmentForm" (ngSubmit)="saveAppointment()">
+            <form [formGroup]="form" (ngSubmit)="saveAppointment()">
                 <div class="tab-content">
                     <!-- Aba Dados da Consulta -->
                     <div class="tab-pane" [ngClass]="{'active show': currentTab === 'appointment-data'}"
@@ -169,8 +169,8 @@
 
                 <div class="card-footer">
                     <!-- Botões de Ação -->
-                    <button type="submit" class="btn btn-primary" [disabled]="!appointmentForm.valid">Salvar</button>
-                    <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Salvar</button>
+                    <button type="button" class="btn btn-secondary" (click)="cancel('appointment/list')">Cancelar</button>
                 </div>
             </form>
         </div>
