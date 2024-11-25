@@ -9,10 +9,12 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { defineLocale } from 'ngx-bootstrap/chronos'; 
+import { ptBrLocale } from 'ngx-bootstrap/locale';
 
 import { AccountModule } from './features/account/account.module';
 import { FooterComponent } from './features/navigation/components/footer/footer.component';
@@ -30,10 +32,11 @@ import { SharedModule } from './shared/shared.module';
 import { NavigationService } from './core/services/navigation.service';
 import { ErrorInterceptor } from './core/interceptors/error.handler.service';
 
-
 export const httpInterceptorProviders = [
   { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 ];
+
+defineLocale('pt-br', ptBrLocale);
 
 @NgModule({
   declarations: [
@@ -69,4 +72,8 @@ export const httpInterceptorProviders = [
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(private localeService: BsLocaleService) { 
+    this.localeService.use('pt-br');
+  }
+}
