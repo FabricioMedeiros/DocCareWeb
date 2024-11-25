@@ -11,7 +11,7 @@ export class SpecialtyService extends BaseService {
 
     constructor(private http: HttpClient) { super(); }
 
-    getAllSpecialties(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
+    getAll(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
         const headers = this.GetAuthHeaderJson();
         
         let url = `${this.UrlServiceV1}specialty`;
@@ -62,7 +62,7 @@ export class SpecialtyService extends BaseService {
             );
     }
     
-    deleteSpecialty(id: number): Observable<any> {
+    delete(id: number): Observable<any> {
         const headers = this.GetAuthHeaderJson();
 
         return this.http
