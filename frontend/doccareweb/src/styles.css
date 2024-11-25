@@ -10,6 +10,10 @@ html {
   overflow-x: hidden;
 }
 
+body {
+  background: #f2f2f2;
+}
+
 /* Estilos para o alert */
 .alert {
   max-width: 100%;

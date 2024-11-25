@@ -1,17 +1,26 @@
 /* Estilos para páginas de listagem de dados */
 .content-list-container {
+    background-color: #ffffff;
     margin: 10px 50px;
-    padding: 0 15px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     min-height: calc(100vh - 140px);
 }
 
-.options-filter-list-container h1 {
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    background-color: #0056b3;
+}
+
+.title h1 {
     font-size: 24px;
-    text-align: center;
     font-weight: bold;
+    color: #ffffff;
+    margin: 0;
 }
 
 .options-filter-list-container {
@@ -23,27 +32,35 @@
     margin: 5px auto;
 }
 
+.no-results-message{
+    margin: 0 15px 11px 15px;
+}
+
 .actions-container {
     margin: 15px 0;
     display: flex;
     gap: 10px;
 }
 
+.btn-new{
+    margin-left: 15px;
+}
+
 /* Tabela */
 .table-container {
     display: block;
-    width: 100%; 
     overflow-x: auto;
-    margin-top: 2px;
+    margin: 2px 15px 0 15px;
+    box-sizing: border-box;
 }
 
 .table {
-    width: 100%;
     table-layout: auto;
     border-collapse: collapse;
     margin-top: 5px;
     border: 1px solid #ddd;
-    min-width: 1000px; 
+    min-width: 100%; 
+    max-width: 100%; 
 }
 
 .table thead {
@@ -51,13 +68,16 @@
     color: white;
 }
 
-.table, th, td {
+.table,
+th,
+td {
     border: 1px solid #ddd;
 }
 
-th, td {
+th,
+td {
     padding: 10px;
-    vertical-align: middle; 
+    vertical-align: middle;
     white-space: nowrap;
     text-align: left;
 }
@@ -77,13 +97,13 @@ th, td {
 .action-column {
     text-align: center;
     width: 10%;
-    vertical-align: middle; 
+    vertical-align: middle;
 }
 
 .button-group {
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     gap: 5px;
 }
 
@@ -115,10 +135,10 @@ th, td {
     }
 
     .table {
-        min-width: 100%; 
+        min-width: 100%;
     }
 
     .width-75-percent {
-        width: auto; 
+        width: auto;
     }
 }

@@ -101,7 +101,6 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
   processFail(fail: any): void {
     this.errors = fail.error.errors;
-    console.log('erros retornados: ' + this.errors);
     this.toastr.error('Ocorreu um erro.', 'Atenção');
   }
 

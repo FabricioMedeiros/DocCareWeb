@@ -27,18 +27,29 @@
         <!-- Senha -->
         <div class="form-group mt-3">
           <label for="password">Senha</label>
-          <div class="input-group">
-            <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control input-line"
-              placeholder="Digite sua senha" formControlName="password"
-              [ngClass]="{'is-invalid': displayMessage['password']}" />
-            <button type="button" class="btn-toggle-password" (click)="togglePasswordVisibility()">
+          <div class="input-container">
+            <input 
+              [type]="showPassword ? 'text' : 'password'" 
+              id="password" 
+              class="form-control input-line"
+              placeholder="Digite sua senha" 
+              formControlName="password"
+              [ngClass]="{'is-invalid': displayMessage['password']}" 
+            />
+            <button 
+              type="button" 
+              class="btn-toggle-password" 
+              (click)="togglePasswordVisibility()"
+            >
               <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
             </button>
           </div>
-          <span class="text-danger" *ngIf="displayMessage['password']">
-            <p [innerHTML]="displayMessage['password']"></p>
-          </span>
-        </div>
+          <div class="error-message-container">
+            <span class="text-danger" *ngIf="displayMessage['password']">
+              <p [innerHTML]="displayMessage['password']"></p>
+            </span>
+          </div>
+        </div>    
   
         <button type="submit" class="btn btn-primary w-100 mt-4" [disabled]="!loginForm.valid">Entrar</button>
       </form>
