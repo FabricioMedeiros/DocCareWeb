@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: 'account', loadChildren: () => import('./features/account/account.module').then(m => m.AccountModule) },
   { path: 'appointment', loadChildren: () => import('./features/appointment/appointment.module').then(m => m.AppointmentModule) },  
+  { path: 'dashboard', loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule) },
   { path: 'doctor', loadChildren: () => import('./features/doctor/doctor.module').then(m => m.DoctorModule) },
   { path: 'healthplan', loadChildren: () => import('./features/healthplan/healthplan.module').then(m => m.HealthplanModule) },
   { path: 'patient', loadChildren: () => import('./features/patient/patient.module').then(m => m.PatientModule) },
