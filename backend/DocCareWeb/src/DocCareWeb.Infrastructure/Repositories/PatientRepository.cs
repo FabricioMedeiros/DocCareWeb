@@ -31,5 +31,10 @@ namespace DocCareWeb.Infrastructure.Repositories
                                 .Include(p => p.HealthPlan)
                                 .FirstOrDefaultAsync(p => p.Id == id);
         }
+
+        public async Task<int> GetTotalPatientsAsync()
+        {
+            return await _context.Set<Patient>().CountAsync();
+        }
     }
 }
