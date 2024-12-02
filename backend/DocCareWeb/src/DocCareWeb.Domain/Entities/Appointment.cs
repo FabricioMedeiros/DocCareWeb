@@ -55,9 +55,9 @@ namespace DocCareWeb.Domain.Entities
 
         public void Complete()
         {
-            if (Status != AppointmentStatus.Confirmed)
+            if (Status != AppointmentStatus.Scheduled && Status != AppointmentStatus.Confirmed)
             {
-                throw new InvalidOperationException("A consulta deve estar no status 'Confirmed' para ser completada.");
+                throw new InvalidOperationException("A consulta deve estar no status 'Scheduled' ou 'Confirmed' para ser completada.");
             }
 
             Status = AppointmentStatus.Completed;

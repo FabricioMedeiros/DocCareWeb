@@ -92,9 +92,9 @@ namespace DocCareWeb.Application.Validators
 
             var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
 
-            if (appointment?.Status == AppointmentStatus.Scheduled && parsedDate < DateTime.Today)
+            if ((appointment?.Status == AppointmentStatus.Scheduled) && ((parsedDate != appointment?.AppointmentDate) && (parsedDate < DateTime.Today)))
             {
-                return false; 
+                return false;
             }
 
             return true;
