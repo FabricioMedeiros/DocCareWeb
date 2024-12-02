@@ -1,1 +1,91 @@
-<p>dashboard-data works!</p>
+<!-- Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-pulse" [fullScreen]="true">
+  <p style="color: white; font-size: 20px;">Carregando...</p>
+</ngx-spinner>
+
+<div class="dashboard-container">
+  <h1>Dashboard</h1>
+
+  <!-- Erros -->
+  <div *ngIf="errorMessage && errorMessage.length > 0" class="alert alert-danger">
+    <h3>Atenção!</h3>
+    <ul>
+      <li>{{ errorMessage }}</li>
+    </ul>
+  </div>
+
+  <!--Filtros -->
+  <div class="filter-container">
+    <label for="doctorSelect">Médico:</label>
+    <select id="doctorSelect" (change)="onDoctorChange($event)">
+      <option value="">Todos</option>
+      <option *ngFor="let doctor of doctors" [value]="doctor.id">{{ doctor.name }}</option>
+    </select>
+
+    <label for="monthSelect">Financeiro do Mês:</label>
+    <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="onMonthChange($event)">
+      <option value="">Todos</option>
+      <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+    </select>
+  </div>
+
+  <!-- Cards principais -->
+  <div class="cards-container">
+    <!-- Total de Pacientes -->
+    <div class="card total-patients">
+      <img class="icon" src="assets/icons/patients.png" alt="Pacientes" />
+      <div>
+        <h2>Total de Pacientes</h2>
+        <div class="info">{{ dashboardData.totalPatients }}</div>
+      </div>
+    </div>
+
+    <!-- Status dos Agendamentos -->
+    <div class="card appointments-status">
+      <img class="icon" src="assets/icons/appointments.png" alt="Agendamentos" />
+      <div>
+        <h2>Agendamentos do dia</h2>
+        <ul>
+          <li *ngFor="let status of getAppointmentsStatusKeys()">
+            {{ getStatusText(status) }}: {{ dashboardData.appointmentsByStatus[status] }}
+          </li>
+        </ul>
+        <p *ngIf="!getAppointmentsStatusKeys().length">Sem agendamentos no dia.</p>
+      </div>
+    </div>
+
+    <!-- Resumo Financeiro Diário -->
+    <div class="card daily-financial-summary">
+      <img class="icon" src="assets/icons/daily-finance.png" alt="Financeiro Diário" />
+      <div>
+        <h2>Financeiro do dia</h2>
+        <ul>
+          <li>Total Pendente: {{ dashboardData.dailyFinancialSummary.totalPending | currency: 'BRL':'symbol':'1.2-2'
+            }}</li>
+          <li>Total Recebido: {{ dashboardData.dailyFinancialSummary.totalReceived | currency:
+            'BRL':'symbol':'1.2-2' }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Resumo Financeiro Mensal/Anual -->
+    <div class="card monthly-financial-summary">
+      <img class="icon" src="assets/icons/monthly-finance.png" alt="{{ financialSummaryLabel }}" />
+      <div>
+        <h2>{{ financialSummaryLabel }}</h2>
+        <ul>
+          <li>{{ pendingLabel }}: {{ dashboardData.monthlyFinancialSummary.totalPending | currencyFormat }}</li>
+          <li>{{ receivedLabel }}: {{ dashboardData.monthlyFinancialSummary.totalReceived | currencyFormat }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico financeiro -->
+  <div class="financial-chart-container">
+    <div class="financial-chart">
+      <h2>Resumo Financeiro</h2>
+      <canvas id="financialChart"></canvas>
+    </div>
+  </div>
+</div>
