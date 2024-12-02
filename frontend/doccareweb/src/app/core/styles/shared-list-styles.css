@@ -50,7 +50,7 @@
 .table-container {
     display: block;
     overflow-x: auto;
-    margin: 2px 15px 0 15px;
+    margin: 0 15px 0 15px;
     box-sizing: border-box;
 }
 
