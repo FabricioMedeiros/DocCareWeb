@@ -80,12 +80,12 @@ export class AppointmentListComponent implements OnInit {
 
     if (storedDoctor) {
       this.selectedDoctor = +storedDoctor;
-    }    
-  
+    }
+
     if (storedPage) {
       this.currentPage = parseInt(storedPage, 10);
     }
-  
+
     if (storedSearchTerm) {
       this.searchTerm = storedSearchTerm;
       this.initialTermSearch = storedSearchTerm;
@@ -108,7 +108,7 @@ export class AppointmentListComponent implements OnInit {
         this.spinner.hide();
         return;
       }
-      
+
       if (hasPatientFilter) {
         this.isFilteringByDateDoctor = false;
         filters['Patient[Name]'] = this.searchTerm.trim();
@@ -157,9 +157,9 @@ export class AppointmentListComponent implements OnInit {
     this.appointments.sort((a, b) => {
       const dateA = new Date(a.appointmentDate).getTime();
       const dateB = new Date(b.appointmentDate).getTime();
-      
+
       if (dateA !== dateB) {
-        return dateA - dateB; 
+        return dateA - dateB;
       }
 
       const timeA = DateUtils.convertTimeToMilliseconds(a.appointmentTime);
@@ -251,25 +251,21 @@ export class AppointmentListComponent implements OnInit {
     }
   }
 
-  updateAppointmentStatus(appointment: AppointmentList, status: AppointmentStatus, popover: any) {
+  updateAppointmentStatus(appointment: AppointmentList, status: AppointmentStatus, popover: PopoverDirective) {
     this.appointmentService.updateAppointmentStatus(appointment.id, status).subscribe({
-      next: (statusSuccess) => this.processSuccess(statusSuccess, appointment, status),
+      next: (statusSuccess) => this.processSuccess(statusSuccess, appointment, status, popover),
       error: (error) => this.processFail(error)
     });
   }
 
-  processSuccess(success: any, appointment: AppointmentList, status: AppointmentStatus) {
+  processSuccess(success: any, appointment: AppointmentList, status: AppointmentStatus, popover: PopoverDirective) {
     appointment.status = status;
-    this.popover.hide();
-    this.errorMessage = '';
-    let toast = this.toastr.success('Status atualizado com sucesso!', 'Atenção!');
+      popover.hide();
 
-    if (toast) {
-      toast.onHidden.subscribe(() => {
-        this.router.navigate(['/appointment/list']);
-      });
-    }
+    this.errorMessage = '';
+    this.toastr.success('Status atualizado com sucesso!', 'Atenção!');
   }
+
 
   processFail(fail: any) {
     this.errorMessage = fail.error.errors;

@@ -32,7 +32,7 @@ import { AppointmentService } from '../../shared/services/appointment.service';
     BsDatepickerModule,
     BsDropdownModule,
     TooltipModule,
-    PopoverModule.forRoot(),
+    PopoverModule,
     CurrencyMaskModule
   ],
   providers:[AppointmentService]
