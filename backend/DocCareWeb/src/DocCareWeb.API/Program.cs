@@ -81,6 +81,7 @@ builder.Services.AddScoped<IHealthPlanService, HealthPlanService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 //Config. JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
