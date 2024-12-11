@@ -2,7 +2,7 @@
 
 ## 📜 **Descrição**
 
-**DocCareWeb** é uma aplicação completa para gerenciamento de consultas médicas.  
+**DocCareWeb** é uma aplicação para gerenciamento de consultas médicas.  
 Com ela, é possível cadastrar **especialidades**, **médicos**, **planos de saúde**, **pacientes** e realizar o **agendamento de consultas**. Além disso, a aplicação oferece uma **dashboard interativo** para monitoramento de informações de agendamentos e financeiro.
 
 ---
