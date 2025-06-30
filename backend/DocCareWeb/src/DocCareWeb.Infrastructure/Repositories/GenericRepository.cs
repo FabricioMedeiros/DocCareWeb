@@ -15,21 +15,39 @@ namespace DocCareWeb.Infrastructure.Repositories
             _context = context;
         }
 
-        public virtual async Task<IEnumerable<TEntity?>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null)
+        public virtual async Task<IEnumerable<TEntity?>> GetAllAsync(
+            Expression<Func<TEntity, bool>>? filter = null,
+            int? skip = null,
+            int? take = null,
+            params Expression<Func<TEntity, object>>[] includeProperties)
         {
-            IQueryable<TEntity> query = _context.Set<TEntity>();
+            IQueryable<TEntity> query = _context.Set<TEntity>().AsNoTracking();
 
             if (filter != null)
-            {
                 query = query.Where(filter);
-            }
+
+            foreach (var include in includeProperties ?? Array.Empty<Expression<Func<TEntity, object>>>())
+                query = query.Include(include);
+
+            if (skip.HasValue)
+                query = query.Skip(skip.Value);
+
+            if (take.HasValue)
+                query = query.Take(take.Value);
 
             return await query.ToListAsync();
         }
 
-        public virtual async Task<TEntity?> GetByIdAsync(int id)
+        public virtual async Task<TEntity?> GetByIdAsync(
+            int id,
+            params Expression<Func<TEntity, object>>[] includeProperties)
         {
-            return await _context.Set<TEntity>().FindAsync(id);
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+
+            foreach (var include in includeProperties ?? Array.Empty<Expression<Func<TEntity, object>>>())
+                query = query.Include(include);
+
+            return await query.FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<TEntity> AddAsync(TEntity entity)

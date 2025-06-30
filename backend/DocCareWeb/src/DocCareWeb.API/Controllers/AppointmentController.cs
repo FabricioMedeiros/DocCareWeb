@@ -6,6 +6,7 @@ using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace DocCareWeb.API.Controllers
 {
@@ -28,7 +29,15 @@ namespace DocCareWeb.API.Controllers
                                                 [FromQuery] int? pageNumber = null,
                                                 [FromQuery] int? pageSize = null)
         {
-            var appointments = await _appointmentService.GetAllAsync(filters, pageNumber, pageSize);
+            var appointments = await _appointmentService.GetAllAsync(filters, 
+                                                                     pageNumber,
+                                                                     pageSize,
+                                                                     includes: new Expression<Func<Appointment, object>>[]
+                                                                     {
+                                                                        x => x.Doctor!,
+                                                                        x => x.Patient!,
+                                                                        x => x.HealthPlan!
+                                                                     });
             return CustomResponse(appointments);
         }      
 
@@ -59,7 +68,6 @@ namespace DocCareWeb.API.Controllers
                 NotifyError("O ID informado não é o mesmo que foi passado na query.");
                 return CustomResponse();
             }
-
 
             var appointment = await _appointmentService.GetByIdAsync(id, true);
 

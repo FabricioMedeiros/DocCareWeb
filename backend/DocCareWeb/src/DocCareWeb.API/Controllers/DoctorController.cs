@@ -6,6 +6,7 @@ using DocCareWeb.Domain.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace DocCareWeb.API.Controllers
 {
@@ -33,14 +34,24 @@ namespace DocCareWeb.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] Dictionary<string, string>? filters, [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
         {
-            var doctors = await _doctorService.GetAllAsync(filters, pageNumber, pageSize);
+            var doctors = await _doctorService.GetAllAsync(filters,
+                                                           pageNumber,
+                                                           pageSize,
+                                                           includes: new Expression<Func<Doctor, object>>[]
+                                                                     {
+                                                                        x => x.Specialty!
+                                                                     });
             return CustomResponse(doctors);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var doctor = await _doctorService.GetByIdAsync(id);
+            var doctor = await _doctorService.GetByIdAsync(id,
+                                                           includes: new Expression<Func<Doctor, object>>[]
+                                                                     {
+                                                                        x => x.Specialty!
+                                                                     });
 
             if (doctor == null) return NotFound();
 
@@ -92,7 +103,7 @@ namespace DocCareWeb.API.Controllers
             var doctor = await _doctorService.GetByIdAsync(id, true);
             if (doctor == null) return NotFound();
 
-            _mapper.Map(doctorDto, doctor);        
+            _mapper.Map(doctorDto, doctor);
 
             await _doctorService.UpdateAsync(doctor);
 

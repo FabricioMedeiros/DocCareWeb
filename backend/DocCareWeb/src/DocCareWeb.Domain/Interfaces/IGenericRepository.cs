@@ -5,8 +5,16 @@ namespace DocCareWeb.Domain.Interfaces
 {
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        Task<IEnumerable<TEntity?>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null);
-        Task<TEntity?> GetByIdAsync(int id);
+        Task<IEnumerable<TEntity?>> GetAllAsync(
+            Expression<Func<TEntity, bool>>? filter = null,
+            int? skip = null,
+            int? take = null,
+            params Expression<Func<TEntity, object>>[] includeProperties);
+
+        Task<TEntity?> GetByIdAsync(
+            int id,
+            params Expression<Func<TEntity, object>>[] includeProperties);
+
         Task<TEntity> AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(int id);

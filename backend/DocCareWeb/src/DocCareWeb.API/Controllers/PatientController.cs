@@ -5,6 +5,7 @@ using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using System.Security.Claims;
 
 namespace DocCareWeb.API.Controllers
@@ -15,8 +16,8 @@ namespace DocCareWeb.API.Controllers
     {
         private readonly IPatientService _patientService;
         private readonly IMapper _mapper;
-        public PatientController(IPatientService patientService, 
-                                 IMapper mapper, 
+        public PatientController(IPatientService patientService,
+                                 IMapper mapper,
                                  INotificator notificator) : base(notificator)
         {
             _patientService = patientService;
@@ -26,14 +27,26 @@ namespace DocCareWeb.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] Dictionary<string, string>? filters, [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
         {
-            var patients = await _patientService.GetAllAsync(filters, pageNumber, pageSize);
+            var patients = await _patientService.GetAllAsync(filters,
+                                                             pageNumber,
+                                                             pageSize,
+                                                             includes: new Expression<Func<Patient, object>>[]
+                                                                     {
+                                                                        x => x.HealthPlan!,
+                                                                        x => x.Address!
+                                                                     });
             return CustomResponse(patients);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var patient = await _patientService.GetByIdAsync(id);
+            var patient = await _patientService.GetByIdAsync(id,
+                                                             includes: new Expression<Func<Patient, object>>[]
+                                                             {
+                                                               x => x.HealthPlan!,
+                                                               x => x.Address!
+                                                             });
 
             if (patient == null) return NotFound();
 
@@ -42,7 +55,7 @@ namespace DocCareWeb.API.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PatientCreateDto patientDto)
-        {         
+        {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var patient = _mapper.Map<Patient>(patientDto);
@@ -61,7 +74,7 @@ namespace DocCareWeb.API.Controllers
                 NotifyError("O ID informado não é o mesmo que foi passado na query.");
                 return CustomResponse();
             }
-            
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var patient = await _patientService.GetByIdAsync(id, true);
