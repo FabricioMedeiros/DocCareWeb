@@ -45,7 +45,8 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       },
       password: {
         required: 'Informe a senha',
-        rangeLength: 'A senha deve possuir entre 6 e 15 caracteres'
+        minlength: 'A senha deve ter pelo menos 6 caracteres.',
+        maxlength: 'A senha não pode exceder 15 caracteres.'
       }
     };
 
