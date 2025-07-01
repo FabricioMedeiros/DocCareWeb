@@ -15,19 +15,28 @@ namespace DocCareWeb.Infrastructure.Repositories
             _context = context;
         }
 
-        public virtual async Task<IEnumerable<TEntity?>> GetAllAsync(
-            Expression<Func<TEntity, bool>>? filter = null,
-            int? skip = null,
-            int? take = null,
-            params Expression<Func<TEntity, object>>[] includeProperties)
+        public virtual IQueryable<TEntity> Query(params Expression<Func<TEntity, object>>[] includeProperties)
         {
-            IQueryable<TEntity> query = _context.Set<TEntity>().AsNoTracking();
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return query;
+        }
+
+        public virtual async Task<IEnumerable<TEntity?>> GetAllAsync(
+           Expression<Func<TEntity, bool>>? filter = null,
+           int? skip = null,
+           int? take = null,
+           params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            IQueryable<TEntity> query = Query(includeProperties);
 
             if (filter != null)
                 query = query.Where(filter);
-
-            foreach (var include in includeProperties ?? Array.Empty<Expression<Func<TEntity, object>>>())
-                query = query.Include(include);
 
             if (skip.HasValue)
                 query = query.Skip(skip.Value);
