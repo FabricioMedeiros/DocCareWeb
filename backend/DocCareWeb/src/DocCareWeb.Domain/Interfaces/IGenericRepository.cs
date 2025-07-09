@@ -6,7 +6,7 @@ namespace DocCareWeb.Domain.Interfaces
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
         IQueryable<TEntity> Query(params Expression<Func<TEntity, object>>[] includeProperties);
-        Task<IEnumerable<TEntity?>> GetAllAsync(
+        Task<(IEnumerable<TEntity?> Items, int TotalRecords)> GetAllAsync(
             Expression<Func<TEntity, bool>>? filter = null,
             int? skip = null,
             int? take = null,

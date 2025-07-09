@@ -35,7 +35,7 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
             a.AppointmentTime == appointment.AppointmentTime && 
             a.Status != AppointmentStatus.Canceled);
 
-        if (existingAppointments.Any())
+        if (existingAppointments.Items.Any())
         {
             Notify("Já existe uma consulta agendada para este médico no mesmo dia e horário.");
             return null;
@@ -58,7 +58,7 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
             a.Id != appointment.Id 
             && a.Status != AppointmentStatus.Canceled);
 
-        if (existingAppointments.Any())
+        if (existingAppointments.Items.Any())
         {
             Notify("Já existe uma consulta agendada para este médico no mesmo dia e horário.");
             return false;

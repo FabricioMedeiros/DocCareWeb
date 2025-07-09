@@ -42,14 +42,14 @@ namespace DocCareWeb.Application.Services
             int size = pageSize ?? 10;
             int skip = (page - 1) * size;
 
-            var pagedItems = await _repository.GetAllAsync(filterExpression, skip, size, includes);
+            var (items, totalRecords) = await _repository.GetAllAsync(filterExpression, skip, size, includes);
 
             return new PagedResult<TListDto>
             {
                 Page = page,
                 PageSize = size,
-                TotalRecords = pagedItems.Count(),
-                Items = _mapper.Map<IEnumerable<TListDto>>(pagedItems)
+                TotalRecords = totalRecords,
+                Items = _mapper.Map<IEnumerable<TListDto>>(items)
             };
         }
 

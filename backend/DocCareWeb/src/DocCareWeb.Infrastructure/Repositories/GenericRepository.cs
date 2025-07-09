@@ -27,7 +27,7 @@ namespace DocCareWeb.Infrastructure.Repositories
             return query;
         }
 
-        public virtual async Task<IEnumerable<TEntity?>> GetAllAsync(
+        public virtual async Task<(IEnumerable<TEntity?> Items, int TotalRecords)> GetAllAsync(
            Expression<Func<TEntity, bool>>? filter = null,
            int? skip = null,
            int? take = null,
@@ -38,13 +38,17 @@ namespace DocCareWeb.Infrastructure.Repositories
             if (filter != null)
                 query = query.Where(filter);
 
+            int totalRecords = await query.CountAsync();
+
             if (skip.HasValue)
                 query = query.Skip(skip.Value);
 
             if (take.HasValue)
                 query = query.Take(take.Value);
 
-            return await query.ToListAsync();
+            var items = await query.ToListAsync();
+
+            return (items, totalRecords);
         }
 
         public virtual async Task<TEntity?> GetByIdAsync(
