@@ -25,21 +25,21 @@ namespace DocCareWeb.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([ModelBinder(BinderType = typeof(FilterBinder))] Dictionary<string, string>? filters,
-                                                [FromQuery] int? pageNumber = null,
-                                                [FromQuery] int? pageSize = null)
+        public async Task<IActionResult> GetAll(Dictionary<string, string>? filters,
+                                               [FromQuery] int? pageNumber = null,
+                                               [FromQuery] int? pageSize = null)
         {
-            var appointments = await _appointmentService.GetAllAsync(filters, 
+            var appointments = await _appointmentService.GetAllAsync(filters,
                                                                      pageNumber,
                                                                      pageSize,
                                                                      includes: new Expression<Func<Appointment, object>>[]
                                                                      {
-                                                                        x => x.Doctor!,
-                                                                        x => x.Patient!,
-                                                                        x => x.HealthPlan!
+                                                                       x => x.Doctor!,
+                                                                       x => x.Patient!,
+                                                                       x => x.HealthPlan!
                                                                      });
             return CustomResponse(appointments);
-        }      
+        }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
