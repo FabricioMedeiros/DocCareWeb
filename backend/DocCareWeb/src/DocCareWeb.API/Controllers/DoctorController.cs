@@ -3,7 +3,6 @@ using DocCareWeb.Application.Dtos.Doctor;
 using DocCareWeb.Application.Interfaces;
 using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -16,19 +15,14 @@ namespace DocCareWeb.API.Controllers
     {
         private readonly IDoctorService _doctorService;
         private readonly IMapper _mapper;
-        private readonly IValidator<DoctorCreateDto> _createValidator;
-        private readonly IValidator<DoctorUpdateDto> _updateValidator;
-
+    
         public DoctorController(IDoctorService doctorService,
                                 IMapper mapper,
-                                INotificator notificator,
-                                IValidator<DoctorCreateDto> createValidator,
-                                IValidator<DoctorUpdateDto> updateValidator) : base(notificator)
+                                INotificator notificator) : base(notificator)
         {
             _doctorService = doctorService;
             _mapper = mapper;
-            _createValidator = createValidator;
-            _updateValidator = updateValidator;
+      
         }
 
         [HttpGet]
@@ -61,22 +55,10 @@ namespace DocCareWeb.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DoctorCreateDto doctorDto)
         {
-            var validationResult = _createValidator.Validate(doctorDto);
+           var doctor = _mapper.Map<Doctor>(doctorDto);
 
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    NotifyError(error.ErrorMessage);
-                }
-
-                return CustomResponse();
-            }
-
-            var doctor = _mapper.Map<Doctor>(doctorDto);
-
-            var createdDoctor = await _doctorService.AddAsync(doctor);
-            return CustomResponse(createdDoctor);
+           var createdDoctor = await _doctorService.AddAsync(doctor);
+           return CustomResponse(createdDoctor);
         }
 
         [HttpPut("{id:int}")]
@@ -87,19 +69,7 @@ namespace DocCareWeb.API.Controllers
                 NotifyError("O ID informado não é o mesmo que foi passado na query.");
                 return CustomResponse();
             }
-
-            var validationResult = _updateValidator.Validate(doctorDto);
-
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    NotifyError(error.ErrorMessage);
-                }
-
-                return CustomResponse();
-            }
-
+                        
             var doctor = await _doctorService.GetByIdAsync(id, true);
             if (doctor == null) return NotFound();
 
