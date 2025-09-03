@@ -66,8 +66,8 @@
             <tr>
               <th>Paciente</th>
               <th *ngIf="!isFilteringByDateDoctor" class="text-center">Data</th>
-              <th class="text-center">Hora</th>
-              <th class="d-none d-md-table-cell">Telefone</th>
+              <th class="text-center">Hora Inicial</th>
+              <th class="text-center">Hora Final</th>
               <th class="d-none d-md-table-cell">Celular</th>
               <th>Status</th>
               <th class="text-center">Ações</th>
@@ -79,8 +79,8 @@
               <td class="text-center" *ngIf="!isFilteringByDateDoctor">
                 {{ appointment.appointmentDate | date: 'dd/MM/yyyy' }}
               </td>
-              <td class="text-center">{{ appointment.appointmentTime }}</td>
-              <td class="d-none d-md-table-cell">{{ appointment.patient.phone | phoneMask }}</td>
+              <td class="text-center">{{ appointment.startTime }}</td>
+              <td class="text-center">{{ appointment.endTime }}</td>
               <td class="d-none d-md-table-cell">{{ appointment.patient.cellPhone | phoneMask }}</td>
               <td [ngClass]="getStatusClass(appointment.status)">
                 {{ getStatusText(appointment.status) }}

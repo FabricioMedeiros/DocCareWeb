@@ -5,7 +5,8 @@ import { AppointmentStatus } from "./appointment-status";
 
 export interface AppointmentBase{
     appointmentDate: Date;
-    appointmentTime: string;
+    startTime: string;
+    endTime: string;
     status: AppointmentStatus;
     cost: number;
     notes: string;

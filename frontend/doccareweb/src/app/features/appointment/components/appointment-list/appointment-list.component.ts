@@ -145,7 +145,8 @@ export class AppointmentListComponent implements OnInit {
     this.appointments = response.data.items.map((item: any) => ({
       id: item.id,
       appointmentDate: new Date(item.appointmentDate),
-      appointmentTime: item.appointmentTime,
+      startTime: item.startTime,
+      endTime: item.endTime,
       status: item.status,
       doctor: item.doctor,
       patient: item.patient,
@@ -162,8 +163,8 @@ export class AppointmentListComponent implements OnInit {
         return dateA - dateB;
       }
 
-      const timeA = DateUtils.convertTimeToMilliseconds(a.appointmentTime);
-      const timeB = DateUtils.convertTimeToMilliseconds(b.appointmentTime);
+      const timeA = DateUtils.convertTimeToMilliseconds(a.startTime);
+      const timeB = DateUtils.convertTimeToMilliseconds(b.startTime);
       return timeA - timeB;
     });
   }

@@ -13,26 +13,26 @@ export class AppointmentService extends BaseService {
 
     getAllAppointments(page?: number, pageSize?: number, filters?: { [key: string]: string }): Observable<any> {
         const headers = this.GetAuthHeaderJson();
-    
+
         let url = `${this.UrlServiceV1}appointment`;
-    
+
         if (page !== undefined && pageSize !== undefined) {
             url += `?pageNumber=${page}&pageSize=${pageSize}`;
         }
-    
+
         if (filters) {
             const filterParams = Object.keys(filters)
                 .map(key => `${key}=${filters[key]}`)
                 .join('&');
-    
+
             url += `${(page !== undefined && pageSize !== undefined) ? '&' : '?'}${filterParams}`;
         }
-    
+
         return this.http
             .get<any>(url, headers)
             .pipe(catchError(super.serviceError));
     }
-    
+
 
     getAppointmentById(id: number): Observable<Appointment> {
         const headers = this.GetAuthHeaderJson();
@@ -72,7 +72,7 @@ export class AppointmentService extends BaseService {
             status: status
         };
 
-         return this.http
+        return this.http
             .put(`${this.UrlServiceV1}appointment/${id}/status`, statusData, headers)
             .pipe(
                 map(this.extractData),
@@ -90,7 +90,7 @@ export class AppointmentService extends BaseService {
 
         return parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate : null;
     }
-    
+
 
     clearLocalCurrentDateList(): void {
         localStorage.removeItem('currentDateAppointmentList');

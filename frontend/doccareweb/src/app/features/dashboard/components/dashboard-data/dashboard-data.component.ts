@@ -40,8 +40,8 @@ export class DashboardDataComponent implements OnInit {
 
   // Variáveis para controlar os textos
   financialSummaryLabel: string = 'Financeiro do Mês';
-  receivedLabel: string = 'Recebido Mensal';
-  pendingLabel: string = 'Pendente Mensal';
+  receivedLabel: string = 'Recebido';
+  pendingLabel: string = 'Pendente';
 
   constructor(
     private dashboardService: DashBoardService,
@@ -148,12 +148,12 @@ export class DashboardDataComponent implements OnInit {
   updateLabels(): void {
     if (this.selectedMonth === '') {
       this.financialSummaryLabel = 'Financeiro Anual';
-      this.receivedLabel = 'Recebido Anual';
-      this.pendingLabel = 'Pendente Anual';
+      this.receivedLabel = 'Recebido';
+      this.pendingLabel = 'Pendente';
     } else {
       this.financialSummaryLabel = 'Financeiro do Mês';
-      this.receivedLabel = 'Recebido Mensal';
-      this.pendingLabel = 'Pendente Mensal';
+      this.receivedLabel = 'Recebido';
+      this.pendingLabel = 'Pendente';
     }
   }
 

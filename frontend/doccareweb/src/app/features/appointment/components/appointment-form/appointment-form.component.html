@@ -40,23 +40,38 @@
                     <div class="tab-pane" [ngClass]="{'active show': currentTab === 'appointment-data'}"
                         id="personal-data" role="tabpanel">
 
-                        <div class="card-body">
+                        <div class="card-body"><!-- Data e Hora da Consulta -->
                             <div class="form-row">
-                                <!-- Médico -->
-                                <div class="form-group col-md-8">
-                                    <label for="doctorId">Médico</label>
-                                    <select id="doctorId" class="form-control" formControlName="doctorId"
-                                        [ngClass]="{'is-invalid': displayMessage['doctorId']}">
-                                        <option *ngFor="let doctor of doctors" [value]="doctor.id">{{ doctor.name }}
-                                        </option>
-                                    </select>
-                                    <span class="text-danger" *ngIf="displayMessage['doctorId']">
-                                        <p [innerHTML]="displayMessage['doctorId']"></p>
+                                <div class="form-group col-md-3">
+                                    <label for="appointmentDate">Data</label>
+                                    <input type="date" id="appointmentDate" class="form-control"
+                                        formControlName="appointmentDate"
+                                        [ngClass]="{'is-invalid': displayMessage['appointmentDate']}" />
+                                    <span class="text-danger" *ngIf="displayMessage['appointmentDate']">
+                                        <p [innerHTML]="displayMessage['appointmentDate']"></p>
                                     </span>
                                 </div>
 
-                                <!-- Status -->
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-2">
+                                    <label for="startTime">Hora Inicial</label>
+                                    <input type="time" id="startTime" class="form-control" formControlName="startTime"
+                                        [ngClass]="{'is-invalid': displayMessage['startTime']}" #startTimeInput />
+                                    <span class="text-danger" *ngIf="displayMessage['startTime']">
+                                        <p [innerHTML]="displayMessage['startTime']"></p>
+                                    </span>
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                    <label for="endTime">Hora Final</label>
+                                    <input type="time" id="endTime" class="form-control" formControlName="endTime"
+                                        [ngClass]="{'is-invalid': displayMessage['endTime']}" />
+                                    <span class="text-danger" *ngIf="displayMessage['endTime']">
+                                        <p [innerHTML]="displayMessage['endTime']"></p>
+                                    </span>
+                                </div>
+
+                                 <!-- Status -->
+                                <div class="form-group col-md-5">
                                     <label for="status">Status</label>
                                     <select id="status" class="form-control" formControlName="status"
                                         [ngClass]="{'is-invalid': displayMessage['status']}">
@@ -67,6 +82,21 @@
                                         <p [innerHTML]="displayMessage['status']"></p>
                                     </span>
                                 </div>
+                            </div>
+
+                            <div class="form-row">
+                                <!-- Médico, Especialidade -->
+                                <div class="form-group col-md-12">
+                                    <label for="doctorId">Médico</label>
+                                    <select id="doctorId" class="form-control" formControlName="doctorId"
+                                        [ngClass]="{'is-invalid': displayMessage['doctorId']}">
+                                        <option *ngFor="let doctor of doctors" [value]="doctor.id">{{ doctor.name }}
+                                        </option>
+                                    </select>
+                                    <span class="text-danger" *ngIf="displayMessage['doctorId']">
+                                        <p [innerHTML]="displayMessage['doctorId']"></p>
+                                    </span>
+                                </div>                               
                             </div>
 
                             <!-- Paciente e CPF -->
@@ -84,7 +114,8 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="cpf">CPF</label>
-                                    <input type="text" id="cpf" class="form-control" formControlName="cpf" mask="000.000.000-00"/>
+                                    <input type="text" id="cpf" class="form-control" formControlName="cpf"
+                                        mask="000.000.000-00" />
                                 </div>
                             </div>
 
@@ -92,19 +123,25 @@
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <label for="phone">Telefone</label>
-                                    <input type="text" id="phone" class="form-control" formControlName="phone" mask="(00) 0000-0000"/>
-                                    <span><p></span>
+                                    <input type="text" id="phone" class="form-control" formControlName="phone"
+                                        mask="(00) 0000-0000" />
+                                    <span>
+                                        <p>
+                                    </span>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="cellPhone">Celular</label>
-                                    <input type="text" id="cellPhone" class="form-control" formControlName="cellPhone" mask="(00) 00000-0000"  />
-                                    <span><p></span>
+                                    <input type="text" id="cellPhone" class="form-control" formControlName="cellPhone"
+                                        mask="(00) 00000-0000" />
+                                    <span>
+                                        <p>
+                                    </span>
                                 </div>
                             </div>
 
-                            <!-- Plano de Saúde, Valor, Data e Hora da Consulta -->
+                            <!-- Plano de Saúde, Valor -->
                             <div class="form-row">
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-8">
                                     <label for="healthPlanId">Plano de Saúde</label>
                                     <select id="healthPlanId" class="form-control" formControlName="healthPlanId"
                                         [ngClass]="{'is-invalid': displayMessage['healthPlanId']}">
@@ -116,7 +153,7 @@
                                     </span>
                                 </div>
 
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-4">
                                     <label for="cost">Valor Consulta</label>
                                     <input type="text" id="cost" class="form-control small-input" formControlName="cost"
                                         currencyMask
@@ -128,27 +165,8 @@
                                         <p [innerHTML]="displayMessage['cost']"></p>
                                     </span>
                                 </div>
+                            </div>          
 
-                                <div class="form-group col-md-3">
-                                    <label for="appointmentDate">Data</label>
-                                    <input type="date" id="appointmentDate" class="form-control"
-                                        formControlName="appointmentDate"
-                                        [ngClass]="{'is-invalid': displayMessage['appointmentDate']}" />
-                                    <span class="text-danger" *ngIf="displayMessage['appointmentDate']">
-                                        <p [innerHTML]="displayMessage['appointmentDate']"></p>
-                                    </span>
-                                </div>
-
-                                <div class="form-group col-md-2">
-                                    <label for="appointmentTime">Hora</label>
-                                    <input type="time" id="appointmentTime" class="form-control"
-                                        formControlName="appointmentTime"
-                                        [ngClass]="{'is-invalid': displayMessage['appointmentTime']}" />
-                                    <span class="text-danger" *ngIf="displayMessage['appointmentTime']">
-                                        <p [innerHTML]="displayMessage['appointmentTime']"></p>
-                                    </span>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -170,7 +188,8 @@
                 <div class="card-footer">
                     <!-- Botões de Ação -->
                     <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Salvar</button>
-                    <button type="button" class="btn btn-secondary" (click)="cancel('appointment/list')">Cancelar</button>
+                    <button type="button" class="btn btn-secondary"
+                        (click)="cancel('appointment/list')">Cancelar</button>
                 </div>
             </form>
         </div>
