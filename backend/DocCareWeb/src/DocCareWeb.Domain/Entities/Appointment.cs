@@ -11,7 +11,9 @@ namespace DocCareWeb.Domain.Entities
         public int HealthPlanId { get; set; }
         public HealthPlan? HealthPlan { get; set; }
         public DateTime AppointmentDate { get; set; }
-        public TimeSpan AppointmentTime { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+
         public required decimal Cost { get; set; }
         public AppointmentStatus Status { get; private set; }
         public string? Notes { get; set; }

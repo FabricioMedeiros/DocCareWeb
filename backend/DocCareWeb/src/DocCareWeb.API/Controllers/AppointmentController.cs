@@ -44,7 +44,13 @@ namespace DocCareWeb.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var appointment = await _appointmentService.GetByIdAsync(id);
+            var appointment = await _appointmentService.GetByIdAsync(id,
+                                                                     includes: new Expression<Func<Appointment, object>>[]
+                                                                     {
+                                                                       x => x.Doctor!,
+                                                                       x => x.Patient!,
+                                                                       x => x.HealthPlan!
+                                                                     });
 
             if (appointment == null) return NotFound();
 
@@ -53,9 +59,9 @@ namespace DocCareWeb.API.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AppointmentCreateDto appointmentDto)
-        {       
+        {
             var appointment = _mapper.Map<Appointment>(appointmentDto);
-            
+
             var createdAppointment = await _appointmentService.AddAsync(appointment);
             return CustomResponse(createdAppointment);
         }
@@ -73,7 +79,7 @@ namespace DocCareWeb.API.Controllers
 
             if (appointment == null) return NotFound();
 
-            _mapper.Map(appointmentDto, appointment);           
+            _mapper.Map(appointmentDto, appointment);
 
             var result = await _appointmentService.UpdateAsync(appointment);
 
@@ -93,7 +99,7 @@ namespace DocCareWeb.API.Controllers
             var appointment = await _appointmentService.GetByIdAsync(statusDto.Id, true);
 
             if (appointment == null)
-                return NotFound();                      
+                return NotFound();
 
             var result = await _appointmentService.ChangeStatusAsync(appointment, statusDto.Status);
 

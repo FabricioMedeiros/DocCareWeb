@@ -3,6 +3,7 @@ using DocCareWeb.Application.Interfaces;
 using DocCareWeb.Domain.Enums;
 using DocCareWeb.Domain.Interfaces;
 using FluentValidation;
+using System.Globalization;
 
 namespace DocCareWeb.Application.Validators
 {
@@ -10,11 +11,35 @@ namespace DocCareWeb.Application.Validators
     {
         public AppointmentValidator()
         {
-            RuleFor(a => a.AppointmentTime)
-                .NotEmpty().WithMessage("A hora da consulta é obrigatória.");
+            RuleFor(a => a.StartTime)
+                .NotEmpty().WithMessage("A hora inicial da consulta é obrigatória.")
+                .Must(IsValidTime).WithMessage("A hora inicial da consulta está em formato inválido. Use hh:mm.");
+
+            RuleFor(a => a.EndTime)
+                .NotEmpty().WithMessage("A hora final da consulta é obrigatória.")
+                .Must(IsValidTime).WithMessage("A hora final da consulta está em formato inválido. Use hh:mm.");
 
             RuleFor(a => a.Cost)
                 .GreaterThanOrEqualTo(0).WithMessage("O valor da consulta deve ser maior ou igual a zero.");
+
+            RuleFor(a => a)
+                .Must(a => IsEndTimeAfterStartTime(a.StartTime, a.EndTime))
+                .WithMessage("A hora final da consulta deve ser posterior à hora inicial.");
+        }
+
+        private bool IsValidTime(string time)
+        {
+            return TimeSpan.TryParseExact(time, @"hh\:mm", CultureInfo.InvariantCulture, out _);
+        }
+
+        private bool IsEndTimeAfterStartTime(string start, string end)
+        {
+            if (TimeSpan.TryParseExact(start, @"hh\:mm", CultureInfo.InvariantCulture, out var startTime) &&
+                TimeSpan.TryParseExact(end, @"hh\:mm", CultureInfo.InvariantCulture, out var endTime))
+            {
+                return endTime > startTime;
+            }
+            return false;
         }
     }
 
@@ -81,7 +106,7 @@ namespace DocCareWeb.Application.Validators
 
             RuleFor(a => a.AppointmentDate)
                 .MustAsync(async (dto, date, cancellation) => await ValidateUpdateDateAsync(dto.Id, date, cancellation))
-                .When(a => !string.IsNullOrEmpty(a.AppointmentDate)) 
+                .When(a => !string.IsNullOrEmpty(a.AppointmentDate))
                 .WithMessage("A data da consulta não pode ser retroativa.");
         }
 
@@ -92,7 +117,8 @@ namespace DocCareWeb.Application.Validators
 
             var appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
 
-            if ((appointment?.Status == AppointmentStatus.Scheduled) && ((parsedDate != appointment?.AppointmentDate) && (parsedDate < DateTime.Today)))
+            if ((appointment?.Status == AppointmentStatus.Scheduled) &&
+                ((parsedDate != appointment?.AppointmentDate) && (parsedDate < DateTime.Today)))
             {
                 return false;
             }

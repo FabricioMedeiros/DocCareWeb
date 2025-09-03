@@ -8,7 +8,6 @@ using DocCareWeb.Application.Dtos.Specialty;
 using DocCareWeb.Application.Dtos.User;
 using DocCareWeb.Domain.Entities;
 
-
 namespace DocCareWeb.Infrastructure.Mappings
 {
     public class MappingProfile : Profile
@@ -27,14 +26,18 @@ namespace DocCareWeb.Infrastructure.Mappings
             CreateMap<AppointmentCreateDto, Appointment>()
                .ForMember(dest => dest.AppointmentDate,
                           opt => opt.MapFrom(src => DateTime.Parse(src.AppointmentDate).Date))
-               .ForMember(dest => dest.AppointmentTime,
-                          opt => opt.MapFrom(src => TimeSpan.Parse(src.AppointmentTime)));
+               .ForMember(dest => dest.StartTime,
+                          opt => opt.MapFrom(src => TimeSpan.Parse(src.StartTime)))
+               .ForMember(dest => dest.EndTime,
+                          opt => opt.MapFrom(src => TimeSpan.Parse(src.EndTime)));
             CreateMap<Appointment, AppointmentUpdateDto>();
             CreateMap<AppointmentUpdateDto, Appointment>()
                .ForMember(dest => dest.AppointmentDate,
                           opt => opt.MapFrom(src => DateTime.Parse(src.AppointmentDate).Date))
-               .ForMember(dest => dest.AppointmentTime,
-                          opt => opt.MapFrom(src => TimeSpan.Parse(src.AppointmentTime)));
+               .ForMember(dest => dest.StartTime,
+                          opt => opt.MapFrom(src => TimeSpan.Parse(src.StartTime)))
+               .ForMember(dest => dest.EndTime,
+                          opt => opt.MapFrom(src => TimeSpan.Parse(src.EndTime)));
             CreateMap<Appointment, AppointmentListDto>().ReverseMap();
 
             // Doctor mappings

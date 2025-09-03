@@ -47,7 +47,8 @@ namespace DocCareWeb.Infrastructure.Data
                 entity.Property(a => a.HealthPlanId).IsRequired();
                 entity.Property(a => a.Cost).IsRequired().HasColumnType("decimal(18,2)");
                 entity.Property(a => a.AppointmentDate).IsRequired();
-                entity.Property(a => a.AppointmentTime).IsRequired();
+                entity.Property(a => a.StartTime).IsRequired();
+                entity.Property(a => a.EndTime).IsRequired();
                 entity.Property(p => p.CreatedAt).IsRequired();
                 entity.Property(p => p.CreatedBy).IsRequired();
                 entity.Property(a => a.Notes).HasMaxLength(500);
