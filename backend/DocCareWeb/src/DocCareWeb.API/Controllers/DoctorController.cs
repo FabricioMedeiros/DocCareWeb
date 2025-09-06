@@ -5,7 +5,7 @@ using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocCareWeb.API.Controllers
 {
@@ -26,15 +26,14 @@ namespace DocCareWeb.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] Dictionary<string, string>? filters, [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
+        public async Task<IActionResult> GetAll([FromQuery] Dictionary<string, string>? filters,
+                                                [FromQuery] int? pageNumber = null,
+                                                [FromQuery] int? pageSize = null)
         {
             var doctors = await _doctorService.GetAllAsync(filters,
                                                            pageNumber,
                                                            pageSize,
-                                                           includes: new Expression<Func<Doctor, object>>[]
-                                                                     {
-                                                                        x => x.Specialty!
-                                                                     });
+                                                           includes: IncludeDoctorRelations());
             return CustomResponse(doctors);
         }
 
@@ -42,10 +41,7 @@ namespace DocCareWeb.API.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var doctor = await _doctorService.GetByIdAsync(id,
-                                                           includes: new Expression<Func<Doctor, object>>[]
-                                                                     {
-                                                                        x => x.Specialty!
-                                                                     });
+                                                           includes: IncludeDoctorRelations());
 
             if (doctor == null) return NotFound();
 
@@ -90,6 +86,12 @@ namespace DocCareWeb.API.Controllers
             await _doctorService.DeleteAsync(id);
 
             return CustomResponse();
+        }
+
+        private static Func<IQueryable<Doctor>, IQueryable<Doctor>> IncludeDoctorRelations()
+        {
+            return query => query
+                .Include(d => d.Specialty);
         }
     }
 }

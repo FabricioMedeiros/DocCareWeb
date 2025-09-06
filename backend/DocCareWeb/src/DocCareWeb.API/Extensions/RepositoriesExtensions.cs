@@ -13,5 +13,7 @@ public static class RepositoriesExtensions
         services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
         services.AddScoped<IHealthPlanRepository, HealthPlanRepository>();
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-    }
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+;    }
 }

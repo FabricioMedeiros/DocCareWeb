@@ -17,7 +17,9 @@ namespace DocCareWeb.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] Dictionary<string, string>? filters, [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
+        public async Task<IActionResult> GetAll([FromQuery] Dictionary<string, string>? filters,
+                                                [FromQuery] int? pageNumber = null, 
+                                                [FromQuery] int? pageSize = null)
         {
             var healthPlans = await _healthPlanService.GetAllAsync(filters, pageNumber, pageSize);
             return CustomResponse(healthPlans);

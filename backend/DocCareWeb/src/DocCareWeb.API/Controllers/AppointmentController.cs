@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using DocCareWeb.API.Filters;
 using DocCareWeb.Application.Dtos.Appointment;
 using DocCareWeb.Application.Interfaces;
 using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocCareWeb.API.Controllers
 {
@@ -25,19 +24,15 @@ namespace DocCareWeb.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(Dictionary<string, string>? filters,
-                                               [FromQuery] int? pageNumber = null,
-                                               [FromQuery] int? pageSize = null)
+        public async Task<IActionResult> GetAll([FromQuery] Dictionary<string, string>? filters,
+                                                [FromQuery] int? pageNumber = null,
+                                                [FromQuery] int? pageSize = null)
         {
             var appointments = await _appointmentService.GetAllAsync(filters,
                                                                      pageNumber,
                                                                      pageSize,
-                                                                     includes: new Expression<Func<Appointment, object>>[]
-                                                                     {
-                                                                       x => x.Doctor!,
-                                                                       x => x.Patient!,
-                                                                       x => x.HealthPlan!
-                                                                     });
+                                                                     includes: IncludeAppointmentRelations());
+
             return CustomResponse(appointments);
         }
 
@@ -45,12 +40,7 @@ namespace DocCareWeb.API.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var appointment = await _appointmentService.GetByIdAsync(id,
-                                                                     includes: new Expression<Func<Appointment, object>>[]
-                                                                     {
-                                                                       x => x.Doctor!,
-                                                                       x => x.Patient!,
-                                                                       x => x.HealthPlan!
-                                                                     });
+                                                                     includes: IncludeAppointmentRelations());
 
             if (appointment == null) return NotFound();
 
@@ -118,6 +108,14 @@ namespace DocCareWeb.API.Controllers
             await _appointmentService.DeleteAsync(id);
 
             return CustomResponse();
+        }
+
+        private static Func<IQueryable<Appointment>, IQueryable<Appointment>> IncludeAppointmentRelations()
+        {
+            return query => query
+                .Include(a => a.Doctor)
+                .Include(a => a.Patient)
+                .Include(a => a.HealthPlan);
         }
     }
 }

@@ -10,16 +10,12 @@ namespace DocCareWeb.Application.Services
 {
     public class DoctorService : GenericService<Doctor, DoctorCreateDto, DoctorUpdateDto, DoctorListDto>, IDoctorService
     {
-        private readonly IDoctorRepository _doctorRepository;
         public DoctorService(
-            IDoctorRepository doctorRepository,
-            IValidator<DoctorCreateDto> createValidator,
-            IValidator<DoctorUpdateDto> updateValidator,
+            IUnitOfWork uow,
             IMapper mapper,
             INotificator notificator)
-            : base(doctorRepository, createValidator, updateValidator, mapper, notificator)
+            : base(uow, uow.Doctors, mapper, notificator)
         {
-            _doctorRepository = doctorRepository;
         }
     }
 }

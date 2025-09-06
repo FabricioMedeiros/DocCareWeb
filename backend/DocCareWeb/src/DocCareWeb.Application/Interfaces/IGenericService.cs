@@ -10,12 +10,14 @@ namespace DocCareWeb.Application.Interfaces
         where TListDto : class
     {
         Task<PagedResult<TListDto>> GetAllAsync(
-            Dictionary<string, string>? filters,
-            int? pageNumber = null,
-            int? pageSize = null,
-            params Expression<Func<TEntity, object>>[] includes);
+           Dictionary<string, string>? filters,
+           int? pageNumber = null,
+           int? pageSize = null,
+           Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null);
 
-        Task<TListDto?> GetByIdAsync(int id, params Expression<Func<TEntity, object>>[] includes);
+        Task<TListDto?> GetByIdAsync(
+            int id,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null);
 
         Task<TEntity?> GetByIdAsync(int id, bool returnEntity);
 
@@ -28,5 +30,7 @@ namespace DocCareWeb.Application.Interfaces
         Task UpdateAsync(TEntity entity);
 
         Task DeleteAsync(int id);
+
+        Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate);
     }
 }

@@ -6,37 +6,33 @@ using DocCareWeb.Application.Services;
 using DocCareWeb.Domain.Entities;
 using DocCareWeb.Domain.Enums;
 using DocCareWeb.Domain.Interfaces;
-using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 public class AppointmentService : GenericService<Appointment, AppointmentCreateDto, AppointmentUpdateDto, AppointmentListDto>, IAppointmentService
 {
-    private readonly IAppointmentRepository _appointmentRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public AppointmentService(
-        IAppointmentRepository appointmentRepository,
-        IValidator<AppointmentCreateDto> createValidator,
-        IValidator<AppointmentUpdateDto> updateValidator,
+        IUnitOfWork uow,
         IMapper mapper,
         INotificator notificator,
-        IHttpContextAccessor httpContextAccessor) : base(appointmentRepository, createValidator, updateValidator, mapper, notificator)
+        IHttpContextAccessor httpContextAccessor)
+        : base(uow, uow.Appointments, mapper, notificator)
     {
-        _appointmentRepository = appointmentRepository;
         _httpContextAccessor = httpContextAccessor;
     }
 
     public override async Task<AppointmentListDto?> AddAsync(Appointment appointment)
     {
-        var existingAppointments = await _appointmentRepository.GetAllAsync(a =>
+        var existingAppointments = await _uow.Appointments.GetAllAsync(a =>
             a.DoctorId == appointment.DoctorId &&
             a.AppointmentDate == appointment.AppointmentDate &&
             a.Status != AppointmentStatus.Canceled);
 
-        if (HasTimeConflict(appointment, existingAppointments.Items.Where(a => a != null)))
+        if (HasTimeConflict(appointment, existingAppointments.Items))
         {
-            Notify("Já existe uma consulta agendada que conflita com o horário informado.");
+            Notify("Já existe uma consulta agendada para esse médico que conflita com o horário informado.");
             return null;
         }
 
@@ -44,29 +40,34 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
         appointment.CreatedBy = userId;
         appointment.CreatedAt = DateTime.Now;
 
-        var createdAppointment = await _appointmentRepository.AddAsync(appointment);
-        return _mapper.Map<AppointmentListDto>(createdAppointment);
+        await _uow.Appointments.AddAsync(appointment);
+        await _uow.CommitAsync();
+
+        return _mapper.Map<AppointmentListDto>(appointment);
     }
 
     public new async Task<bool> UpdateAsync(Appointment appointment)
     {
-        var existingAppointments = await _appointmentRepository.GetAllAsync(a =>
+        var existingAppointments = await _uow.Appointments.GetAllAsync(a =>
             a.DoctorId == appointment.DoctorId &&
             a.AppointmentDate == appointment.AppointmentDate &&
             a.Id != appointment.Id &&
             a.Status != AppointmentStatus.Canceled);
 
-        if (HasTimeConflict(appointment, existingAppointments.Items.Where(a => a != null)))
+        if (HasTimeConflict(appointment, existingAppointments.Items))
         {
-            Notify("Já existe uma consulta agendada que conflita com o horário informado.");
+            Notify("Já existe uma consulta agendada para esse médico que conflita com o horário informado.");
             return false;
         }
+
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId") ?? "Anonymous";
         appointment.LastUpdatedBy = userId;
         appointment.LastUpdatedAt = DateTime.Now;
 
-        await _appointmentRepository.UpdateAsync(appointment);
+        _uow.Appointments.Update(appointment);
+        await _uow.CommitAsync();
+
         return true;
     }
 
@@ -85,31 +86,23 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId") ?? "Anonymous";
         appointment.LastUpdatedBy = userId;
+        appointment.LastUpdatedAt = DateTime.Now;
 
-        await _appointmentRepository.UpdateAsync(appointment);
+        _uow.Appointments.Update(appointment);
+        await _uow.CommitAsync();
+
         return true;
     }
 
     private bool CanChangeStatus(AppointmentStatus currentStatus, AppointmentStatus newStatus)
     {
-        if (currentStatus == AppointmentStatus.Scheduled)
+        return currentStatus switch
         {
-            return newStatus == AppointmentStatus.Confirmed ||
-                   newStatus == AppointmentStatus.Canceled ||
-                   newStatus == AppointmentStatus.Completed;
-        }
-
-        if (currentStatus == AppointmentStatus.Confirmed)
-        {
-            return newStatus == AppointmentStatus.Completed || newStatus == AppointmentStatus.Canceled;
-        }
-
-        if (currentStatus == AppointmentStatus.Completed || currentStatus == AppointmentStatus.Canceled)
-        {
-            return false;
-        }
-
-        return false;
+            AppointmentStatus.Scheduled => newStatus is AppointmentStatus.Confirmed or AppointmentStatus.Canceled or AppointmentStatus.Completed,
+            AppointmentStatus.Confirmed => newStatus is AppointmentStatus.Completed or AppointmentStatus.Canceled,
+            AppointmentStatus.Completed or AppointmentStatus.Canceled => false,
+            _ => false
+        };
     }
 
     public bool SetAppointmentStatus(Appointment appointment, AppointmentStatus newStatus)
@@ -143,7 +136,9 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
 
         foreach (var existing in existingAppointments)
         {
-            var existingStart = existing!.StartTime;
+            if (existing == null) continue;
+
+            var existingStart = existing.StartTime;
             var existingEnd = existing.EndTime;
 
             bool overlaps = newStart < existingEnd && newEnd > existingStart;
