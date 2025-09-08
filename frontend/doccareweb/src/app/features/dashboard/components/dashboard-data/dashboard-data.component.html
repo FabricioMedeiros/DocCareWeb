@@ -60,10 +60,8 @@
       <div>
         <h2>Financeiro do dia</h2>
         <ul>
-          <li>Total Pendente: {{ dashboardData.dailyFinancialSummary.totalPending | currency: 'BRL':'symbol':'1.2-2'
-            }}</li>
-          <li>Total Recebido: {{ dashboardData.dailyFinancialSummary.totalReceived | currency:
-            'BRL':'symbol':'1.2-2' }}</li>
+          <li>Total Pendente: {{ dashboardData.dailyFinancialSummary.totalPending | currencyFormat  }}</li>
+          <li>Total Recebido: {{ dashboardData.dailyFinancialSummary.totalReceived | currencyFormat }}</li>
         </ul>
       </div>
     </div>
