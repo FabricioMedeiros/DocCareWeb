@@ -89,84 +89,84 @@ export class AppointmentFormComponent
   }
 
   ngOnInit(): void {
-  this.buildForm();
-  this.setStatusOptions();
-
-  const storedDate = this.appointmentService.getLocalCurrentDateList();
-  const storedDoctor = this.appointmentService.getLocalCurrentDoctorList();
-
-  if (storedDate) {
-    const parsedDate = new Date(storedDate);
-    const formattedDate = parsedDate.toISOString().split('T')[0];
-    this.form.get('appointmentDate')?.setValue(formattedDate);
-  }
-
-  if (storedDoctor) {
-    this.form.get('doctorId')?.setValue(storedDoctor);
-  }
-
-  const resolvedData = this.route.snapshot.data['appointment'];
-  this.spinner.show();
-
-  if (resolvedData) {
-    this.initializeForm({
-      data: {
-        ...resolvedData?.data,
-        doctorId: resolvedData.data.doctor.id,
-        patientId: resolvedData.data.patient.id,
-        healthPlanId: resolvedData.data.healthPlan.id,
-        cpf: resolvedData.data.patient.cpf,
-        phone: resolvedData.data.patient.phone,
-        cellPhone: resolvedData.data.patient.cellPhone
-      }
-    });
-
-    this.currentStatus = this.form.get('status')?.value;
+    this.buildForm();
     this.setStatusOptions();
 
-    if (this.currentStatus === AppointmentStatus.Confirmed) {
-      this.form.get('appointmentDate')?.disable();
-      this.form.get('startTime')?.disable();
-      this.form.get('endTime')?.disable();
+    const storedDate = this.appointmentService.getLocalCurrentDateList();
+    const storedDoctor = this.appointmentService.getLocalCurrentDoctorList();
+
+    if (storedDate) {
+      const parsedDate = new Date(storedDate);
+      const formattedDate = parsedDate.toISOString().split('T')[0];
+      this.form.get('appointmentDate')?.setValue(formattedDate);
     }
 
-    if ([AppointmentStatus.Canceled, AppointmentStatus.Completed].includes(this.currentStatus)) {
-      this.form.disable();
-      this.form.get('notes')?.enable();
-    } else {
-      this.form.get('status')?.enable();
+    if (storedDoctor) {
+      this.form.get('doctorId')?.setValue(storedDoctor);
     }
+
+    const resolvedData = this.route.snapshot.data['appointment'];
+    this.spinner.show();
+
+    if (resolvedData) {
+      this.initializeForm({
+        data: {
+          ...resolvedData?.data,
+          doctorId: resolvedData.data.doctor.id,
+          patientId: resolvedData.data.patient.id,
+          healthPlanId: resolvedData.data.healthPlan.id,
+          cpf: resolvedData.data.patient.cpf,
+          phone: resolvedData.data.patient.phone,
+          cellPhone: resolvedData.data.patient.cellPhone
+        }
+      });
+
+      this.currentStatus = this.form.get('status')?.value;
+      this.setStatusOptions();
+
+      if (this.currentStatus === AppointmentStatus.Confirmed) {
+        this.form.get('appointmentDate')?.disable();
+        this.form.get('startTime')?.disable();
+        this.form.get('endTime')?.disable();
+      }
+
+      if ([AppointmentStatus.Canceled, AppointmentStatus.Completed].includes(this.currentStatus)) {
+        this.form.disable();
+        this.form.get('notes')?.enable();
+      } else {
+        this.form.get('status')?.enable();
+      }
+    }
+
+    forkJoin([this.loadDoctors(), this.loadPatients(), this.loadHealthPlans()])
+      .pipe(finalize(() => this.spinner.hide()))
+      .subscribe(() => {
+        if (this.isEditMode) {
+          this.updatePatientDetails(this.form.get('patientId')?.value);
+        }
+
+        this.form.get('healthPlanId')?.valueChanges
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(healthPlanId => {
+            const selectedHealthPlan = this.healthPlans.find(hp => hp.id === +healthPlanId);
+            if (selectedHealthPlan) {
+              this.form.get('cost')?.setValue(selectedHealthPlan.cost);
+            }
+          });
+      });
+
+    this.form.get('patientId')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(patientId => this.updatePatientDetails(patientId));
+
+    this.form.get('startTime')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(startTime => {
+        if (startTime && !this.isEditMode) {
+          this.form.get('endTime')?.setValue(this.suggestEndTime(startTime), { emitEvent: false });
+        }
+      });
   }
-
-  forkJoin([this.loadDoctors(), this.loadPatients(), this.loadHealthPlans()])
-    .pipe(finalize(() => this.spinner.hide()))
-    .subscribe(() => {
-      if (this.isEditMode) {
-        this.updatePatientDetails(this.form.get('patientId')?.value);
-      }
-
-      this.form.get('healthPlanId')?.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(healthPlanId => {
-          const selectedHealthPlan = this.healthPlans.find(hp => hp.id === +healthPlanId);
-          if (selectedHealthPlan) {
-            this.form.get('cost')?.setValue(selectedHealthPlan.cost);
-          }
-        });
-    });
-
-  this.form.get('patientId')?.valueChanges
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(patientId => this.updatePatientDetails(patientId));
-
-  this.form.get('startTime')?.valueChanges
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(startTime => {
-      if (startTime && !this.isEditMode) {
-        this.form.get('endTime')?.setValue(this.suggestEndTime(startTime), { emitEvent: false });
-      }
-    });
-}
 
   override ngAfterViewInit(): void {
     super.ngAfterViewInit();
@@ -200,22 +200,22 @@ export class AppointmentFormComponent
   }
 
   updatePatientDetails(patientId: number): void {
-  const selectedPatient = this.patients.find(p => p.id === +patientId);
-  if (!selectedPatient) return;
+    const selectedPatient = this.patients.find(p => p.id === +patientId);
+    if (!selectedPatient) return;
 
-  const currentPlanId = this.form.get('healthPlanId')?.value;
-  const patientPlanId = selectedPatient.healthPlan?.id ?? null;
+    const currentPlanId = this.form.get('healthPlanId')?.value;
+    const patientPlanId = selectedPatient.healthPlan?.id ?? null;
 
-  this.form.patchValue({
-    cpf: selectedPatient.cpf ?? '',
-    phone: selectedPatient.phone ?? '',
-    cellPhone: selectedPatient.cellPhone ?? ''
-  });
+    this.form.patchValue({
+      cpf: selectedPatient.cpf ?? '',
+      phone: selectedPatient.phone ?? '',
+      cellPhone: selectedPatient.cellPhone ?? ''
+    });
 
-  if (!currentPlanId || currentPlanId === patientPlanId) {
-    this.form.get('healthPlanId')?.setValue(patientPlanId);
+    if (!currentPlanId || currentPlanId === patientPlanId) {
+      this.form.get('healthPlanId')?.setValue(patientPlanId);
+    }
   }
-}
 
   private suggestEndTime(startTime: string): string {
     const [hours, minutes] = startTime.split(':').map(Number);
@@ -258,7 +258,7 @@ export class AppointmentFormComponent
     if (this.form.dirty && this.form.valid) {
       this.changesSaved = true;
       const appointmentData = { ...this.form.getRawValue() };
-      
+
       if (this.isEditMode) {
         const newStatus = appointmentData.status;
 
@@ -268,16 +268,7 @@ export class AppointmentFormComponent
         }
 
         this.appointmentService.updateAppointment(appointmentData).subscribe({
-          next: () => {
-            if (this.currentStatus !== newStatus) {
-              this.appointmentService.updateAppointmentStatus(appointmentData.id, appointmentData.status).subscribe({
-                next: () => this.processSuccess('Agendamento atualizado com sucesso!', '/appointment/list'),
-                error: (error) => this.processFail(error)
-              });
-            } else {
-              this.processSuccess('Agendamento atualizado com sucesso!', '/appointment/list');
-            }
-          },
+          next: () => this.processSuccess('Agendamento atualizado com sucesso!', '/appointment/list'),
           error: (error) => this.processFail(error)
         });
       } else {

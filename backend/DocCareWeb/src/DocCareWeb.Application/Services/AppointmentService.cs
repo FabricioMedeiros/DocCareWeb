@@ -46,20 +46,39 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
         return _mapper.Map<AppointmentListDto>(appointment);
     }
 
-    public new async Task<bool> UpdateAsync(Appointment appointment)
+    public override async Task UpdateAsync(AppointmentUpdateDto dto)
     {
-        var existingAppointments = await _uow.Appointments.GetAllAsync(a =>
-            a.DoctorId == appointment.DoctorId &&
-            a.AppointmentDate == appointment.AppointmentDate &&
-            a.Id != appointment.Id &&
-            a.Status != AppointmentStatus.Canceled);
+        var appointment = await _uow.Appointments.GetByIdAsync(dto.Id);
 
-        if (HasTimeConflict(appointment, existingAppointments.Items))
+        if (appointment is null)
         {
-            Notify("Já existe uma consulta agendada para esse médico que conflita com o horário informado.");
-            return false;
+            Notify("Agendamento não encontrado.");
+            return;
         }
 
+        var existingAppointments = await _uow.Appointments.GetAllAsync(a =>
+            a.DoctorId == dto.DoctorId &&
+            a.AppointmentDate.Date == DateOnly.Parse(dto.AppointmentDate).ToDateTime(TimeOnly.MinValue) &&
+            a.Id != dto.Id &&
+            a.Status != AppointmentStatus.Canceled);
+
+        var updatedAppointment = _mapper.Map(dto, appointment);
+
+        if (HasTimeConflict(updatedAppointment, existingAppointments.Items))
+        {
+            Notify("Já existe uma consulta agendada para esse médico que conflita com o horário informado.");
+            return;
+        }
+      
+        if (dto.Status != appointment.Status)
+        {
+            if (!CanChangeStatus(appointment.Status, dto.Status) ||
+                !SetAppointmentStatus(appointment, dto.Status))
+            {
+                Notify("Mudança de status não permitida.");
+                return;
+            }
+        }
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId") ?? "Anonymous";
         appointment.LastUpdatedBy = userId;
@@ -67,9 +86,32 @@ public class AppointmentService : GenericService<Appointment, AppointmentCreateD
 
         _uow.Appointments.Update(appointment);
         await _uow.CommitAsync();
-
-        return true;
     }
+
+    //public new async Task<bool> UpdateAsync(Appointment appointment)
+    //{
+    //    var existingAppointments = await _uow.Appointments.GetAllAsync(a =>
+    //        a.DoctorId == appointment.DoctorId &&
+    //        a.AppointmentDate == appointment.AppointmentDate &&
+    //        a.Id != appointment.Id &&
+    //        a.Status != AppointmentStatus.Canceled);
+
+    //    if (HasTimeConflict(appointment, existingAppointments.Items))
+    //    {
+    //        Notify("Já existe uma consulta agendada para esse médico que conflita com o horário informado.");
+    //        return false;
+    //    }
+
+
+    //    var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId") ?? "Anonymous";
+    //    appointment.LastUpdatedBy = userId;
+    //    appointment.LastUpdatedAt = DateTime.Now;
+
+    //    _uow.Appointments.Update(appointment);
+    //    await _uow.CommitAsync();
+
+    //    return true;
+    //}
 
     public async Task<bool> ChangeStatusAsync(Appointment appointment, AppointmentStatus newStatus)
     {

@@ -6,7 +6,6 @@ namespace DocCareWeb.Application.Interfaces
 {
     public interface IAppointmentService : IGenericService<Appointment, AppointmentCreateDto, AppointmentUpdateDto, AppointmentListDto>
     {
-        new Task<bool> UpdateAsync(Appointment appointment);
         Task<bool> ChangeStatusAsync(Appointment appointment, AppointmentStatus newStatus);
     }
 }

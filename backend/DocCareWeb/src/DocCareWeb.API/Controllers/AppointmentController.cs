@@ -71,9 +71,7 @@ namespace DocCareWeb.API.Controllers
 
             _mapper.Map(appointmentDto, appointment);
 
-            var result = await _appointmentService.UpdateAsync(appointment);
-
-            if (!result) CustomResponse();
+            await _appointmentService.UpdateAsync(appointment);
 
             return CustomResponse();
         }
@@ -89,7 +87,7 @@ namespace DocCareWeb.API.Controllers
             var appointment = await _appointmentService.GetByIdAsync(statusDto.Id, true);
 
             if (appointment == null)
-                return NotFound();
+              return NotFound();
 
             var result = await _appointmentService.ChangeStatusAsync(appointment, statusDto.Status);
 
