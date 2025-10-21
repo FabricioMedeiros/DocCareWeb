@@ -1,15 +1,8 @@
-<!-- Spinner -->
-<ngx-spinner
-  bdColor="rgba(0, 0, 0, 0.8)"
-  size="medium"
-  color="#fff"
-  type="ball-pulse"
-  [fullScreen]="true">
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-pulse" [fullScreen]="true">
   <p style="color: white; font-size: 20px;">Carregando...</p>
 </ngx-spinner>
 
 <div class="form-content-container">
-  <!-- Erros -->
   <div class="alert alert-danger" *ngIf="errors.length > 0">
     <h3>Atenção</h3>
     <ul>
@@ -17,43 +10,57 @@
     </ul>
   </div>
 
-  <!-- Contêiner do Card -->
   <div class="card-container">
     <div class="card">
       <div class="card-header">
         <h3>{{ isEditMode ? 'Editar Plano de Saúde' : 'Cadastro de Plano de Saúde' }}</h3>
       </div>
 
-      <form [formGroup]="form" (ngSubmit)="saveHealthPlan()">
-        <div class="card-body">
-          <!-- Campo de Descrição -->
-          <div class="form-group">
-            <label for="description">Descrição</label>
-            <input type="text" id="description" class="form-control" formControlName="description" #descriptionInput
-              [ngClass]="{'is-invalid': displayMessage['description']}" />
+      <!-- Abas -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{ 'active': currentTab === 'info' }" (click)="setTab('info')" role="tab">
+            Informações
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{ 'active': currentTab === 'services' }" (click)="setTab('services')" role="tab">
+            Serviços
+          </a>
+        </li>
+      </ul>
 
-            <!-- Mensagem de Erro -->
-            <span class="text-danger" *ngIf="displayMessage['description']">
-              <p [innerHTML]="displayMessage['description']"></p>
-            </span>
-            </div>            
-            
-            <!-- Campo de Valor da Consulta -->
-            <div class="form-group">
-              <label for="cost">Valor da Consulta</label>
-              <input type="text" id="cost" class="form-control small-input" formControlName="cost" currencyMask
-                [options]="{ allowNegative: false, allowZero: false, prefix: 'R$ ', thousands: '.', decimal: ',', decimalLimit: 2 }"
-                [ngClass]="{'is-invalid': displayMessage['cost']}" />
-            
-              <!-- Mensagem de Erro -->
-              <span class="text-danger" *ngIf="displayMessage['cost']">
-                <p [innerHTML]="displayMessage['cost']"></p>
-              </span>
-            </div>            
+      <form [formGroup]="form" (ngSubmit)="saveHealthPlan()">
+        <div class="tab-content">
+          <!-- Aba Informações -->
+          <div class="tab-pane" [ngClass]="{ 'active show': currentTab === 'info' }" id="info" role="tabpanel">
+            <div class="card-body">
+              <div class="form-group mb-3">
+                <label for="name">Nome</label>
+                <input type="text" id="name" class="form-control" formControlName="name"
+                       [ngClass]="{'is-invalid': displayMessage['name']}">
+                <div class="text-danger" *ngIf="displayMessage['name']">
+                  <small [innerHTML]="displayMessage['name']"></small>
+                </div>
+              </div>
+            </div>
           </div>
 
-        <div class="card-footer">
-          <!-- Botões de Ação -->
+          <!-- Aba Serviços -->
+          <div class="tab-pane" [ngClass]="{ 'active show': currentTab === 'services' }" id="services" role="tabpanel">
+            <div class="card-body">
+              <div class="grid-service-wrapper">
+              <app-service-selector-grid
+                [availableServices]="allServices"
+                [items]="serviceItems"
+                (itemsChange)="onItemsChanged($event)">
+              </app-service-selector-grid>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer text-end">
           <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Salvar</button>
           <button type="button" class="btn btn-secondary" (click)="cancel('/healthplan/list')">Cancelar</button>
         </div>

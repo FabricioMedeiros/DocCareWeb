@@ -1,4 +1,4 @@
 export interface HealthPlan {
     id: number;
-    description: string;
+    name: string;
 }

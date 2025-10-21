@@ -38,20 +38,25 @@ namespace DocCareWeb.Application.Services
         {
             var filterExpression = ApplyFilters(filters);
 
-            int page = pageNumber ?? 1;
-            int size = pageSize ?? 10;
-            int skip = (page - 1) * size;
+            int? skip = null;
+            int? take = null;
+
+            if (pageNumber.HasValue && pageSize.HasValue)
+            {
+                skip = (pageNumber.Value - 1) * pageSize.Value;
+                take = pageSize.Value;
+            }
 
             var (items, totalRecords) = await _repository.GetAllAsync(
                 filter: filterExpression,
                 includes: includes,
                 skip: skip,
-                take: size);
+                take: take);
 
             return new PagedResult<TListDto>
             {
-                Page = page,
-                PageSize = size,
+                Page = pageNumber ?? 1,
+                PageSize = pageSize ?? totalRecords, 
                 TotalRecords = totalRecords,
                 Items = _mapper.Map<IEnumerable<TListDto>>(items)
             };
@@ -70,19 +75,25 @@ namespace DocCareWeb.Application.Services
             return await _repository.GetByIdAsync(id);
         }
 
-        public virtual async Task<TListDto?> AddAsync(TCreateDto createDto)
+        public virtual async Task<TListDto?> AddAsync(TEntity entity,
+                                                      Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null)
+        {
+            await _repository.AddAsync(entity);
+            await _uow.CommitAsync();
+
+            var fullEntity = await _repository.GetByIdAsync(entity.Id, includes);
+            return _mapper.Map<TListDto>(fullEntity);
+        }
+
+        public virtual async Task<TListDto?> AddAsync(TCreateDto createDto,
+                                                      Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null)
         {
             var entity = _mapper.Map<TEntity>(createDto);
             await _repository.AddAsync(entity);
             await _uow.CommitAsync();
-            return _mapper.Map<TListDto>(entity);
-        }
 
-        public virtual async Task<TListDto?> AddAsync(TEntity entity)
-        {
-            await _repository.AddAsync(entity);
-            await _uow.CommitAsync();
-            return _mapper.Map<TListDto>(entity);
+            var fullEntity = await _repository.GetByIdAsync(entity.Id, includes);
+            return _mapper.Map<TListDto>(fullEntity);
         }
 
         public virtual async Task UpdateAsync(TUpdateDto updateDto)
@@ -109,7 +120,7 @@ namespace DocCareWeb.Application.Services
             return await _repository.ExistsAsync(predicate);
         }
 
-        private static Expression<Func<TEntity, bool>> ApplyFilters(Dictionary<string, string>? filters)
+        protected static Expression<Func<TEntity, bool>> ApplyFilters(Dictionary<string, string>? filters)
         {
             var parameter = Expression.Parameter(typeof(TEntity), "entity");
             Expression combinedExpression = Expression.Constant(true);

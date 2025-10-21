@@ -8,6 +8,8 @@ namespace DocCareWeb.Infrastructure.Mappings
     {
         public void Configure(EntityTypeBuilder<Patient> builder)
         {
+            builder.ToTable("Patients");
+
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Name).IsRequired().HasMaxLength(50);
             builder.Property(p => p.Cpf).HasMaxLength(11);
@@ -19,17 +21,17 @@ namespace DocCareWeb.Infrastructure.Mappings
             builder.Property(p => p.Email).HasMaxLength(60);
             builder.Property(p => p.CreatedAt).IsRequired();
             builder.Property(p => p.CreatedBy).IsRequired();
-            builder.Property(p => p.Notes).HasMaxLength(5000);
-
-            builder.HasOne(p => p.Address)
-                   .WithMany()
-                   .HasForeignKey(p => p.AddressId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(p => p.Notes).HasMaxLength(5000);            
 
             builder.HasOne(p => p.HealthPlan)
-                   .WithMany(hp => hp.Patients)
-                   .HasForeignKey(p => p.HealthPlanId)
+                   .WithMany()
+                   .HasForeignKey(hp => hp.HealthPlanId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p => p.Address)
+                   .WithOne()
+                   .HasForeignKey<Address>(a => a.PatientId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -17,8 +17,4 @@
     <ProjectReference Include="..\DocCareWeb.Domain\DocCareWeb.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\Pagination\" />
-  </ItemGroup>
-
 </Project>

@@ -111,7 +111,7 @@ export class AppointmentListComponent implements OnInit {
 
       if (hasPatientFilter) {
         this.isFilteringByDateDoctor = false;
-        filters['Patient[Name]'] = this.searchTerm.trim();
+        filters['Patient.Name'] = this.searchTerm.trim();
 
         const statusArray = [AppointmentStatus.Scheduled, AppointmentStatus.Confirmed];
         filters['Status'] = encodeURIComponent(statusArray.join(','));
@@ -120,7 +120,7 @@ export class AppointmentListComponent implements OnInit {
       if (!hasPatientFilter && (hasDoctorFilter && hasDateFilter)) {
         this.isFilteringByDateDoctor = true;
         filters['AppointmentDate'] = DateUtils.formatDateToYYYYMMDD(this.currentDate);
-        filters['Doctor[Id]'] = this.selectedDoctor.toString();
+        filters['Doctor.Id'] = this.selectedDoctor.toString();
       }
 
       this.appointmentService.getAllAppointments(this.currentPage, this.pageSize, filters).subscribe({

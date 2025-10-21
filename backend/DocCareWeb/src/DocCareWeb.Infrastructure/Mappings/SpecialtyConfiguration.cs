@@ -8,8 +8,10 @@ namespace DocCareWeb.Infrastructure.Mapping
     {
         public void Configure(EntityTypeBuilder<Specialty> builder)
         {
+            builder.ToTable("Specialties");
+
             builder.HasKey(s => s.Id);
-            builder.Property(s => s.Description).IsRequired().HasMaxLength(50);
+            builder.Property(s => s.Name).IsRequired().HasMaxLength(50);
         }
     }
 }

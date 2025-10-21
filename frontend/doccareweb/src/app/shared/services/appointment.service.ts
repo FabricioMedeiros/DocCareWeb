@@ -13,26 +13,30 @@ export class AppointmentService extends BaseService {
 
     getAllAppointments(page?: number, pageSize?: number, filters?: { [key: string]: string }): Observable<any> {
         const headers = this.GetAuthHeaderJson();
-
         let url = `${this.UrlServiceV1}appointment`;
 
+        const queryParts: string[] = [];
+
         if (page !== undefined && pageSize !== undefined) {
-            url += `?pageNumber=${page}&pageSize=${pageSize}`;
+            queryParts.push(`pageNumber=${page}`, `pageSize=${pageSize}`);
         }
 
         if (filters) {
             const filterParams = Object.keys(filters)
-                .map(key => `${key}=${filters[key]}`)
-                .join('&');
-
-            url += `${(page !== undefined && pageSize !== undefined) ? '&' : '?'}${filterParams}`;
+                .map(key => `${key}=${filters[key]}`);
+            queryParts.push(...filterParams);
         }
 
+        if (queryParts.length > 0) {
+            url += `?${queryParts.join('&')}`;
+        }
+
+        console.log('url:' + url);
+        
         return this.http
             .get<any>(url, headers)
             .pipe(catchError(super.serviceError));
-    }
-
+    }   
 
     getAppointmentById(id: number): Observable<Appointment> {
         const headers = this.GetAuthHeaderJson();
@@ -124,7 +128,7 @@ export class AppointmentService extends BaseService {
         localStorage.setItem('searchTermAppointmentList', searchTerm);
     }
 
-    getLocalSearchTerm(): string {
+    getLocalSearchTerm(): string {                                                 
         return localStorage.getItem('searchTermAppointmentList') || '';
     }
 

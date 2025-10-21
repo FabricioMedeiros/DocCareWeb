@@ -7,9 +7,9 @@ namespace DocCareWeb.Application.Validators
     {
         public SpecialtyValidator()
         {
-            RuleFor(s => s.Description)
-                .NotEmpty().WithMessage("A descrição é obrigatória.")
-                .Length(2, 50).WithMessage("A descrição deve ter entre 2 e 50 caracteres.");
+            RuleFor(s => s.Name)
+                .NotEmpty().WithMessage("O nome é obrigatória.")
+                .Length(2, 50).WithMessage("O nome deve ter entre 2 e 50 caracteres.");
         }
     }
 

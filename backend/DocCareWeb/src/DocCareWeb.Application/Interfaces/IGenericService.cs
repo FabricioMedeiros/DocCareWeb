@@ -21,9 +21,9 @@ namespace DocCareWeb.Application.Interfaces
 
         Task<TEntity?> GetByIdAsync(int id, bool returnEntity);
 
-        Task<TListDto?> AddAsync(TCreateDto createDto);
+        Task<TListDto?> AddAsync(TCreateDto createDto, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null);
 
-        Task<TListDto?> AddAsync(TEntity entity);
+        Task<TListDto?> AddAsync(TEntity entity, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null);
 
         Task UpdateAsync(TUpdateDto updateDto);
 

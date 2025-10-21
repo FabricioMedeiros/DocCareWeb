@@ -12,30 +12,47 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height: 60px;
+  min-height: 60px;
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 0;
   margin-bottom: 15px;
-  gap: 10px; 
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-container select {
+  flex: 1;
+  min-width: 300px;
+  max-width: 100%;
 }
 
 .filter-container label {
   margin: 0 0 0 10px;
   font-weight: bold;
-  line-height: 1; 
-  height: 100%; 
+  line-height: 1;
+  height: 100%;
   display: flex;
-  align-items: center; 
+  align-items: center;
 }
 
-.filter-container select {
+.filter-container select,
+.filter-container input[type="date"] {
   margin-left: 0;
   padding: 5px;
   font-size: 1em;
 }
 
+.filter-container .date-group {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+/* Cards */
 .cards-container {
   display: flex;
   flex-wrap: wrap;
@@ -78,10 +95,10 @@
 }
 
 .card li {
-  text-align: start; 
+  text-align: start;
 }
 
-.financial-chart-container{
+.financial-chart-container {
   width: 100%;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -89,11 +106,11 @@
   margin-top: 15px;
 }
 
-.financial-chart { 
+.financial-chart {
   padding: 20px;
-  background-color: #fff; 
-  width: 100%; 
-  max-width: 800px; 
+  background-color: #fff;
+  width: 100%;
+  max-width: 800px;
   margin: 0 auto;
 }
 
@@ -102,21 +119,63 @@
   font-size: 1.5em;
 }
 
-@media (max-width: 935px) {
+/* Ajuste para telas pequenas */
+@media (max-width: 1335px) {
   .cards-container {
-    flex-direction: column; 
-  }
-  
-  .filter-container {
-    flex-direction: column; 
-    align-items: flex-start;
-    height: auto; 
-    padding: 10px; 
+    flex-direction: column;
   }
 
-  .filter-container label,
+  .filter-container {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 10px;
+  }
+
+  .filter-container label {
+    margin: 0;
+    width: 100%;
+  }
+
   .filter-container select {
-    margin: 0; 
+    width: 100%;
+  }
+
+  .filter-container .date-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: nowrap;
+  }
+
+  .filter-container .date-group label {
+  flex: 0 0 90px; 
+  max-width: 90px;
+  display: flex;
+  align-items: center;
+}
+  .filter-container .date-group input[type="date"] {
+    flex: 1 1 auto;
+    min-width: 150px;
+  }
+
+  .filter-container .date-group label,
+  .filter-container .date-group input {
+    flex: 1;
+  }
+}
+
+@media (max-width: 844px) {
+  .filter-container .date-group {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .filter-container .date-group label,
+  .filter-container .date-group input,
+  .filter-container button {
     width: 100%;
   }
 }

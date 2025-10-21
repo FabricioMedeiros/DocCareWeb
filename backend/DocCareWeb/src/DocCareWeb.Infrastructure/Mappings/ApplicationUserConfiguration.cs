@@ -9,9 +9,8 @@ namespace DocCareWeb.Infrastructure.Mappings
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
             builder.ToTable("Users");
-            builder.Property(e => e.Name)
-                   .IsRequired()
-                   .HasMaxLength(60);
+
+            builder.Property(u => u.Name).IsRequired().HasMaxLength(60);
         }
     }
 }

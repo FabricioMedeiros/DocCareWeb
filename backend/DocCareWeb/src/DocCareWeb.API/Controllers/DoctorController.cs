@@ -51,11 +51,11 @@ namespace DocCareWeb.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DoctorCreateDto doctorDto)
         {
-           var doctor = _mapper.Map<Doctor>(doctorDto);
-
-           var createdDoctor = await _doctorService.AddAsync(doctor);
-           return CustomResponse(createdDoctor);
+            var createdDoctor = await _doctorService.AddAsync(doctorDto, 
+                                                              includes: IncludeDoctorRelations());
+            return CustomResponse(createdDoctor);
         }
+
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] DoctorUpdateDto doctorDto)
@@ -88,10 +88,9 @@ namespace DocCareWeb.API.Controllers
             return CustomResponse();
         }
 
-        private static Func<IQueryable<Doctor>, IQueryable<Doctor>> IncludeDoctorRelations()
-        {
-            return query => query
-                .Include(d => d.Specialty);
+        private static Func<IQueryable<Doctor>, IQueryable<Doctor>> IncludeDoctorRelations() 
+        { 
+            return query => query.Include(d => d.Specialty); 
         }
     }
 }

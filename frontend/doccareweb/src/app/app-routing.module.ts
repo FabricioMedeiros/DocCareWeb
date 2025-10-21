@@ -19,6 +19,7 @@ const routes: Routes = [
   { path: 'specialty', loadChildren: () => import('./features/specialty/specialty.module').then(m => m.SpecialtyModule) },
   { path: 'service-unavailable', component: ServiceUnavailableComponent, canActivate: [navigationGuard] },
   { path: 'not-found', component: NotFoundComponent, canActivate: [navigationGuard] },
+  { path: 'service', loadChildren: () => import('./features/service/service.module').then(m => m.ServiceModule) },
   { path: '**', component: NotFoundComponent }
 ];
 

@@ -15,9 +15,9 @@ namespace DocCareWeb.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetDashboardData(int? doctorId = null, DateTime? startDate = null, DateTime? endDate = null)
+        public async Task<IActionResult> GetDashboardData(DateTime startDate, DateTime endDate, int? doctorId = null)
         {
-            var data = await _dashboardService.GetDashboardDataAsync(doctorId, startDate, endDate);
+            var data = await _dashboardService.GetDashboardDataAsync(startDate, endDate, doctorId);
             return CustomResponse(data);
         }
 

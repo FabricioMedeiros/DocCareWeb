@@ -1,5 +1,7 @@
+import { HealthPlanItem } from "./healthplanitem";
+
 export interface HealthPlan {
-    id: number;
-    description: string;
-    cost: number;
+  id: number;
+  name: string;
+  items: HealthPlanItem[];
 }

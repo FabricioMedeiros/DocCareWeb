@@ -63,15 +63,9 @@ namespace DocCareWeb.API.Controllers
             {
                 NotifyError("O ID informado não é o mesmo que foi passado na query.");
                 return CustomResponse();
-            }
+            }           
 
-            var appointment = await _appointmentService.GetByIdAsync(id, true);
-
-            if (appointment == null) return NotFound();
-
-            _mapper.Map(appointmentDto, appointment);
-
-            await _appointmentService.UpdateAsync(appointment);
+            await _appointmentService.UpdateAsync(appointmentDto);
 
             return CustomResponse();
         }
@@ -113,7 +107,9 @@ namespace DocCareWeb.API.Controllers
             return query => query
                 .Include(a => a.Doctor)
                 .Include(a => a.Patient)
-                .Include(a => a.HealthPlan);
+                .Include(a => a.HealthPlan)
+                .Include(a => a.Items)
+                .ThenInclude(i => i.Service);
         }
     }
 }

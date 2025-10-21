@@ -14,33 +14,39 @@ import { CrmMaskPipe } from './pipes/crm-mask.pipe';
 import { PatientService } from './services/patient.service';
 import { CpfMaskPipe } from './pipes/cpf-mask.pipe';
 import { HealthPlanService } from './services/healthplan.service';
+import { ServiceService } from './services/service.service';
+import { ServiceSelectorGridComponent } from './components/service-selector-grid/service-selector-grid.component';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 @NgModule({
   declarations: [
     PaginationComponent,
     SearchBarComponent,
+    ServiceSelectorGridComponent,
     CurrencyFormatPipe,
     PhoneMaskPipe,
     CrmMaskPipe,
-    CpfMaskPipe 
+    CpfMaskPipe
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     NgxMaskDirective, 
-    NgxMaskPipe 
+    NgxMaskPipe,
+    CurrencyMaskModule
   ],
   exports: [
     PaginationComponent,
     SearchBarComponent,
+    ServiceSelectorGridComponent,
     CurrencyFormatPipe,
     PhoneMaskPipe,
     CrmMaskPipe,
     CpfMaskPipe,
     NgxMaskDirective, 
-    NgxMaskPipe 
+    NgxMaskPipe
   ],
-  providers: [provideNgxMask(), SpecialtyService, DoctorService, PatientService, HealthPlanService]
+  providers: [provideNgxMask(), SpecialtyService, DoctorService, PatientService, HealthPlanService, ServiceService]
 })
 export class SharedModule { }

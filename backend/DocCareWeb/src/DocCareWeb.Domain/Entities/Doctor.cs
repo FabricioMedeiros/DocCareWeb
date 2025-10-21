@@ -2,9 +2,9 @@
 {
     public class Doctor : BaseEntity
     {
-        public required string Name { get; set; }
-        public required int SpecialtyId { get; set; }
-        public Specialty? Specialty { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int SpecialtyId { get; set; }
+        public Specialty Specialty { get; set; } = null!;
         public string? Crm { get; set; }
         public string? Email { get; set; }
         public string? CellPhone { get; set; }

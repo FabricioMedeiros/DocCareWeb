@@ -10,8 +10,6 @@ import { HealthPlanFormComponent } from './components/healthplan-form/healthplan
 import { HealthPlanListComponent } from './components/healthplan-list/healthplan-list.component';
 import { HealthPlanService } from '../../shared/services/healthplan.service';
 
-
-
 const routes: Routes = [
   {
     path: '', component: HealthplanComponent,

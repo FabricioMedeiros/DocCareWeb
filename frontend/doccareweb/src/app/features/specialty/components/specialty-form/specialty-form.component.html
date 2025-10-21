@@ -26,15 +26,15 @@
 
       <form [formGroup]="form" (ngSubmit)="saveSpecialty()">
         <div class="card-body">
-          <!-- Campo de Descrição -->
+          <!-- Campo do Nome -->
           <div class="form-group">
-            <label for="description">Descrição</label>
-            <input type="text" id="description" class="form-control" formControlName="description"
-              [ngClass]="{'is-invalid': displayMessage['description']}" />
+            <label for="name">Nome</label>
+            <input type="text" id="name" class="form-control" formControlName="name"
+              [ngClass]="{'is-invalid': displayMessage['name']}" />
 
             <!-- Mensagem de Erro -->
-            <span class="text-danger" *ngIf="displayMessage['description']">
-              <p [innerHTML]="displayMessage['description']"></p>
+            <span class="text-danger" *ngIf="displayMessage['name']">
+              <p [innerHTML]="displayMessage['name']"></p>
             </span>
           </div>
         </div>

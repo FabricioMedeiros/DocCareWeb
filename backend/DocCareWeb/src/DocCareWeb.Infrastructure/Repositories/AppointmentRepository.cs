@@ -10,10 +10,10 @@ namespace DocCareWeb.Infrastructure.Repositories
     {
         public AppointmentRepository(ApplicationDbContext context) : base(context)  { }
 
-        public async Task<Dictionary<string, int>> GetAppointmentsByStatusAsync(DateTime date, int? doctorId = null)
+        public async Task<Dictionary<string, int>> GetAppointmentsByStatusAsync(DateTime startDate, DateTime endDate, int? doctorId = null)
         {
             var query = _context.Set<Appointment>()
-                .Where(a => a.AppointmentDate.Date == date.Date);
+                .Where(a => a.AppointmentDate.Date >= startDate.Date && a.AppointmentDate.Date <= endDate.Date);
 
             if (doctorId.HasValue)
             {
@@ -39,8 +39,8 @@ namespace DocCareWeb.Infrastructure.Repositories
                 pendingQuery = pendingQuery.Where(a => a.DoctorId == doctorId.Value);
             }
 
-            var totalReceived = await receivedQuery.SumAsync(a => a.Cost);
-            var totalPending = await pendingQuery.SumAsync(a => a.Cost);
+            var totalReceived = await receivedQuery.SumAsync(a => a.TotalAmount);
+            var totalPending = await pendingQuery.SumAsync(a => a.TotalAmount);
 
             return new FinancialSummary
             {

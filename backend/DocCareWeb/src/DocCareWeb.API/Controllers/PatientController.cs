@@ -56,7 +56,8 @@ namespace DocCareWeb.API.Controllers
             patient.CreatedBy = userId!;
             patient.CreatedAt = DateTime.Now;
 
-            var createdPatient = await _patientService.AddAsync(patient);
+            var createdPatient = await _patientService.AddAsync(patient,
+                                                                includes: IncludePatientRelations());
             return CustomResponse(createdPatient);
         }
 

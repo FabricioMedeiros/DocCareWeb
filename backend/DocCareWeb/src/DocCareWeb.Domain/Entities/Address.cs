@@ -2,12 +2,13 @@
 {
     public class Address : BaseEntity
     {
-        public required string Street { get; set; }
+        public int PatientId { get; set; }
+        public string Street { get; set; } = string.Empty;
         public string? Number { get; set; }
         public string? Complement { get; set; }
         public required string City { get; set; }
         public string? Neighborhood { get; set; }        
-        public required string State { get; set; }
-        public required string ZipCode { get; set; }
+        public  string State { get; set; } = string.Empty;
+        public string ZipCode { get; set; } = string.Empty;
     }
 }

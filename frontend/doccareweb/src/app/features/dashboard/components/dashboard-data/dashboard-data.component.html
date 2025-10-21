@@ -17,16 +17,22 @@
   <!--Filtros -->
   <div class="filter-container">
     <label for="doctorSelect">Médico:</label>
-    <select id="doctorSelect" (change)="onDoctorChange($event)">
+    <select id="doctorSelect" [(ngModel)]="selectedDoctorId">
       <option value="">Todos</option>
       <option *ngFor="let doctor of doctors" [value]="doctor.id">{{ doctor.name }}</option>
     </select>
 
-    <label for="monthSelect">Financeiro do Mês:</label>
-    <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="onMonthChange($event)">
-      <option value="">Todos</option>
-      <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
-    </select>
+    <div class="date-group">
+      <label for="startDate">Data inicial:</label>
+      <input id="startDate" type="date" [(ngModel)]="startDate" />
+
+      <label for="endDate">Data final:</label>
+      <input id="endDate" type="date" [(ngModel)]="endDate" />
+
+      <button type="button" class="btn btn-primary" (click)="onSearch()" aria-label="Pesquisar">
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
   </div>
 
   <!-- Cards principais -->
@@ -44,7 +50,7 @@
     <div class="card appointments-status">
       <img class="icon" src="assets/icons/appointments.png" alt="Agendamentos" />
       <div>
-        <h2>Agendamentos do dia</h2>
+        <h2>{{ schedulePeriod }}</h2>
         <ul>
           <li *ngFor="let status of getAppointmentsStatusKeys()">
             {{ getStatusText(status) }}: {{ dashboardData.appointmentsByStatus[status] }}
@@ -54,26 +60,14 @@
       </div>
     </div>
 
-    <!-- Resumo Financeiro Diário -->
-    <div class="card daily-financial-summary">
-      <img class="icon" src="assets/icons/daily-finance.png" alt="Financeiro Diário" />
-      <div>
-        <h2>Financeiro do dia</h2>
-        <ul>
-          <li>Total Pendente: {{ dashboardData.dailyFinancialSummary.totalPending | currencyFormat  }}</li>
-          <li>Total Recebido: {{ dashboardData.dailyFinancialSummary.totalReceived | currencyFormat }}</li>
-        </ul>
-      </div>
-    </div>
-
     <!-- Resumo Financeiro Mensal/Anual -->
     <div class="card monthly-financial-summary">
       <img class="icon" src="assets/icons/monthly-finance.png" alt="{{ financialSummaryLabel }}" />
       <div>
         <h2>{{ financialSummaryLabel }}</h2>
         <ul>
-          <li>{{ pendingLabel }}: {{ dashboardData.monthlyFinancialSummary.totalPending | currencyFormat }}</li>
-          <li>{{ receivedLabel }}: {{ dashboardData.monthlyFinancialSummary.totalReceived | currencyFormat }}</li>
+          <li>{{ pendingLabel }}: {{ dashboardData.financialSummary.totalPending | currencyFormat }}</li>
+          <li>{{ receivedLabel }}: {{ dashboardData.financialSummary.totalReceived | currencyFormat }}</li>
         </ul>
       </div>
     </div>

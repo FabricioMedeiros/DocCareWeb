@@ -118,7 +118,7 @@
                 <div class="form-group col-md-4">
                   <label for="healthPlanId">Plano de Saúde</label>
                   <select id="healthPlanId" class="form-control" formControlName="healthPlanId">
-                    <option *ngFor="let plan of healthPlans" [ngValue]="plan.id">{{ plan.description }}</option>
+                    <option *ngFor="let plan of healthPlans" [ngValue]="plan.id">{{ plan.name }}</option>
                   </select>
                   <span class="text-danger" *ngIf="displayMessage['healthPlanId']">
                     <p [innerHTML]="displayMessage['healthPlanId']"></p>

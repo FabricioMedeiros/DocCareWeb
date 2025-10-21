@@ -1,7 +1,9 @@
 ﻿using DocCareWeb.Application.Dtos.HealthPlan;
 using DocCareWeb.Application.Interfaces;
 using DocCareWeb.Application.Notifications;
+using DocCareWeb.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocCareWeb.API.Controllers
 {
@@ -21,14 +23,18 @@ namespace DocCareWeb.API.Controllers
                                                 [FromQuery] int? pageNumber = null, 
                                                 [FromQuery] int? pageSize = null)
         {
-            var healthPlans = await _healthPlanService.GetAllAsync(filters, pageNumber, pageSize);
+            var healthPlans = await _healthPlanService.GetAllAsync(filters, 
+                                                                   pageNumber, 
+                                                                   pageSize,
+                                                                   includes: IncludeHealthPlanRelations());
             return CustomResponse(healthPlans);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var healthPlan = await _healthPlanService.GetByIdAsync(id);
+            var healthPlan = await _healthPlanService.GetByIdAsync(id,
+                                                                   includes: IncludeHealthPlanRelations());
 
             if (healthPlan == null) return NotFound();
 
@@ -38,7 +44,8 @@ namespace DocCareWeb.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] HealthPlanCreateDto healthPlanDto)
         {
-            var createdHealhPlan = await _healthPlanService.AddAsync(healthPlanDto);
+            var createdHealhPlan = await _healthPlanService.AddAsync(healthPlanDto,
+                                                                     includes: IncludeHealthPlanRelations());
             return CustomResponse(createdHealhPlan);
         }
 
@@ -66,6 +73,12 @@ namespace DocCareWeb.API.Controllers
             await _healthPlanService.DeleteAsync(id);
 
             return CustomResponse();
+        }
+        private static Func<IQueryable<HealthPlan>, IQueryable<HealthPlan>> IncludeHealthPlanRelations()
+        {
+            return query => query
+                .Include(h => h.Items)
+                .ThenInclude(i => i.Service);
         }
     }
 }

@@ -10,8 +10,6 @@ import { SpecialtyComponent } from './specialty.component';
 import { SpecialtyListComponent } from './components/specialty-list/specialty-list.component';
 import { SpecialtyFormComponent } from './components/specialty-form/specialty-form.component';
 
-
-
 const routes: Routes = [
   {
     path: '', component: SpecialtyComponent,

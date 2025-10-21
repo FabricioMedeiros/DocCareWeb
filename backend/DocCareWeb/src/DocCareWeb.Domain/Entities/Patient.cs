@@ -1,12 +1,10 @@
 ﻿using DocCareWeb.Domain.Enums;
-using System.Net;
-using System.Reflection;
 
 namespace DocCareWeb.Domain.Entities
 {
     public class Patient : BaseEntity
     {
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public string? Cpf { get; set; }
         public string? Rg { get; set; }
         public Gender Gender { get; set; }
@@ -16,11 +14,10 @@ namespace DocCareWeb.Domain.Entities
         public string? CellPhone { get; set; }
         public string? Notes { get; set; }
         public int HealthPlanId { get; set; }
-        public HealthPlan? HealthPlan { get; set; }
-        public int AddressId { get; set; }
-        public Address? Address { get; set; }
+        public HealthPlan HealthPlan { get; set; } = null!;
+        public Address Address { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
-        public required string CreatedBy { get; set; }
+        public string CreatedBy { get; set; } = null!;
         public DateTime? LastUpdatedAt { get; set; }
         public string? LastUpdatedBy { get; set; }
     }

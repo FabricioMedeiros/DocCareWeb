@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HealthplanListComponent } from './healthplan-list.component';
+import { HealthPlanListComponent } from './healthplan-list.component';
 
 describe('HealthplanListComponent', () => {
-  let component: HealthplanListComponent;
-  let fixture: ComponentFixture<HealthplanListComponent>;
+  let component: HealthPlanListComponent;
+  let fixture: ComponentFixture<HealthPlanListComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HealthplanListComponent]
+      declarations: [HealthPlanListComponent]
     });
-    fixture = TestBed.createComponent(HealthplanListComponent);
+    fixture = TestBed.createComponent(HealthPlanListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

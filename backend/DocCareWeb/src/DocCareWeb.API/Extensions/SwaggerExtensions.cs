@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using DocCareWeb.API.Filters;
+using Microsoft.OpenApi.Models;
 
 namespace DocCareWeb.API.Extensions;
 
@@ -32,7 +33,7 @@ public static class SwaggerExtensions
                     },
                     Array.Empty<string>()
                 }
-            });
+            });          
         });
     }
 }

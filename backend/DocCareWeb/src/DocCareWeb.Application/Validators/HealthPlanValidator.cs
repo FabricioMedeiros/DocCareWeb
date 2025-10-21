@@ -7,12 +7,9 @@ namespace DocCareWeb.Application.Validators
     {
         public HealthPlanValidator()
         {
-            RuleFor(h => h.Description)
-                .NotEmpty().WithMessage("A descrição é obrigatória.")
-                .Length(2, 60).WithMessage("A descrição deve ter entre 2 e 60 caracteres.");
-
-            RuleFor(a => a.Cost)
-                .GreaterThanOrEqualTo(0).WithMessage("O valor da consulta deve ser maior ou igual a zero.");
+            RuleFor(h => h.Name)
+                .NotEmpty().WithMessage("O nome é obrigatório.")
+                .Length(2, 60).WithMessage("O nome deve ter entre 2 e 60 caracteres.");
         }
     }
 

@@ -8,14 +8,15 @@ namespace DocCareWeb.Infrastructure.Mappings
     {
         public void Configure(EntityTypeBuilder<HealthPlan> builder)
         {
-            builder.HasKey(hp => hp.Id);
-            builder.Property(hp => hp.Description).IsRequired().HasMaxLength(60);
-            builder.Property(hp => hp.Cost).HasColumnType("decimal(18,2)");
+            builder.ToTable("HealthPlans");
 
-            builder.HasMany(hp => hp.Patients)
-                   .WithOne(p => p.HealthPlan)
-                   .HasForeignKey(p => p.HealthPlanId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            builder.HasKey(hp => hp.Id);
+            builder.Property(hp => hp.Name).IsRequired().HasMaxLength(60);
+
+            builder.HasMany(hp => hp.Items)
+                   .WithOne(item => item.HealthPlan)
+                   .HasForeignKey(item => item.HealthPlanId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

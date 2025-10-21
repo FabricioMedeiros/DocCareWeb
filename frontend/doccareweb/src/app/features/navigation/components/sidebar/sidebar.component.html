@@ -31,6 +31,12 @@
       </a>
     </li>
     <li>
+      <a [routerLink]="['/service/list']" title="Serviços">
+        <i class="fa fa-syringe"></i>
+        <span class="menu-text" *ngIf="!isSidebarClosed">Serviços</span>
+      </a>
+    </li>
+    <li>
       <a [routerLink]="['/doctor/list']" title="Médicos">
         <i class="fa fa-user-md"></i>
         <span class="menu-text" *ngIf="!isSidebarClosed">Médicos</span>

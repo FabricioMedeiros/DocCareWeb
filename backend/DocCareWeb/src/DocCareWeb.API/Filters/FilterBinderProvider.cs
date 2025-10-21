@@ -14,5 +14,4 @@ namespace DocCareWeb.API.Filters
             return null;
         }
     }
-
 }

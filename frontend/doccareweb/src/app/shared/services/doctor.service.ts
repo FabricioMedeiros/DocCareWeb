@@ -12,22 +12,27 @@ export class DoctorService extends BaseService {
 
     getAll(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
         const headers = this.GetAuthHeaderJson();
-        
+
         let url = `${this.UrlServiceV1}doctor`;
-    
+        const queryParts: string[] = [];
+
         if (page !== undefined && pageSize !== undefined) {
-            url += `?pageNumber=${page}&pageSize=${pageSize}`;
+            queryParts.push(`pageNumber=${page}`, `pageSize=${pageSize}`);
         }
-    
+
         if (field && value) {
-            url += `${(page !== undefined && pageSize !== undefined) ? '&' : '?'}filters[${field}]=${value}`;
+            queryParts.push(`${field}=${value}`);
         }
-    
+
+        if (queryParts.length > 0) {
+            url += `?${queryParts.join('&')}`;
+        }
+
         return this.http
             .get<any>(url, headers)
             .pipe(catchError(super.serviceError));
     }
-    
+
     getDoctorById(id: number): Observable<Doctor> {
         const headers = this.GetAuthHeaderJson();
 
@@ -49,7 +54,7 @@ export class DoctorService extends BaseService {
 
     updateDoctor(doctor: Doctor): Observable<Doctor> {
         const headers = this.GetAuthHeaderJson();
-        
+
         return this.http
             .put<Doctor>(`${this.UrlServiceV1}doctor/${doctor.id}`, doctor, headers)
             .pipe(
@@ -57,7 +62,7 @@ export class DoctorService extends BaseService {
                 catchError(this.serviceError)
             );
     }
-    
+
     delete(id: number): Observable<any> {
         const headers = this.GetAuthHeaderJson();
 

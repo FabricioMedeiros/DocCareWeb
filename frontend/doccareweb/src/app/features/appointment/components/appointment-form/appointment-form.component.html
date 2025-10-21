@@ -26,10 +26,12 @@
                         (click)="setTab('appointment-data')" role="tab">Dados</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" [ngClass]="{'active': currentTab === 'services'}" (click)="setTab('services')"
+                        role="tab">Serviços</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" [ngClass]="{'active': currentTab === 'notes'}" (click)="setTab('notes')"
-                        role="tab">
-                        Observações
-                    </a>
+                        role="tab">Observações</a>
                 </li>
             </ul>
 
@@ -70,7 +72,7 @@
                                     </span>
                                 </div>
 
-                                 <!-- Status -->
+                                <!-- Status -->
                                 <div class="form-group col-md-5">
                                     <label for="status">Status</label>
                                     <select id="status" class="form-control" formControlName="status"
@@ -96,7 +98,7 @@
                                     <span class="text-danger" *ngIf="displayMessage['doctorId']">
                                         <p [innerHTML]="displayMessage['doctorId']"></p>
                                     </span>
-                                </div>                               
+                                </div>
                             </div>
 
                             <!-- Paciente e CPF -->
@@ -146,7 +148,7 @@
                                     <select id="healthPlanId" class="form-control" formControlName="healthPlanId"
                                         [ngClass]="{'is-invalid': displayMessage['healthPlanId']}">
                                         <option *ngFor="let healthPlan of healthPlans" [value]="healthPlan.id">{{
-                                            healthPlan.description }}</option>
+                                            healthPlan.name }}</option>
                                     </select>
                                     <span class="text-danger" *ngIf="displayMessage['healthPlanId']">
                                         <p [innerHTML]="displayMessage['healthPlanId']"></p>
@@ -154,19 +156,29 @@
                                 </div>
 
                                 <div class="form-group col-md-4">
-                                    <label for="cost">Valor Consulta</label>
-                                    <input type="text" id="cost" class="form-control small-input" formControlName="cost"
+                                    <label for="totalAmount">Valor Total</label>
+                                    <input type="text" id="totalAmount" class="form-control small-input" formControlName="totalAmount"
                                         currencyMask
                                         [options]="{ allowNegative: false, allowZero: false, prefix: 'R$ ', thousands: '.', decimal: ',', decimalLimit: 2 }"
-                                        [ngClass]="{'is-invalid': displayMessage['cost']}" />
-
-                                    <!-- Mensagem de Erro -->
-                                    <span class="text-danger" *ngIf="displayMessage['cost']">
-                                        <p [innerHTML]="displayMessage['cost']"></p>
-                                    </span>
+                                    />
                                 </div>
-                            </div>          
+                            </div>
 
+                        </div>
+                    </div>
+
+                    <!-- Aba Serviços -->
+                    <div class="tab-pane" [ngClass]="{ 'active show': currentTab === 'services' }" id="services"
+                        role="tabpanel">
+                        <div class="card-body">
+                            <div class="grid-service-wrapper">
+                                <app-service-selector-grid 
+                                    [availableServices]="allServices" 
+                                    [items]="serviceItems"
+                                    [includeSuggestedPrice]="true"
+                                    (itemsChange)="onItemsChanged($event)">
+                                </app-service-selector-grid>
+                            </div>
                         </div>
                     </div>
 

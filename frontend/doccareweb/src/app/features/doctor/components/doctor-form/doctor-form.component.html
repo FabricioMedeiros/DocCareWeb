@@ -52,7 +52,7 @@
             <div class="form-group col-md-6">
               <label for="specialtyId">Especialidade</label>
               <select id="specialtyId" class="form-control" formControlName="specialtyId">
-                <option *ngFor="let specialty of specialties" [value]="specialty.id">{{ specialty.description }}</option>
+                <option *ngFor="let specialty of specialties" [value]="specialty.id">{{ specialty.name }}</option>
               </select>
               <span class="text-danger" *ngIf="displayMessage['specialtyId']">
                 <p [innerHTML]="displayMessage['specialtyId']"></p>

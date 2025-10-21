@@ -6,8 +6,7 @@ namespace DocCareWeb.Application.Dtos.DashBoard
     {
         public int TotalPatients { get; set; }
         public required Dictionary<string, int> AppointmentsByStatus { get; set; }
-        public required FinancialSummary DailyFinancialSummary { get; set; }
-        public required FinancialSummary MonthlyFinancialSummary { get; set; }
+        public required FinancialSummary FinancialSummary { get; set; }
     }
 
 }

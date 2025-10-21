@@ -25,8 +25,8 @@ export class HealthPlanListComponent extends BaseListComponent<HealthPlan> imple
   }
 
   override ngOnInit(): void {
-    this.fieldSearch = 'description';
-    this.placeholderSearch = 'Pesquise pela descrição';
+    this.fieldSearch = 'name';
+    this.placeholderSearch = 'Pesquise pelo nome';
     super.ngOnInit();
   }
 

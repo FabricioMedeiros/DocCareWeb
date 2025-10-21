@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 export abstract class BaseService {
 
     public LocalStorage = new LocalStorageUtils();
-    protected UrlServiceV1: string = environment.apiUrlv1;   
+    protected UrlServiceV1: string = environment.apiUrlv1;
 
     protected GetHeaderJson() {
         return {
@@ -23,6 +23,24 @@ export abstract class BaseService {
                 'Authorization': `Bearer ${this.LocalStorage.getTokenUser()}`
             })
         };
+    }
+
+    protected buildQueryParams(
+        filters?: { [key: string]: string },
+        page?: number,
+        pageSize?: number
+    ): string {
+        const parts: string[] = [];
+
+        if (page !== undefined && pageSize !== undefined) {
+            parts.push(`pageNumber=${page}`, `pageSize=${pageSize}`);
+        }
+
+        if (filters) {
+            parts.push(...Object.entries(filters).map(([key, value]) => `${key}=${value}`));
+        }
+
+        return parts.length > 0 ? `?${parts.join('&')}` : '';
     }
 
     protected extractData(response: any) {
@@ -45,7 +63,7 @@ export abstract class BaseService {
         }
         if (response.status === 500) {
             customError.push("Ocorreu um erro no processamento, tente novamente mais tarde ou contate o nosso suporte.");
-            
+
             customResponse.error.errors = customError;
             return throwError(customResponse);
         }

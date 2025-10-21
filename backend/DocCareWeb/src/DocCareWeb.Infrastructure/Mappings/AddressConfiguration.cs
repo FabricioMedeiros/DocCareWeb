@@ -8,7 +8,10 @@ namespace DocCareWeb.Infrastructure.Mappings
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
+            builder.ToTable("Addresses");
+
             builder.HasKey(a => a.Id);
+            builder.Property(a => a.PatientId).IsRequired();
             builder.Property(a => a.Street).IsRequired().HasMaxLength(50);
             builder.Property(a => a.Number).HasMaxLength(10);
             builder.Property(a => a.Complement).HasMaxLength(20);

@@ -4,7 +4,6 @@ using DocCareWeb.Application.Interfaces;
 using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
 using DocCareWeb.Domain.Interfaces;
-using FluentValidation;
 
 namespace DocCareWeb.Application.Services
 {

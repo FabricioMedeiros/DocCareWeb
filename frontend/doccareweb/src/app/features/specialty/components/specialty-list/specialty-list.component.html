@@ -40,13 +40,13 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Descrição</th>
+                    <th>Nome</th>
                     <th class="text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let specialty of items">
-                    <td class="align-left">{{ specialty.description }}</td>
+                    <td class="align-left">{{ specialty.name }}</td>
                     <td class="action-column">
                         <div class="button-group">
                             <button class="btn btn-action btn-warning" (click)="editItem(specialty, 'specialty/edit')">
@@ -76,7 +76,7 @@
                 </button>
             </div>
             <div class="modal-body text-center custom-modal-delete">
-                <p>Confirma a exclusão desta especialidade: {{selectedItem.description}}?</p>
+                <p>Confirma a exclusão desta especialidade: {{selectedItem.name}}?</p>
                 <div class="button-container">
                     <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedItem)">Sim</button>
                     <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Não</button>

@@ -2,8 +2,7 @@
 {
     public class HealthPlan : BaseEntity
     {
-        public string? Description { get; set; }
-        public required decimal Cost { get; set; }
-        public ICollection<Patient>? Patients { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public ICollection<HealthPlanItem> Items { get; set; } = new List<HealthPlanItem>();
     }
 }

@@ -48,6 +48,9 @@ namespace DocCareWeb.Infrastructure.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
                     b.Property<string>("State")
                         .IsRequired()
                         .HasMaxLength(2)
@@ -65,7 +68,10 @@ namespace DocCareWeb.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses");
+                    b.HasIndex("PatientId")
+                        .IsUnique();
+
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("DocCareWeb.Domain.Entities.ApplicationUser", b =>
@@ -149,9 +155,6 @@ namespace DocCareWeb.Infrastructure.Migrations
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -187,6 +190,9 @@ namespace DocCareWeb.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
@@ -195,7 +201,36 @@ namespace DocCareWeb.Infrastructure.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
+                });
+
+            modelBuilder.Entity("DocCareWeb.Domain.Entities.AppointmentItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SuggestedPrice")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("AppointmentItems", (string)null);
                 });
 
             modelBuilder.Entity("DocCareWeb.Domain.Entities.Doctor", b =>
@@ -236,7 +271,7 @@ namespace DocCareWeb.Infrastructure.Migrations
 
                     b.HasIndex("SpecialtyId");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("DocCareWeb.Domain.Entities.HealthPlan", b =>
@@ -247,17 +282,40 @@ namespace DocCareWeb.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("HealthPlans");
+                    b.ToTable("HealthPlans", (string)null);
+                });
+
+            modelBuilder.Entity("DocCareWeb.Domain.Entities.HealthPlanItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HealthPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HealthPlanId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("HealthPlanItems", (string)null);
                 });
 
             modelBuilder.Entity("DocCareWeb.Domain.Entities.Patient", b =>
@@ -267,9 +325,6 @@ namespace DocCareWeb.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
@@ -324,11 +379,30 @@ namespace DocCareWeb.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
-
                     b.HasIndex("HealthPlanId");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", (string)null);
+                });
+
+            modelBuilder.Entity("DocCareWeb.Domain.Entities.Service", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("BasePrice")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("DocCareWeb.Domain.Entities.Specialty", b =>
@@ -339,14 +413,14 @@ namespace DocCareWeb.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specialties");
+                    b.ToTable("Specialties", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -482,6 +556,15 @@ namespace DocCareWeb.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("DocCareWeb.Domain.Entities.Address", b =>
+                {
+                    b.HasOne("DocCareWeb.Domain.Entities.Patient", null)
+                        .WithOne("Address")
+                        .HasForeignKey("DocCareWeb.Domain.Entities.Address", "PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DocCareWeb.Domain.Entities.Appointment", b =>
                 {
                     b.HasOne("DocCareWeb.Domain.Entities.Doctor", "Doctor")
@@ -509,6 +592,25 @@ namespace DocCareWeb.Infrastructure.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("DocCareWeb.Domain.Entities.AppointmentItem", b =>
+                {
+                    b.HasOne("DocCareWeb.Domain.Entities.Appointment", "Appointment")
+                        .WithMany("Items")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DocCareWeb.Domain.Entities.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("Service");
+                });
+
             modelBuilder.Entity("DocCareWeb.Domain.Entities.Doctor", b =>
                 {
                     b.HasOne("DocCareWeb.Domain.Entities.Specialty", "Specialty")
@@ -520,21 +622,32 @@ namespace DocCareWeb.Infrastructure.Migrations
                     b.Navigation("Specialty");
                 });
 
-            modelBuilder.Entity("DocCareWeb.Domain.Entities.Patient", b =>
+            modelBuilder.Entity("DocCareWeb.Domain.Entities.HealthPlanItem", b =>
                 {
-                    b.HasOne("DocCareWeb.Domain.Entities.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
+                    b.HasOne("DocCareWeb.Domain.Entities.HealthPlan", "HealthPlan")
+                        .WithMany("Items")
+                        .HasForeignKey("HealthPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DocCareWeb.Domain.Entities.HealthPlan", "HealthPlan")
-                        .WithMany("Patients")
-                        .HasForeignKey("HealthPlanId")
+                    b.HasOne("DocCareWeb.Domain.Entities.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Address");
+                    b.Navigation("HealthPlan");
+
+                    b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("DocCareWeb.Domain.Entities.Patient", b =>
+                {
+                    b.HasOne("DocCareWeb.Domain.Entities.HealthPlan", "HealthPlan")
+                        .WithMany()
+                        .HasForeignKey("HealthPlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("HealthPlan");
                 });
@@ -590,9 +703,20 @@ namespace DocCareWeb.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DocCareWeb.Domain.Entities.Appointment", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("DocCareWeb.Domain.Entities.HealthPlan", b =>
                 {
-                    b.Navigation("Patients");
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("DocCareWeb.Domain.Entities.Patient", b =>
+                {
+                    b.Navigation("Address")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

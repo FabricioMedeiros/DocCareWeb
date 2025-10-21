@@ -42,6 +42,11 @@ body {
   margin-bottom: 2px; 
 }
 
+.price-input {
+    max-width: 150px;
+  }
+  
+
 /* Estilos para mensagem de registros não localizados */
 .no-results-message {
   text-align: center;

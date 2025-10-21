@@ -1,0 +1,58 @@
+<!-- Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-pulse" [fullScreen]="true">
+  <p style="color: white; font-size: 20px;">Carregando...</p>
+</ngx-spinner>
+
+<div class="form-content-container">
+  <!-- Erros -->
+  <div class="alert alert-danger" *ngIf="errors.length > 0">
+    <h3>Atenção</h3>
+    <ul>
+      <li *ngFor="let error of errors">{{ error }}</li>
+    </ul>
+  </div>
+
+  <!-- Contêiner do Card -->
+  <div class="card-container">
+    <div class="card">
+      <div class="card-header">
+        <h3>{{ isEditMode ? 'Editar Serviço' : 'Cadastro de Serviços' }}</h3>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="saveService()">
+        <div class="card-body">
+          <!-- Campo de Descrição -->
+          <div class="form-group">
+            <label for="name">Nome</label>
+            <input type="text" id="name" class="form-control" formControlName="name"
+              [ngClass]="{'is-invalid': displayMessage['name']}" />
+
+            <!-- Mensagem de Erro -->
+            <span class="text-danger" *ngIf="displayMessage['name']">
+              <p [innerHTML]="displayMessage['name']"></p>
+            </span>
+          </div>
+
+          <!--Campo Preçco Base-->
+            <div class="form-group">
+              <label for="basePrice">Preço Base</label>
+              <input type="text" id="basePrice" class="form-control price-input" formControlName="basePrice" currencyMask
+                [options]="{ allowNegative: false, allowZero: false, prefix: 'R$ ', thousands: '.', decimal: ',', decimalLimit: 2 }"
+                [ngClass]="{'is-invalid': displayMessage['basePrice']}" />
+            
+              <!-- Mensagem de Erro -->
+              <span class="text-danger" *ngIf="displayMessage['basePrice']">
+                <p [innerHTML]="displayMessage['basePrice']"></p>
+              </span>
+            </div>            
+        </div>
+
+        <div class="card-footer">
+          <!-- Botões de Ação -->
+          <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Salvar</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel('/service/list')">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

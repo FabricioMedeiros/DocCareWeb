@@ -1,0 +1,98 @@
+<div class="service-selector-container">
+  <!-- Formulário de busca e adição de serviço -->
+  <form [formGroup]="form">
+    <div class="row g-3 align-items-end">
+      <!-- Serviço -->
+      <div class="col-md-6 position-relative">
+        <label class="form-label">Serviço</label>
+        <input type="text" class="form-control" formControlName="search" (input)="filterServices()"
+          (blur)="hideSuggestions()" [readonly]="selectedService !== null" placeholder="Digite o nome do serviço"
+          [ngClass]="{ 'is-invalid': displayMessage['name'] }">
+
+        <ul *ngIf="showSuggestions && filteredServices.length > 0"
+          class="list-group position-absolute w-100 zindex-dropdown">
+          <li class="list-group-item list-group-item-action" *ngFor="let service of filteredServices"
+            (mousedown)="selectService(service)">
+            {{ service.name }} - R$ {{ service.price }}
+          </li>
+        </ul>
+
+        <div class="text-danger" style="min-height: 1.5rem;">
+          <small *ngIf="displayMessage['name']" [innerHTML]="displayMessage['name']"></small>
+        </div>
+      </div>
+
+      <!-- Preço -->
+      <div class="col-md-3">
+        <label class="form-label">Preço</label>
+        <input type="text" class="form-control" formControlName="price" currencyMask [options]="{
+               allowNegative: false,
+               allowZero: false,
+               prefix: 'R$ ',
+               thousands: '.',
+               decimal: ',',
+               decimalLimit: 2
+             }" [ngClass]="{ 'is-invalid': displayMessage['price'] }" placeholder="Preço sugerido">
+
+        <div class="text-danger" style="min-height: 1.5rem;">
+          <small *ngIf="displayMessage['price']" [innerHTML]="displayMessage['price']"></small>
+        </div>
+      </div>
+
+      <!-- Botões -->
+      <div class="col-md-3">
+        <div class="button-group">
+          <button type="button" class="btn btn-primary btn-action" (click)="addService()" title="Adicionar serviço à lista">
+            <i class="fas fa-plus"></i>
+          </button>
+
+          <button *ngIf="selectedService" type="button" class="btn btn-warning btn-action"
+            (click)="clearSelectedService()" title="Alterar serviço selecionado">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+
+        <div style="min-height: 1.5rem;"></div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Tabela com rolagem -->
+  <div class="service-table-wrapper">
+    <table class="table table-bordered table-striped mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Serviço</th>
+          <th style="width: 120px;">Preço</th>
+          <th style="width: 100px;">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items">
+          <td>{{ item.name }}</td>
+          <td>
+            <input type="text" class="form-control form-control-sm" currencyMask [options]="{
+             prefix: 'R$ ',
+             thousands: '.',
+             decimal: ',',
+             allowNegative: false,
+             allowZero: false,
+             decimalLimit: 2
+           }" [(ngModel)]="item.price" (ngModelChange)="updatePrice(item, $event)">
+          </td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-danger btn-action" (click)="removeItem(item.serviceId)"
+              title="Remover serviço da lista">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+

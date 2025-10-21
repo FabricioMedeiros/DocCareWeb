@@ -10,13 +10,18 @@ namespace DocCareWeb.API.Filters
 
             foreach (var key in bindingContext.HttpContext.Request.Query.Keys)
             {
-                var value = bindingContext.HttpContext.Request.Query[key].ToString();
 
-                var normalizedKey = key.Replace("[", ".").Replace("]", "");
+                if (key.Equals("pageNumber", StringComparison.OrdinalIgnoreCase) ||
+                    key.Equals("pageSize", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var value = bindingContext.HttpContext.Request.Query[key].ToString();
 
                 if (!string.IsNullOrWhiteSpace(value))
                 {
-                    filters[normalizedKey] = value;
+                    filters[key] = value;
                 }
             }
 

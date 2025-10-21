@@ -8,23 +8,13 @@ namespace DocCareWeb.Infrastructure.Mappings
     {
         public void Configure(EntityTypeBuilder<Doctor> builder)
         {
+            builder.ToTable("Doctors");
+
             builder.HasKey(d => d.Id);
-
-            builder.Property(d => d.Name)
-                   .IsRequired()
-                   .HasMaxLength(50);
-
-            builder.Property(d => d.Crm)
-                   .IsRequired()
-                   .HasMaxLength(20);
-
-            builder.Property(d => d.CellPhone)
-                   .IsRequired()
-                   .HasMaxLength(11);
-
-            builder.Property(d => d.Email)
-                   .IsRequired()
-                   .HasMaxLength(60);
+            builder.Property(d => d.Name).IsRequired().HasMaxLength(50);
+            builder.Property(d => d.Crm).IsRequired().HasMaxLength(20);
+            builder.Property(d => d.CellPhone).IsRequired().HasMaxLength(11);
+            builder.Property(d => d.Email).IsRequired().HasMaxLength(60);
 
             builder.HasOne(d => d.Specialty)
                    .WithMany()

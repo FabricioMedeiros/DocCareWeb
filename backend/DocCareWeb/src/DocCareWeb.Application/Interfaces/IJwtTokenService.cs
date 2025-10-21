@@ -1,5 +1,4 @@
 ﻿using DocCareWeb.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 
 namespace DocCareWeb.Application.Interfaces
 {

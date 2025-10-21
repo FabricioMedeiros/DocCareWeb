@@ -1,7 +1,15 @@
 @import 'src/app/core/styles/shared-form-styles.css';
 
+.tab-pane{
+  min-height: 400px;
+}
+
+.grid-service-wrapper {
+  height: 350px;
+}
+
 .notes-tab {
-    min-height: 344px; 
+    min-height: 400px; 
     display: flex;
     flex-direction: column; 
   }
@@ -17,3 +25,16 @@
     resize: none; 
     margin: 0;
   }
+
+  /* Ajuste para telas pequenas */
+  @media (max-width: 768px) {
+  .tab-content {
+    height: auto;
+    min-height: 400px;
+    overflow-y: visible;
+  }
+
+  .grid-service-wrapper{
+    height: auto;
+  }
+}

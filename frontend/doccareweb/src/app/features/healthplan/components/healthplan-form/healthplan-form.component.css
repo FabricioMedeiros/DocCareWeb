@@ -1,6 +1,21 @@
 @import 'src/app/core/styles/shared-form-styles.css';
 
-.small-input {
-    max-width: 150px;
+.tab-content {
+  height: 300px; 
+}
+
+.grid-service-wrapper {
+  height: 280px; 
+}
+
+@media (max-width: 768px) {
+  .tab-content {
+    height: auto;
+    min-height: 300px;
+    overflow-y: visible;
   }
-  
+
+  .grid-service-wrapper{
+    height: auto;
+  }
+}

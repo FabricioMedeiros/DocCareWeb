@@ -13,14 +13,31 @@ namespace DocCareWeb.Domain.Entities
         public DateTime AppointmentDate { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-
-        public required decimal Cost { get; set; }
-        public AppointmentStatus Status { get; private set; }
+        public AppointmentStatus Status { get; private set; } = AppointmentStatus.Scheduled;
+        public decimal TotalAmount { get; private set; }
         public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; }
         public required string CreatedBy { get; set; }
         public DateTime? LastUpdatedAt { get; set; }
         public string? LastUpdatedBy { get; set; }
+        public ICollection<AppointmentItem> Items { get; set; } = new List<AppointmentItem>();
+
+        public void UpdateServices(IEnumerable<AppointmentItem> services)
+        {
+            Items.Clear();
+
+            foreach (var service in services)
+            {
+                Items.Add(service);
+            }
+
+            CalculateTotal();
+        }
+
+        public void CalculateTotal()
+        {
+            TotalAmount = Items.Sum(s => s.Price);
+        }
 
         public void Schedule()
         {

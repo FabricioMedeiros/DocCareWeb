@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, map, Observable, Subject, takeUntil, finalize } from 'rxjs';
+import { forkJoin, map, Observable, Subject, takeUntil, finalize, startWith, pairwise, skip } from 'rxjs';
 
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -17,6 +17,9 @@ import { DoctorService } from 'src/app/shared/services/doctor.service';
 import { HealthPlanService } from 'src/app/shared/services/healthplan.service';
 import { GenericValidator } from 'src/app/core/validators/generic-form-validation';
 import { BaseFormComponent } from 'src/app/shared/components/base-form/base-form.component';
+import { ServiceItem } from 'src/app/shared/models/service-item';
+import { Service } from 'src/app/features/service/models/service';
+import { ServiceService } from 'src/app/shared/services/service.service';
 
 @Component({
   selector: 'app-appointment-form',
@@ -30,9 +33,11 @@ export class AppointmentFormComponent
   doctors: Doctor[] = [];
   patients: Patient[] = [];
   healthPlans: HealthPlan[] = [];
+  serviceItems: ServiceItem[] = [];
+  allServices: Service[] = [];
 
   currentTab: string = 'appointment-data';
-  selectedPatient: Patient = { id: 0, name: '', cpf: '', phone: '', cellPhone: '', healthPlan: { id: 0, description: '', cost: 0 } };
+  selectedPatient: Patient = { id: 0, name: '', cpf: '', phone: '', cellPhone: '', healthPlan: { id: 0, name: '', cost: 0 } };
   selectedCost: number = 0;
   currentStatus: AppointmentStatus = 0;
 
@@ -72,6 +77,8 @@ export class AppointmentFormComponent
     private readonly doctorService: DoctorService,
     private readonly patientService: PatientService,
     private readonly healthPlanService: HealthPlanService,
+    private serviceService: ServiceService,
+    private cdr: ChangeDetectorRef
   ) {
     super(fb, router, route, toastr, spinner);
 
@@ -98,11 +105,11 @@ export class AppointmentFormComponent
     if (storedDate) {
       const parsedDate = new Date(storedDate);
       const formattedDate = parsedDate.toISOString().split('T')[0];
-      this.form.get('appointmentDate')?.setValue(formattedDate);
+      this.form.get('appointmentDate')?.setValue(formattedDate, { emitEvent: false });
     }
 
     if (storedDoctor) {
-      this.form.get('doctorId')?.setValue(storedDoctor);
+      this.form.get('doctorId')?.setValue(storedDoctor, { emitEvent: false });
     }
 
     const resolvedData = this.route.snapshot.data['appointment'];
@@ -111,7 +118,7 @@ export class AppointmentFormComponent
     if (resolvedData) {
       this.initializeForm({
         data: {
-          ...resolvedData?.data,
+          ...resolvedData.data,
           doctorId: resolvedData.data.doctor.id,
           patientId: resolvedData.data.patient.id,
           healthPlanId: resolvedData.data.healthPlan.id,
@@ -138,23 +145,49 @@ export class AppointmentFormComponent
       }
     }
 
-    forkJoin([this.loadDoctors(), this.loadPatients(), this.loadHealthPlans()])
+    forkJoin([
+      this.loadDoctors(),
+      this.loadPatients(),
+      this.loadHealthPlans()
+    ])
       .pipe(finalize(() => this.spinner.hide()))
       .subscribe(() => {
         if (this.isEditMode) {
           this.updatePatientDetails(this.form.get('patientId')?.value);
         }
 
-        this.form.get('healthPlanId')?.valueChanges
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(healthPlanId => {
-            const selectedHealthPlan = this.healthPlans.find(hp => hp.id === +healthPlanId);
-            if (selectedHealthPlan) {
-              this.form.get('cost')?.setValue(selectedHealthPlan.cost);
-            }
-          });
+        this.serviceItems = [...(resolvedData?.data?.items ?? [])];
+
+        const totalFromItems = this.serviceItems.reduce((sum, it) => sum + (it.price || 0), 0);
+        this.form.get('totalAmount')?.setValue(totalFromItems.toFixed(2), { emitEvent: false });
+
+        this.updateHealthPlanFieldState();
+
+        const healthPlanIdFromResolved = resolvedData?.data?.healthPlan?.id;
+        if (this.isEditMode && healthPlanIdFromResolved) {
+          this.loadServicesByHealthPlan(healthPlanIdFromResolved);
+        }
+
       });
 
+    const healthPlanControl = this.form.get('healthPlanId');
+    healthPlanControl?.valueChanges
+      .pipe(pairwise(), takeUntil(this.destroy$))
+      .subscribe(([previous, current]) => {
+        if (previous === current) return;
+
+        if (this.serviceItems.length > 0) {
+          healthPlanControl.setValue(previous, { emitEvent: false });
+          return;
+        }
+
+        const selectedHealthPlan = this.healthPlans.find(hp => hp.id === +current);
+        if (selectedHealthPlan) {
+          this.form.get('cost')?.setValue(selectedHealthPlan.cost, { emitEvent: false });
+          this.loadServicesByHealthPlan(selectedHealthPlan.id);
+        }
+      });
+   
     this.form.get('patientId')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(patientId => this.updatePatientDetails(patientId));
@@ -178,7 +211,6 @@ export class AppointmentFormComponent
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-
   }
 
   buildForm(): void {
@@ -194,7 +226,7 @@ export class AppointmentFormComponent
       phone: [{ value: '', disabled: true }],
       cellPhone: [{ value: '', disabled: true }],
       healthPlanId: ['', [Validators.required]],
-      cost: ['0', [Validators.required]],
+      totalAmount: [{ value: '0', disabled: true }, [Validators.required]],
       notes: ['']
     });
   }
@@ -213,7 +245,11 @@ export class AppointmentFormComponent
     });
 
     if (!currentPlanId || currentPlanId === patientPlanId) {
-      this.form.get('healthPlanId')?.setValue(patientPlanId);
+      this.form.get('healthPlanId')?.setValue(patientPlanId, { emitEvent: false });
+
+      if (patientPlanId) {
+        this.loadServicesByHealthPlan(patientPlanId);
+      }
     }
   }
 
@@ -223,13 +259,6 @@ export class AppointmentFormComponent
     date.setHours(hours, minutes);
     date.setHours(date.getHours() + 1);
     return date.toTimeString().slice(0, 5);
-  }
-
-  setCostBasedOnHealthPlan(healthPlanId: number): void {
-    const selectedPlan = this.healthPlans.find(h => h.id === healthPlanId);
-    if (selectedPlan) {
-      this.form.get('cost')?.setValue(selectedPlan.cost || '');
-    }
   }
 
   setTab(tab: string): void {
@@ -254,29 +283,48 @@ export class AppointmentFormComponent
     ));
   }
 
-  saveAppointment() {
+  private loadServicesByHealthPlan(healthPlanId: number): void {
+    this.spinner.show();
+    this.serviceService.getAll(undefined, undefined, 'healthPlanId', healthPlanId.toString())
+      .pipe(finalize(() => this.spinner.hide()))
+      .subscribe(response => {
+        this.allServices = response?.data?.items || [];
+        this.updateHealthPlanFieldState();
+      });
+  }  
+
+  saveAppointment(): void {
     if (this.form.dirty && this.form.valid) {
-      this.changesSaved = true;
-      const appointmentData = { ...this.form.getRawValue() };
+      const appointmentData = {
+        ...this.form.getRawValue(),
+        items: this.serviceItems
+      };
+
+      delete appointmentData.totalAmount;
 
       if (this.isEditMode) {
         const newStatus = appointmentData.status;
-
-        if ((this.currentStatus !== newStatus) && (!this.canChangeStatus(this.currentStatus, newStatus))) {
+        if (this.currentStatus !== newStatus && !this.canChangeStatus(this.currentStatus, newStatus)) {
           this.toastr.error('Mudança de status não permitida.', 'Atenção');
           return;
         }
-
-        this.appointmentService.updateAppointment(appointmentData).subscribe({
-          next: () => this.processSuccess('Agendamento atualizado com sucesso!', '/appointment/list'),
-          error: (error) => this.processFail(error)
-        });
-      } else {
-        this.appointmentService.registerAppointment(appointmentData).subscribe({
-          next: () => this.processSuccess('Agendamento cadastrado com sucesso!', '/appointment/list'),
-          error: (error) => this.processFail(error)
-        });
       }
+
+      const request = this.isEditMode
+        ? this.appointmentService.updateAppointment(appointmentData)
+        : this.appointmentService.registerAppointment(appointmentData);
+
+      request.subscribe({
+        next: () => {
+          const msg = this.isEditMode
+            ? 'Agendamento atualizado com sucesso!'
+            : 'Agendamento cadastrado com sucesso!';
+          this.processSuccess(msg, '/appointment/list');
+        },
+        error: err => this.processFail(err)
+      });
+
+      this.changesSaved = true;
     }
   }
 
@@ -316,5 +364,31 @@ export class AppointmentFormComponent
       [AppointmentStatus.Confirmed, AppointmentStatus.Canceled, AppointmentStatus.Completed].includes(newStatus)) ||
       (currentStatus === AppointmentStatus.Confirmed &&
         [AppointmentStatus.Canceled, AppointmentStatus.Completed].includes(newStatus));
+  }
+
+  private updateHealthPlanFieldState(): void {
+    const healthPlanControl = this.form.get('healthPlanId');
+    if (this.serviceItems.length > 0) {
+      healthPlanControl?.disable();
+    } else {
+      healthPlanControl?.enable();
+    }
+  }
+
+  onItemsChanged(updatedItems: ServiceItem[]): void {
+    this.serviceItems = updatedItems.map(item => {
+      const service = this.allServices.find(s => s.id === item.serviceId);
+      return {
+        serviceId: item.serviceId,
+        name: item.name,
+        price: item.price,
+        suggestedPrice: service?.price
+      };
+    });
+
+    const total = this.serviceItems.reduce((sum, item) => sum + (item.price || 0), 0);
+    this.form.get('totalAmount')?.setValue(total.toFixed(2));
+    this.form.markAsDirty();
+    this.updateHealthPlanFieldState();
   }
 }

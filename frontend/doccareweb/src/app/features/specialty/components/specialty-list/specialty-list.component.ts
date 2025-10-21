@@ -24,8 +24,8 @@ export class SpecialtyListComponent extends BaseListComponent<Specialty> impleme
   }
 
   override ngOnInit(): void {
-    this.fieldSearch = 'description';
-    this.placeholderSearch = 'Pesquise pela descrição';
+    this.fieldSearch = 'name';
+    this.placeholderSearch = 'Pesquise pelo nome';
     super.ngOnInit();
   }
 

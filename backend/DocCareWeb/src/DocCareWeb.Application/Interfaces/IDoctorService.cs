@@ -1,5 +1,4 @@
-﻿using DocCareWeb.Application.Dtos;
-using DocCareWeb.Application.Dtos.Doctor;
+﻿using DocCareWeb.Application.Dtos.Doctor;
 using DocCareWeb.Domain.Entities;
 
 namespace DocCareWeb.Application.Interfaces

@@ -1,0 +1,89 @@
+<!-- Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-pulse" [fullScreen]="true">
+    <p style="color: white; font-size: 20px;">Carregando...</p>
+</ngx-spinner>
+
+<div class="content-list-container">
+
+    <!-- Opções de Pesquisa -->
+    <div class='options-filter-list-container'>
+        <!-- Título -->
+        <div class="title">
+            <h1>Serviços</h1>
+        </div>
+
+        <!-- Erros -->
+        <div *ngIf="errorMessage && errorMessage.length > 0" class="alert alert-danger">
+            <h3>Atenção!</h3>
+            <ul>
+                <li>{{ errorMessage }}</li>
+            </ul>
+        </div>
+
+        <!-- Barra de Pesquisa -->
+        <app-search-bar [placeholder]="placeholderSearch" [pageSizeOptions]="[10, 30, 50]"
+            [initialSearchTerm]="initialTermSearch" (search)="onSearch($event)" (clear)="clearSearch()">
+        </app-search-bar>
+
+        <div *ngIf="items.length === 0 && searchTerm !== '' && !errorMessage && !loadingData"
+            class="no-results-message">
+            Nenhum resultado encontrado.
+        </div>
+
+        <a class="btn btn-new btn-outline-primary" (click)="addItem('service/new')">
+            <i class="fas fa-plus"></i> Cadastrar
+        </a>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-container">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th class="align-right">Preço Base</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let service of items">
+                    <td class="align-left">{{ service.name }}</td>
+                    <td class="align-right">{{ service.price | currencyFormat }}</td>
+                    <td class="action-column">
+                        <div class="button-group">
+                            <button class="btn btn-action btn-warning" (click)="editItem(service, 'service/edit')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-action btn-danger" (click)="openDeleteModal(template, service)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Paginação -->
+        <div *ngIf="items.length > 0">
+            <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChanged)="onPageChanged($event)">
+            </app-pagination>
+        </div>
+
+        <!-- Modal -->
+        <ng-template #template>
+            <div class="modal-header">
+                <h4 class="modal-title text-danger">Atenção</h4>
+                <button type="button" class="close" aria-label="Close" (click)="bsModalRef.hide()">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body text-center custom-modal-delete">
+                <p>Confirma a exclusão deste serviço: {{selectedItem.name}}?</p>
+                <div class="button-container">
+                    <button type="button" class="btn btn-danger" (click)="confirmDelete(selectedItem)">Sim</button>
+                    <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Não</button>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+</div>
