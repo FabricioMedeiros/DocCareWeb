@@ -18,7 +18,7 @@ const routes: Routes = [
       { path: 'edit/:id', component: DoctorFormComponent, 
         canActivate: [authGuard],  
         canDeactivate: [canDeactivateForm], resolve: {
-        doctor: genericResolver(DoctorService, (service, id) => service.getDoctorById(id))
+        doctor: genericResolver(DoctorService, (service, id) => service.getById(id))
       }},
     ]
   }

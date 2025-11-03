@@ -37,10 +37,10 @@ export class ServiceFormComponent extends BaseFormComponent<Service> implements 
   ngOnInit(): void {
     this.buildForm();
 
-    const resolvedData = this.route.snapshot.data['service']; 
+    const resolvedData = this.route.snapshot.data['service'];
 
     if (resolvedData) {
-      this.initializeForm(resolvedData);  
+      this.initializeForm(resolvedData);
     }
   }
 
@@ -56,27 +56,19 @@ export class ServiceFormComponent extends BaseFormComponent<Service> implements 
     if (this.form.dirty && this.form.valid) {
       this.entity = Object.assign({}, this.entity, this.form.value);
 
-      if (this.isEditMode) {
-        this.serviceService.updateService(this.entity).subscribe({
-          next: () => {
-            this.processSuccess('Serviço alterado com sucesso!', '/service/list');
-          },
-          error: (error) => {
-            this.processFail(error);
-          }
-        });
-      } else {
-        this.serviceService.registerService(this.entity).subscribe({
-          next: () => {
-            this.processSuccess('Serviço cadastrado com sucesso!', '/service/list');
-          },
-          error: (error) => {
-            this.processFail(error);
-          }
-        });
-      }
-    }
+      const request = this.serviceService.save(this.entity);
 
-    this.changesSaved = true;
+      request.subscribe({
+        next: () => {
+          const msg = this.isEditMode
+            ? 'Serviço atualizado com sucesso!'
+            : 'Serviço cadastrado com sucesso!';
+          this.processSuccess(msg, '/service/list');
+        },
+        error: err => this.processFail(err)
+      });
+
+      this.changesSaved = true;
+    }
   }
 }

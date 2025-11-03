@@ -123,7 +123,7 @@ export class AppointmentListComponent implements OnInit {
         filters['Doctor.Id'] = this.selectedDoctor.toString();
       }
 
-      this.appointmentService.getAllAppointments(this.currentPage, this.pageSize, filters).subscribe({
+      this.appointmentService.getAll(this.currentPage, this.pageSize, filters).subscribe({
         next: response => {
           this.processloadAppointmentsSuccess(response);
         },

@@ -20,7 +20,7 @@ const routes: Routes = [
       { path: 'edit/:id', component: AppointmentFormComponent, 
         canActivate: [authGuard],  
         canDeactivate: [canDeactivateForm], 
-        resolve: { appointment: genericResolver(AppointmentService, (service, id) => service.getAppointmentById(id))
+        resolve: { appointment: genericResolver(AppointmentService, (service, id) => service.getById(id))
       }},
     ]
   }

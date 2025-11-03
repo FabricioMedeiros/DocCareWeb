@@ -91,22 +91,21 @@ export class DoctorFormComponent extends BaseFormComponent<Doctor> implements On
 
   saveDoctor() {
     if (this.form.dirty && this.form.valid) {
-      this.changesSaved = true;
-      const doctorData = Object.assign({}, this.form.value);
+      this.entity = Object.assign({}, this.form.value);
 
-      if (this.isEditMode) {
-        this.doctorService.updateDoctor(doctorData).subscribe({
-          next: () => this.processSuccess('Médico atualizado com sucesso!', '/doctor/list'),
-          error: (error) =>  this.processFail(error)
-        });
-      } else {
-        this.doctorService.registerDoctor(doctorData).subscribe({
-          next: () => this.processSuccess('Médico cadastrado com sucesso!', '/doctor/list'),
-          error: (error) => {
-            this.processFail(error);
-          }
-        });
-      }
+      const request = this.doctorService.save(this.entity);
+
+      request.subscribe({
+        next: () => {
+          const msg = this.isEditMode
+            ? 'Médico atualizado com sucesso!'
+            : 'Médico cadastrado com sucesso!';
+          this.processSuccess(msg, '/doctor/list');
+        },
+        error: err => this.processFail(err)
+      });
+
+      this.changesSaved = true;
     }
   }
 }

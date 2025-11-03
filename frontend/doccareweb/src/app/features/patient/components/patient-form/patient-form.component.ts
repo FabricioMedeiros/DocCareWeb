@@ -120,20 +120,21 @@ export class PatientFormComponent extends BaseFormComponent<Patient> implements 
 
   savePatient(): void {
     if (this.form.dirty && this.form.valid) {
-      this.changesSaved = true;
-      const patientData =  Object.assign({}, this.form.getRawValue());
+      this.entity = Object.assign({}, this.form.getRawValue());
 
-      if (this.isEditMode) {
-        this.patientService.updatePatient(patientData).subscribe({
-          next: () => this.processSuccess('Paciente atualizado com sucesso!', '/patient/list'),
-          error: (error) => this.processFail(error)
-        });
-      } else {
-        this.patientService.registerPatient(patientData).subscribe({
-          next: () => this.processSuccess('Paciente cadastrado com sucesso!', '/patient/list'),
-          error: (error) => this.processFail(error)
-        });
-      }
+      const request = this.patientService.save(this.entity);
+
+      request.subscribe({
+        next: () => {
+          const msg = this.isEditMode
+            ? 'Paciente alterado com sucesso!'
+            : 'Paciente cadastrado com sucesso!';
+          this.processSuccess(msg, '/patient/list');
+        },
+        error: err => this.processFail(err)
+      });
+
+      this.changesSaved = true;
     }
   }
 

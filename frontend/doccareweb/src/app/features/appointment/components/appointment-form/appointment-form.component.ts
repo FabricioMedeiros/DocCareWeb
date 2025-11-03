@@ -285,7 +285,7 @@ export class AppointmentFormComponent
 
   private loadServicesByHealthPlan(healthPlanId: number): void {
     this.spinner.show();
-    this.serviceService.getAll(undefined, undefined, 'healthPlanId', healthPlanId.toString())
+    this.serviceService.getAll(undefined, undefined, { healthPlanId: healthPlanId.toString() })
       .pipe(finalize(() => this.spinner.hide()))
       .subscribe(response => {
         this.allServices = response?.data?.items || [];
@@ -310,9 +310,7 @@ export class AppointmentFormComponent
         }
       }
 
-      const request = this.isEditMode
-        ? this.appointmentService.updateAppointment(appointmentData)
-        : this.appointmentService.registerAppointment(appointmentData);
+      const request = this.appointmentService.save(appointmentData);
 
       request.subscribe({
         next: () => {

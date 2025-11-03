@@ -81,9 +81,7 @@ export class HealthPlanFormComponent extends BaseFormComponent<HealthPlan> imple
         items: this.serviceItems
       };
 
-      const request = this.isEditMode
-        ? this.healthPlanService.updateHealthPlan(this.entity)
-        : this.healthPlanService.registerHealthPlan(this.entity);
+      const request = this.healthPlanService.save(this.entity);
 
       request.subscribe({
         next: () => {

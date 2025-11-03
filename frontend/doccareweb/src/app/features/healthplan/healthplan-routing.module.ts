@@ -20,7 +20,7 @@ const routes: Routes = [
       { path: 'edit/:id', component: HealthPlanFormComponent, 
         canActivate: [authGuard],  
         canDeactivate: [canDeactivateForm], 
-        resolve: { healthPlan: genericResolver(HealthPlanService, (service, id) => service.getHealthPlanById(id))
+        resolve: { healthPlan: genericResolver(HealthPlanService, (service, id) => service.getById(id))
       }},
     ]
   }

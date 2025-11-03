@@ -19,7 +19,7 @@ const routes: Routes = [
       { path: 'edit/:id', component: ServiceFormComponent, 
         canActivate: [authGuard],  
         canDeactivate: [canDeactivateForm], 
-        resolve: {service: genericResolver(ServiceService, (service, id) => service.getServiceById(id))}
+        resolve: {service: genericResolver(ServiceService, (service, id) => service.getById(id))}
       },
     ]
   }

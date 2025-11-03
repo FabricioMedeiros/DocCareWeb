@@ -20,7 +20,7 @@ const routes: Routes = [
       { path: 'edit/:id', component: SpecialtyFormComponent, 
         canActivate: [authGuard],  
         canDeactivate: [canDeactivateForm], resolve: {
-        specialty: genericResolver(SpecialtyService, (service, id) => service.getSpecialtyById(id))
+        specialty: genericResolver(SpecialtyService, (service, id) => service.getById(id))
       }},
     ]
   }

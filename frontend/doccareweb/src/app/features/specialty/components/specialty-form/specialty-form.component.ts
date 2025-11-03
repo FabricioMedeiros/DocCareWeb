@@ -55,25 +55,17 @@ export class SpecialtyFormComponent extends BaseFormComponent<Specialty> impleme
     if (this.form.dirty && this.form.valid) {
       this.entity = Object.assign({}, this.entity, this.form.value);
 
-      if (this.isEditMode) {
-        this.specialtyService.updateSpecialty(this.entity).subscribe({
-          next: () => {
-            this.processSuccess('Especialidade alterada com sucesso!', '/specialty/list');
-          },
-          error: (error) => {
-            this.processFail(error);
-          }
-        });
-      } else {
-        this.specialtyService.registerSpecialty(this.entity).subscribe({
-          next: () => {
-            this.processSuccess('Especialidade cadastrada com sucesso!', '/specialty/list');
-          },
-          error: (error) => {
-            this.processFail(error);
-          }
-        });
-      }
+      const request = this.specialtyService.save(this.entity);
+
+      request.subscribe({
+        next: () => {
+          const msg = this.isEditMode
+            ? 'Especialidade atualizada com sucesso!'
+            : 'Especialidade cadastrada com sucesso!';
+          this.processSuccess(msg, '/specialty/list');
+        },
+        error: err => this.processFail(err)
+      });
     }
 
     this.changesSaved = true;

@@ -47,6 +47,7 @@ export abstract class BaseListComponent<T> implements OnInit {
     const storedSearchTerm = this.service.getLocalSearchTerm();
   
     if (storedPage) this.currentPage = parseInt(storedPage, 10);
+   
     if (storedSearchTerm) {
       this.searchTerm = storedSearchTerm;
       this.initialTermSearch = storedSearchTerm;
