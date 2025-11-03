@@ -1,97 +1,12 @@
-import { Doctor } from './../../features/doctor/models/doctor';
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import { BaseService } from "src/app/core/services/base.service";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { GenericCrudService } from 'src/app/core/services/generic-crud.service';
+import { Doctor } from 'src/app/features/doctor/models/doctor';
 
 @Injectable()
-export class DoctorService extends BaseService {
-
-    constructor(private http: HttpClient) { super(); }
-
-    getAll(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
-        const headers = this.GetAuthHeaderJson();
-
-        let url = `${this.UrlServiceV1}doctor`;
-        const queryParts: string[] = [];
-
-        if (page !== undefined && pageSize !== undefined) {
-            queryParts.push(`pageNumber=${page}`, `pageSize=${pageSize}`);
-        }
-
-        if (field && value) {
-            queryParts.push(`${field}=${value}`);
-        }
-
-        if (queryParts.length > 0) {
-            url += `?${queryParts.join('&')}`;
-        }
-
-        return this.http
-            .get<any>(url, headers)
-            .pipe(catchError(super.serviceError));
-    }
-
-    getDoctorById(id: number): Observable<Doctor> {
-        const headers = this.GetAuthHeaderJson();
-
-        return this.http
-            .get<Doctor>(`${this.UrlServiceV1}doctor/${id}`, headers)
-            .pipe(catchError(super.serviceError));
-    }
-
-    registerDoctor(doctor: Doctor): Observable<Doctor> {
-        const headers = this.GetAuthHeaderJson();
-
-        return this.http
-            .post<Doctor>(`${this.UrlServiceV1}doctor`, doctor, headers)
-            .pipe(
-                map(this.extractData),
-                catchError(this.serviceError)
-            );
-    }
-
-    updateDoctor(doctor: Doctor): Observable<Doctor> {
-        const headers = this.GetAuthHeaderJson();
-
-        return this.http
-            .put<Doctor>(`${this.UrlServiceV1}doctor/${doctor.id}`, doctor, headers)
-            .pipe(
-                map(this.extractData),
-                catchError(this.serviceError)
-            );
-    }
-
-    delete(id: number): Observable<any> {
-        const headers = this.GetAuthHeaderJson();
-
-        return this.http
-            .delete(`${this.UrlServiceV1}doctor/${id}`, headers)
-            .pipe(catchError(this.serviceError));
-    }
-
-    saveLocalCurrentPageList(page: number): void {
-        localStorage.setItem('currentPageDoctorList', page.toString());
-    }
-
-    getLocalCurrentPageList(): string {
-        return localStorage.getItem('currentPageDoctorList') || '';
-    }
-
-    clearLocalCurrentPageList(): void {
-        localStorage.removeItem('currentPageDoctorList');
-    }
-
-    saveLocalSearchTerm(searchTerm: string): void {
-        localStorage.setItem('searchTermDoctorList', searchTerm);
-    }
-
-    getLocalSearchTerm(): string {
-        return localStorage.getItem('searchTermDoctorList') || '';
-    }
-
-    clearLocalSearchTerm(): void {
-        localStorage.removeItem('searchTermDoctorList');
-    }
+export class DoctorService extends GenericCrudService<Doctor> {
+  constructor(protected override http: HttpClient) {
+    super(http, 'Doctor', 'doctor');
+  }
 }

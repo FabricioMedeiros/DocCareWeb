@@ -47,6 +47,12 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     NgxMaskDirective, 
     NgxMaskPipe
   ],
-  providers: [provideNgxMask(), SpecialtyService, DoctorService, PatientService, HealthPlanService, ServiceService]
+  providers: [provideNgxMask(), 
+              SpecialtyService,
+              DoctorService,
+              PatientService, 
+              HealthPlanService,
+              ServiceService
+            ]
 })
 export class SharedModule { }

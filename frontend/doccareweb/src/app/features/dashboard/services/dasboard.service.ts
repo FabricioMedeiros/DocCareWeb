@@ -8,7 +8,7 @@ export class DashBoardService extends BaseService {
     constructor(private http: HttpClient) { super(); }
 
     getDashboardData(doctorId?: string, startDate?: string, endDate?: string): Observable<any> {
-        const headers = this.GetAuthHeaderJson();
+        const headers = this.getAuthHeaderJson();
         
         let url = `${this.UrlServiceV1}dashboard`;
         

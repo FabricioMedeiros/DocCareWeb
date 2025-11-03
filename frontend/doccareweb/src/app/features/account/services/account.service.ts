@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { BaseService } from 'src/app/core/services/base.service';
-import { User } from '../models/user'; 
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable, map, catchError } from "rxjs";
+
+import { BaseService } from "src/app/core/services/base.service";
+import { User } from "../models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -14,23 +14,21 @@ export class AccountService extends BaseService {
     super();
   }
 
-  registerUser(user: User) : Observable<User> {
-      let response = this.http
-          .post(this.UrlServiceV1 + 'auth/register', user, this.GetHeaderJson())
-          .pipe(
-              map(this.extractData),
-              catchError(this.serviceError));
-
-      return response;
+  registerUser(user: User): Observable<User> {
+    return this.http
+      .post(this.UrlServiceV1 + 'auth/register', user, this.getHeaderJson())
+      .pipe(
+        map((res) => this.extractData(res)),
+        catchError((err) => this.serviceError(err))
+      );
   }
 
-  login(user: User) : Observable<User> {
-      let response = this.http
-          .post(this.UrlServiceV1 + 'auth/login', user, this.GetHeaderJson())
-          .pipe(
-              map(this.extractData),
-              catchError(this.serviceError));
-
-      return response;
+  login(user: User): Observable<User> {
+    return this.http
+      .post(this.UrlServiceV1 + 'auth/login', user, this.getHeaderJson())
+      .pipe(
+        map((res) => this.extractData(res)),
+        catchError((err) => this.serviceError(err))
+      );
   }
 }

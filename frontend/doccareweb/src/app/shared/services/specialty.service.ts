@@ -1,101 +1,12 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { catchError, map } from "rxjs/operators";
-import { BaseService } from "src/app/core/services/base.service";
-import { Specialty } from "../../features/specialty/models/specialty";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
+import { GenericCrudService } from 'src/app/core/services/generic-crud.service';
+import { Specialty } from 'src/app/features/specialty/models/specialty';
 
 @Injectable()
-export class SpecialtyService extends BaseService {
-
-    constructor(private http: HttpClient) { super(); }
-
-    getAll(page?: number, pageSize?: number, field?: string, value?: string): Observable<any> {
-        const headers = this.GetAuthHeaderJson();
-
-        let url = `${this.UrlServiceV1}specialty`;
-        const queryParts: string[] = [];
-
-        if (page !== undefined && pageSize !== undefined) {
-            queryParts.push(`pageNumber=${page}`, `pageSize=${pageSize}`);
-        }
-
-        if (field && value) {
-            queryParts.push(`${field}=${value}`);
-        }
-
-        if (queryParts.length > 0) {
-            url += `?${queryParts.join('&')}`;
-        }
-
-        return this.http
-            .get<any>(url, headers)
-            .pipe(catchError(super.serviceError));
-    }
-
-    getSpecialtyById(id: number): Observable<Specialty> {
-        const headers = this.GetAuthHeaderJson();
-
-        return this.http
-            .get<Specialty>(`${this.UrlServiceV1}specialty/${id}`, headers)
-            .pipe(catchError(super.serviceError));
-    }
-
-    registerSpecialty(specialty: Specialty): Observable<Specialty> {
-        const headers = this.GetAuthHeaderJson();
-
-        return this.http
-            .post<Specialty>(`${this.UrlServiceV1}specialty`, specialty, headers)
-            .pipe(
-                map(this.extractData),
-                catchError(this.serviceError)
-            );
-    }
-
-    updateSpecialty(specialty: Specialty): Observable<Specialty> {
-        const headers = this.GetAuthHeaderJson();
-        const httpOptions = {
-            headers: headers
-        };
-
-        return this.http
-            .put<Specialty>(`${this.UrlServiceV1}specialty/${specialty.id}`, specialty, headers)
-            .pipe(
-                map(this.extractData),
-                catchError(this.serviceError)
-            );
-    }
-
-    delete(id: number): Observable<any> {
-        const headers = this.GetAuthHeaderJson();
-
-        return this.http
-            .delete(`${this.UrlServiceV1}specialty/${id}`, headers)
-            .pipe(catchError(this.serviceError));
-    }
-
-    saveLocalCurrentPageList(page: number): void {
-        localStorage.setItem('currentPageSpecialtyList', page.toString());
-    }
-
-    getLocalCurrentPageList(): string {
-        return localStorage.getItem('currentPageSpecialtyList') || '';
-    }
-
-    clearLocalCurrentPageList(): void {
-        localStorage.removeItem('currentPageSpecialtyList');
-    }
-
-    saveLocalSearchTerm(searchTerm: string): void {
-        localStorage.setItem('searchTermSpecialtyList', searchTerm);
-    }
-
-    getLocalSearchTerm(): string {
-        return localStorage.getItem('searchTermSpecialtyList') || '';
-    }
-
-    clearLocalSearchTerm(): void {
-        localStorage.removeItem('searchTermSpecialtyList');
-    }
+export class SpecialtyService extends GenericCrudService<Specialty> {
+  constructor(protected override http: HttpClient) {
+    super(http, 'Specialty', 'specialty');
+  }
 }
