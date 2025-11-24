@@ -1,6 +1,8 @@
 ﻿using DocCareWeb.Application.Dtos.Service;
-using DocCareWeb.Application.Interfaces;
+using DocCareWeb.Application.Features.Services.Commands;
+using DocCareWeb.Application.Features.Services.Queries;
 using DocCareWeb.Application.Notifications;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocCareWeb.API.Controllers
@@ -8,12 +10,13 @@ namespace DocCareWeb.API.Controllers
     [Route("api/[controller]")]
     public class ServiceController : MainController
     {
-        private readonly IServiceService _serviceService;
+        private readonly IMediator _mediator;
 
-        public ServiceController(IServiceService serviceService, INotificator notificator)
-            : base(notificator)
+        public ServiceController(
+            IMediator mediator,
+            INotificator notificator) : base(notificator)
         {
-            _serviceService = serviceService;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -21,25 +24,23 @@ namespace DocCareWeb.API.Controllers
                                                 [FromQuery] int? pageNumber = null,
                                                 [FromQuery] int? pageSize = null)
         {
-            var services = await _serviceService.GetAllAsync(filters, pageNumber, pageSize);
-            return CustomResponse(services);
+            var result = await _mediator.Send(new GetAllServicesQuery(filters, pageNumber, pageSize));
+            return CustomResponse(result);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var service = await _serviceService.GetByIdAsync(id);
-
-            if (service == null) return NotFound();
-
-            return CustomResponse(service);
+            var result = await _mediator.Send(new GetServiceByIdQuery(id));
+            if (result == null) return NotFound();
+            return CustomResponse(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ServiceCreateDto serviceDto)
         {
-            var createdService = await _serviceService.AddAsync(serviceDto);
-            return CustomResponse(createdService);
+            var created = await _mediator.Send(new CreateServiceCommand(serviceDto));
+            return CustomResponse(created);
         }
 
         [HttpPut("{id:int}")]
@@ -51,20 +52,14 @@ namespace DocCareWeb.API.Controllers
                 return CustomResponse();
             }
 
-            await _serviceService.UpdateAsync(serviceDto);
-
+            await _mediator.Send(new UpdateServiceCommand(serviceDto));
             return CustomResponse();
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var service = await _serviceService.GetByIdAsync(id);
-
-            if (service == null) return NotFound();
-
-            await _serviceService.DeleteAsync(id);
-
+            await _mediator.Send(new DeleteServiceCommand(id));
             return CustomResponse();
         }
     }

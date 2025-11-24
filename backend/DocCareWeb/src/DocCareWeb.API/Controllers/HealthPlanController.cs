@@ -1,7 +1,9 @@
 ﻿using DocCareWeb.Application.Dtos.HealthPlan;
-using DocCareWeb.Application.Interfaces;
+using DocCareWeb.Application.Features.HealthPlans.Commands;
+using DocCareWeb.Application.Features.HealthPlans.Queries;
 using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,12 +12,13 @@ namespace DocCareWeb.API.Controllers
     [Route("api/[controller]")]
     public class HealthPlanController : MainController
     {
-        private readonly IHealthPlanService _healthPlanService;
+        private readonly IMediator _mediator;
 
-        public HealthPlanController(IHealthPlanService healthPlanService, INotificator notificator)
-            : base(notificator)
+        public HealthPlanController(
+            IMediator mediator,
+            INotificator notificator) : base(notificator)
         {
-            _healthPlanService = healthPlanService;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -23,30 +26,30 @@ namespace DocCareWeb.API.Controllers
                                                 [FromQuery] int? pageNumber = null, 
                                                 [FromQuery] int? pageSize = null)
         {
-            var healthPlans = await _healthPlanService.GetAllAsync(filters, 
-                                                                   pageNumber, 
-                                                                   pageSize,
-                                                                   includes: IncludeHealthPlanRelations());
-            return CustomResponse(healthPlans);
+            var result = await _mediator.Send(new GetAllHealthPlansQuery(filters,
+                                                                         pageNumber,
+                                                                         pageSize,
+                                                                         IncludeHealthPlanRelations()));
+            return CustomResponse(result);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var healthPlan = await _healthPlanService.GetByIdAsync(id,
-                                                                   includes: IncludeHealthPlanRelations());
+            var result = await _mediator.Send(new GetHealthPlanByIdQuery(id,
+                                                                         IncludeHealthPlanRelations()));
 
-            if (healthPlan == null) return NotFound();
+            if (result == null) return NotFound();
 
-            return CustomResponse(healthPlan);
+            return CustomResponse(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] HealthPlanCreateDto healthPlanDto)
         {
-            var createdHealhPlan = await _healthPlanService.AddAsync(healthPlanDto,
-                                                                     includes: IncludeHealthPlanRelations());
-            return CustomResponse(createdHealhPlan);
+            var result = await _mediator.Send(new CreateHealthPlanCommand(healthPlanDto,
+                                                                          IncludeHealthPlanRelations()));
+            return CustomResponse(result);
         }
 
         [HttpPut("{id:int}")]
@@ -58,7 +61,7 @@ namespace DocCareWeb.API.Controllers
                 return CustomResponse();
             }
 
-            await _healthPlanService.UpdateAsync(healthPlanDto);
+            await _mediator.Send(new UpdateHealthPlanCommand(healthPlanDto));
 
             return CustomResponse();
         }
@@ -66,11 +69,7 @@ namespace DocCareWeb.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var healthPlan = await _healthPlanService.GetByIdAsync(id);
-
-            if (healthPlan == null) return NotFound();
-
-            await _healthPlanService.DeleteAsync(id);
+            await _mediator.Send(new DeleteHealthPlanCommand(id));
 
             return CustomResponse();
         }

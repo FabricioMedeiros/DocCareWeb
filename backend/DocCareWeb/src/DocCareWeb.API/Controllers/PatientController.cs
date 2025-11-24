@@ -1,8 +1,9 @@
-﻿using AutoMapper;
-using DocCareWeb.Application.Dtos.Patient;
-using DocCareWeb.Application.Interfaces;
+﻿using DocCareWeb.Application.Dtos.Patient;
+using DocCareWeb.Application.Features.Patients.Commands;
+using DocCareWeb.Application.Features.Patients.Queries;
 using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +15,11 @@ namespace DocCareWeb.API.Controllers
     [Route("api/[controller]")]
     public class PatientController : MainController
     {
-        private readonly IPatientService _patientService;
-        private readonly IMapper _mapper;
-        public PatientController(IPatientService patientService,
-                                 IMapper mapper,
+        private readonly IMediator _mediator;
+        public PatientController(IMediator mediator,
                                  INotificator notificator) : base(notificator)
         {
-            _patientService = patientService;
-            _mapper = mapper;
+          _mediator = mediator; 
         }
 
         [HttpGet]
@@ -29,36 +27,35 @@ namespace DocCareWeb.API.Controllers
                                                 [FromQuery] int? pageNumber = null, 
                                                 [FromQuery] int? pageSize = null)
         {
-            var patients = await _patientService.GetAllAsync(filters,
-                                                             pageNumber,
-                                                             pageSize,
-                                                             includes: IncludePatientRelations());
-            return CustomResponse(patients);
+            var result = await _mediator.Send(new GetAllPatientsQuery(filters,
+                                                                      pageNumber,
+                                                                      pageSize,
+                                                                      IncludePatientRelations()));
+            return CustomResponse(result);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var patient = await _patientService.GetByIdAsync(id,
-                                                             includes: IncludePatientRelations());
+            var result = await _mediator.Send(new GetPatientByIdQuery(id,
+                                                                      IncludePatientRelations()));
 
-            if (patient == null) return NotFound();
+            if (result == null) return NotFound();
 
-            return CustomResponse(patient);
+            return CustomResponse(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PatientCreateDto patientDto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous";
+            var createdAt = DateTime.Now;
 
-            var patient = _mapper.Map<Patient>(patientDto);
-            patient.CreatedBy = userId!;
-            patient.CreatedAt = DateTime.Now;
-
-            var createdPatient = await _patientService.AddAsync(patient,
-                                                                includes: IncludePatientRelations());
-            return CustomResponse(createdPatient);
+            var result = await _mediator.Send(new CreatePatientCommand(patientDto,
+                                                                       userId,
+                                                                       createdAt,
+                                                                       IncludePatientRelations()));
+            return CustomResponse(result);
         }
 
         [HttpPut("{id:int}")]
@@ -70,16 +67,13 @@ namespace DocCareWeb.API.Controllers
                 return CustomResponse();
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous";
+            var LastUpdatedAt = DateTime.UtcNow;
 
-            var patient = await _patientService.GetByIdAsync(id, true);
-            if (patient == null) return NotFound();
-
-            _mapper.Map(patientDto, patient);
-            patient.LastUpdatedBy = userId;
-            patient.LastUpdatedAt = DateTime.UtcNow;
-
-            await _patientService.UpdateAsync(patient);
+            await _mediator.Send(new UpdatePatientCommand(patientDto,
+                                                          userId,
+                                                          LastUpdatedAt,
+                                                          IncludePatientRelations()));
 
             return CustomResponse();
         }
@@ -87,11 +81,7 @@ namespace DocCareWeb.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var patient = await _patientService.GetByIdAsync(id);
-
-            if (patient == null) return NotFound();
-
-            await _patientService.DeleteAsync(id);
+            await _mediator.Send(new DeletePatientCommand(id));
 
             return CustomResponse();
         }

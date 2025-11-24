@@ -1,4 +1,5 @@
-﻿using DocCareWeb.Application.Notifications;
+﻿using DocCareWeb.Application.Features.Appointments.Handlers;
+using DocCareWeb.Application.Notifications;
 using DocCareWeb.Infrastructure.Mappings;
 
 namespace DocCareWeb.API.Extensions
@@ -18,6 +19,14 @@ namespace DocCareWeb.API.Extensions
         public static void ConfigureAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(MappingProfile));
+        }
+
+        public static void ConfigureMediatr(this IServiceCollection services)
+        {
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblies(typeof(AppointmentCommandHandler).Assembly);
+            });
         }
     }
 }

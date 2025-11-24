@@ -1,8 +1,9 @@
-﻿using AutoMapper;
-using DocCareWeb.Application.Dtos.Doctor;
-using DocCareWeb.Application.Interfaces;
+﻿using DocCareWeb.Application.Dtos.Doctor;
+using DocCareWeb.Application.Features.Doctors.Commands;
+using DocCareWeb.Application.Features.Doctors.Queries;
 using DocCareWeb.Application.Notifications;
 using DocCareWeb.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,16 +14,13 @@ namespace DocCareWeb.API.Controllers
     [Route("api/[controller]")]
     public class DoctorController : MainController
     {
-        private readonly IDoctorService _doctorService;
-        private readonly IMapper _mapper;
-    
-        public DoctorController(IDoctorService doctorService,
-                                IMapper mapper,
-                                INotificator notificator) : base(notificator)
+        private readonly IMediator _mediator;
+
+        public DoctorController(
+            IMediator mediator,
+            INotificator notificator) : base(notificator)
         {
-            _doctorService = doctorService;
-            _mapper = mapper;
-      
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -30,30 +28,30 @@ namespace DocCareWeb.API.Controllers
                                                 [FromQuery] int? pageNumber = null,
                                                 [FromQuery] int? pageSize = null)
         {
-            var doctors = await _doctorService.GetAllAsync(filters,
-                                                           pageNumber,
-                                                           pageSize,
-                                                           includes: IncludeDoctorRelations());
-            return CustomResponse(doctors);
+            var result = await _mediator.Send(new GetAllDoctorsQuery(filters,
+                                                                     pageNumber,
+                                                                     pageSize,
+                                                                     IncludeDoctorRelations()));
+            return CustomResponse(result);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var doctor = await _doctorService.GetByIdAsync(id,
-                                                           includes: IncludeDoctorRelations());
+            var result = await _mediator.Send(new GetDoctorByIdQuery(id,
+                                                                     IncludeDoctorRelations()));
 
-            if (doctor == null) return NotFound();
+            if (result == null) return NotFound();
 
-            return CustomResponse(doctor);
+            return CustomResponse(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DoctorCreateDto doctorDto)
         {
-            var createdDoctor = await _doctorService.AddAsync(doctorDto, 
-                                                              includes: IncludeDoctorRelations());
-            return CustomResponse(createdDoctor);
+            var result = await _mediator.Send(new CreateDoctorCommand(doctorDto,
+                                                                      IncludeDoctorRelations()));
+            return CustomResponse(result);
         }
 
 
@@ -65,13 +63,8 @@ namespace DocCareWeb.API.Controllers
                 NotifyError("O ID informado não é o mesmo que foi passado na query.");
                 return CustomResponse();
             }
-                        
-            var doctor = await _doctorService.GetByIdAsync(id, true);
-            if (doctor == null) return NotFound();
 
-            _mapper.Map(doctorDto, doctor);
-
-            await _doctorService.UpdateAsync(doctor);
+            await _mediator.Send(new UpdateDoctorCommand(doctorDto));
 
             return CustomResponse();
         }
@@ -79,11 +72,7 @@ namespace DocCareWeb.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var doctor = await _doctorService.GetByIdAsync(id);
-
-            if (doctor == null) return NotFound();
-
-            await _doctorService.DeleteAsync(id);
+            await _mediator.Send(new DeleteDoctorCommand(id));
 
             return CustomResponse();
         }

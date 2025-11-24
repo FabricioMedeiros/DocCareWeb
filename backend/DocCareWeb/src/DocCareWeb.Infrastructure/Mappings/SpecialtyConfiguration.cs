@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DocCareWeb.Infrastructure.Mapping
+namespace DocCareWeb.Infrastructure.Mappings
 {
     public class SpecialtyConfiguration : IEntityTypeConfiguration<Specialty>
     {

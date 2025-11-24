@@ -14,6 +14,7 @@ builder.Services.ConfigureHttpContextAccessor();
 builder.Services.ConfigureNotifications();
 builder.Services.ConfigureValidators(); 
 builder.Services.ConfigureAutoMapper();
+builder.Services.ConfigureMediatr();
 
 var app = builder.Build();
 

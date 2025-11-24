@@ -1,6 +1,8 @@
 ﻿using DocCareWeb.Application.Dtos.Specialty;
-using DocCareWeb.Application.Interfaces;
+using DocCareWeb.Application.Features.Specialties.Commands;
+using DocCareWeb.Application.Features.Specialties.Queries;
 using DocCareWeb.Application.Notifications;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocCareWeb.API.Controllers
@@ -8,12 +10,13 @@ namespace DocCareWeb.API.Controllers
     [Route("api/[controller]")]
     public class SpecialtyController : MainController
     {
-        private readonly ISpecialtyService _specialtyService;
+        private readonly IMediator _mediator;
 
-        public SpecialtyController(ISpecialtyService specialtyService, INotificator notificator)
-            : base(notificator)
+        public SpecialtyController(
+            IMediator mediator,
+            INotificator notificator) : base(notificator)
         {
-            _specialtyService = specialtyService;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -21,25 +24,23 @@ namespace DocCareWeb.API.Controllers
                                                 [FromQuery] int? pageNumber = null, 
                                                 [FromQuery] int? pageSize = null)
         {
-            var specialties = await _specialtyService.GetAllAsync(filters, pageNumber, pageSize);
-            return CustomResponse(specialties);
+            var result = await _mediator.Send(new GetAllSpecialtiesQuery(filters, pageNumber, pageSize));
+            return CustomResponse(result);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var specialty = await _specialtyService.GetByIdAsync(id);
-
-            if (specialty == null) return NotFound();
-
-            return CustomResponse(specialty);
+            var result = await _mediator.Send(new GetSpecialtyByIdQuery(id));
+            if (result == null) return NotFound();
+            return CustomResponse(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] SpecialtyCreateDto specialtyDto)
         {
-            var createdSpecialty = await _specialtyService.AddAsync(specialtyDto);
-            return CustomResponse(createdSpecialty);
+            var created = await _mediator.Send(new CreateSpecialtyCommand(specialtyDto));
+            return CustomResponse(created);
         }
 
         [HttpPut("{id:int}")]
@@ -51,20 +52,14 @@ namespace DocCareWeb.API.Controllers
                 return CustomResponse();
             }
 
-            await _specialtyService.UpdateAsync(specialtyDto);
-
+            await _mediator.Send(new UpdateSpecialtyCommand(specialtyDto));
             return CustomResponse();
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var specialty = await _specialtyService.GetByIdAsync(id);
-
-            if (specialty == null) return NotFound();
-
-            await _specialtyService.DeleteAsync(id);
-
+            await _mediator.Send(new DeleteSpecialtyCommand(id));
             return CustomResponse();
         }
     }
