@@ -40,7 +40,13 @@ export class ServiceFormComponent extends BaseFormComponent<Service> implements 
     const resolvedData = this.route.snapshot.data['service'];
 
     if (resolvedData) {
-      this.initializeForm(resolvedData);
+      const serviceData = (resolvedData as any).data ?? resolvedData;
+      const data = {
+        ...serviceData,
+        basePrice: serviceData?.price?.toString() ?? ''
+      };
+
+      this.initializeForm({ data });
     }
   }
 

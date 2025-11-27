@@ -45,9 +45,9 @@ export abstract class BaseListComponent<T> implements OnInit {
   ngOnInit(): void {
     const storedPage = this.service.getLocalCurrentPageList();
     const storedSearchTerm = this.service.getLocalSearchTerm();
-  
+
     if (storedPage) this.currentPage = parseInt(storedPage, 10);
-   
+
     if (storedSearchTerm) {
       this.searchTerm = storedSearchTerm;
       this.initialTermSearch = storedSearchTerm;
@@ -60,7 +60,7 @@ export abstract class BaseListComponent<T> implements OnInit {
     this.spinner.show();
     this.loadingData = true;
     this.items = [];
-    
+
     this.service.getAll(this.currentPage, this.pageSize, this.fieldSearch, this.searchTerm).subscribe({
       next: (response: any) => this.processLoadSuccess(response),
       error: (error: any) => this.processLoadFail(error),
@@ -122,8 +122,15 @@ export abstract class BaseListComponent<T> implements OnInit {
     this.toastr.success('Registro excluído com sucesso!', 'Atenção!');
   }
 
-  processFailDelete(fail: any) {
-    this.toastr.error('Ocorreu um erro.', 'Atenção!');
+  processFailDelete(error: any) {
+    this.bsModalRef.hide();
+
+    const errors = error.error?.errors;
+    if (errors && errors.length > 0) {
+      this.toastr.warning(errors[0], 'Atenção!');
+    } else {
+      this.toastr.error('Erro inesperado ao excluir.', 'Atenção!');
+    }
   }
 
   onSearch(event: { pageSize: number, term: string }): void {

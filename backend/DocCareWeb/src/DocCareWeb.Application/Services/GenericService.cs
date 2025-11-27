@@ -4,6 +4,7 @@ using DocCareWeb.Application.Notifications;
 using DocCareWeb.Application.Utils;
 using DocCareWeb.Domain.Entities;
 using DocCareWeb.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace DocCareWeb.Application.Services
@@ -112,7 +113,20 @@ namespace DocCareWeb.Application.Services
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);
-            await _uow.CommitAsync();
+
+            try
+            {
+                await _uow.CommitAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                var message = ex.InnerException?.Message ?? ex.Message;
+
+                if (message.Contains("REFERENCE constraint"))
+                   Notify("Não é possível excluir, existem registros vinculados.");
+                else
+                   Notify("Erro inesperado ao processar a operação.");
+            }
         }
 
         public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
